@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختيار الاكس العشوائي - Stake</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #f5c842;
+    --gold-dark: #c9a020;
+    --bg: #0d0d0d;
+    --card: #161616;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #777;
+    --green: #00e676;
+    --red: #ff5252;
+    --blue: #40c4ff;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 60px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,200,66,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,200,66,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 500px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  /* Nav back */
+  .nav-back {
+    align-self: flex-start;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 13px; font-weight: 600;
+    text-decoration: none; cursor: pointer;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 14px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-back:hover { color: var(--gold); border-color: var(--gold-dark); }
+
+  .header { text-align: center; margin-bottom: 32px; }
+  .header .logo { font-size: 12px; font-weight: 600; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 28px; font-weight: 900; color: #fff; }
+  .header .sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* Big display */
+  .display-wrap {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .display-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(245,200,66,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .mult-label {
+    font-size: 11px; color: var(--muted); letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  .mult-display {
+    font-size: 80px; font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, #f5c842, #fff 50%, #f5c842);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(245,200,66,0.4));
+    transition: all 0.1s;
+    min-height: 100px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mult-display.rolling {
+    filter: drop-shadow(0 0 30px rgba(245,200,66,0.8));
+  }
+  .mult-display.low { background: linear-gradient(135deg, #ff5252, #ff8a80); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 20px rgba(255,82,82,0.5)); }
+  .mult-display.mid { background: linear-gradient(135deg, #f5c842, #ffe082); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 20px rgba(245,200,66,0.6)); }
+  .mult-display.high { background: linear-gradient(135deg, #00e676, #69f0ae); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 30px rgba(0,230,118,0.7)); }
+  .mult-display.epic { background: linear-gradient(135deg, #40c4ff, #e040fb, #f5c842); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 40px rgba(224,64,251,0.8)); animation: epicGlow 0.5s infinite alternate; }
+  @keyframes epicGlow {
+    from { filter: drop-shadow(0 0 20px rgba(224,64,251,0.5)); }
+    to { filter: drop-shadow(0 0 50px rgba(64,196,255,1)); }
+  }
+
+  .x-suffix { font-size: 36px; font-weight: 900; color: var(--gold); margin-right: 4px; vertical-align: super; }
+
+  .result-tier {
+    margin-top: 16px; font-size: 15px; font-weight: 700;
+    min-height: 24px; letter-spacing: 1px;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .result-tier.show { opacity: 1; }
+  .tier-low { color: var(--red); }
+  .tier-mid { color: var(--gold); }
+  .tier-high { color: var(--green); }
+  .tier-epic { color: #e040fb; }
+
+  /* Gauge bar */
+  .gauge-wrap {
+    width: 100%; margin-top: 20px;
+    background: #1a1a1a; border-radius: 999px;
+    height: 8px; overflow: hidden;
+  }
+  .gauge-fill {
+    height: 100%; border-radius: 999px;
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--green), #e040fb);
+  }
+
+  /* Spin button */
+  .spin-btn {
+    width: 100%; padding: 18px;
+    font-family: 'Cairo', sans-serif; font-size: 20px; font-weight: 900;
+    cursor: pointer; border-radius: 16px; border: none;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: #0d0d0d; margin-bottom: 20px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 24px rgba(245,200,66,0.35);
+    letter-spacing: 1px;
+  }
+  .spin-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(245,200,66,0.5); }
+  .spin-btn:active:not(:disabled) { transform: scale(0.97); }
+  .spin-btn:disabled { opacity: 0.4; cursor: not-allowed; background: #333; box-shadow: none; }
+
+  /* Range selector */
+  .range-wrap {
+    width: 100%; background: var(--card);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px; margin-bottom: 20px;
+  }
+  .range-title { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+  .range-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .range-btn {
+    padding: 10px 6px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
+    border-radius: 10px; border: 1px solid var(--border);
+    background: #1a1a1a; color: var(--muted); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .range-btn:hover { border-color: var(--gold-dark); color: var(--gold); }
+  .range-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #000; border-color: var(--gold); }
+
+  /* History */
+  .history-wrap {
+    width: 100%; background: var(--card);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px; display: none;
+  }
+  .history-wrap.show { display: block; }
+  .history-title { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; font-weight: 600; }
+  .history-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .history-chip {
+    padding: 5px 12px; border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    border: 1px solid;
+  }
+  .chip-low { background: rgba(255,82,82,0.1); color: var(--red); border-color: rgba(255,82,82,0.3); }
+  .chip-mid { background: rgba(245,200,66,0.1); color: var(--gold); border-color: rgba(245,200,66,0.3); }
+  .chip-high { background: rgba(0,230,118,0.1); color: var(--green); border-color: rgba(0,230,118,0.3); }
+  .chip-epic { background: rgba(224,64,251,0.1); color: #e040fb; border-color: rgba(224,64,251,0.3); }
+
+  /* Particles */
+  .particle {
+    position: fixed; pointer-events: none; z-index: 999;
+    border-radius: 50%;
+    animation: fly 1.2s ease-out forwards;
+  }
+  @keyframes fly {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx),var(--dy)) scale(0); opacity: 0; }
+  }
+
+  /* Rocket animation */
+  .rocket {
+    position: fixed; font-size: 32px; pointer-events: none; z-index: 998;
+    animation: rocketLaunch 1.2s ease-out forwards;
+  }
+  @keyframes rocketLaunch {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-300px) scale(0.3); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a class="nav-back" href="index.html">← العودة للرئيسية</a>
+
+  <div class="header">
+    <div class="logo">🚀 Stake Casino</div>
+    <h1>اختيار الاكس العشوائي</h1>
+    <div class="sub">بين 10x و 1000x</div>
+  </div>
+
+  <div class="display-wrap">
+    <div class="mult-label">المضاعف العشوائي</div>
+    <div class="mult-display" id="mult-display">?</div>
+    <div class="result-tier" id="result-tier"></div>
+    <div class="gauge-wrap"><div class="gauge-fill" id="gauge-fill"></div></div>
+  </div>
+
+  <button class="spin-btn" id="spin-btn">🎲 اسحب الاكس</button>
+
+  <div class="range-wrap">
+    <div class="range-title">🎯 نطاق الاكس</div>
+    <div class="range-btns">
+      <button class="range-btn active" data-min="10" data-max="1000">10 - 1000x</button>
+      <button class="range-btn" data-min="10" data-max="500">10 - 500x</button>
+      <button class="range-btn" data-min="10" data-max="100">10 - 100x</button>
+      <button class="range-btn" data-min="100" data-max="500">100 - 500x</button>
+      <button class="range-btn" data-min="500" data-max="1000">500 - 1000x</button>
+    </div>
+  </div>
+
+  <div class="history-wrap" id="history-wrap">
+    <div class="history-title">⏱ آخر النتائج</div>
+    <div class="history-row" id="history-row"></div>
+  </div>
+
+</div>
+
+<script>
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+let minVal = 10, maxVal = 1000;
+let historyList = [];
+let spinning = false;
+
+// ---- Sound ----
+function playTick(freq) {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type = 'sine';
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0.12, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+  o.start(); o.stop(ctx.currentTime + 0.06);
+}
+
+function playWin(mult) {
+  const isEpic = mult >= 501;
+  const isHigh = mult >= 201;
+  const notes = isEpic
+    ? [523, 659, 784, 1047, 1319, 1568]
+    : isHigh
+    ? [523, 659, 784, 1047]
+    : [392, 494, 587];
+
+  notes.forEach((freq, i) => {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = isEpic ? 'sawtooth' : 'sine';
+    const t = ctx.currentTime + i * 0.1;
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(isEpic ? 0.35 : 0.25, t + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    o.start(t); o.stop(t + 0.4);
+  });
+
+  // Extra bass for epic
+  if (isEpic) {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sine'; o.frequency.value = 80;
+    g.gain.setValueAtTime(0.5, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    o.start(); o.stop(ctx.currentTime + 0.6);
+  }
+}
+
+function playRollSound(freq) {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(freq * 0.5, ctx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(freq, ctx.currentTime + 0.05);
+  g.gain.setValueAtTime(0.08, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+  o.start(); o.stop(ctx.currentTime + 0.07);
+}
+
+// ---- Particles ----
+function spawnParticles(x, y, count, isEpic) {
+  const colors = isEpic
+    ? ['#e040fb','#40c4ff','#f5c842','#fff','#00e676','#ff5252']
+    : ['#f5c842','#fff','#00e676'];
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 60 + Math.random() * (isEpic ? 200 : 120);
+    const size = isEpic ? 6 + Math.random() * 8 : 4 + Math.random() * 6;
+    p.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1200);
+  }
+}
+
+function spawnRocket(x, y) {
+  const r = document.createElement('div');
+  r.className = 'rocket';
+  r.textContent = '🚀';
+  r.style.left = x + 'px';
+  r.style.top = y + 'px';
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 1200);
+}
+
+// ---- Tier ----
+function getTier(val) {
+  if (val >= 501) return { label: '👑 EXPERT — نادر جداً!', cls: 'tier-epic', dispCls: 'epic' };
+  if (val >= 201) return { label: '🔥 HARD', cls: 'tier-high', dispCls: 'high' };
+  if (val >= 51)  return { label: '💪 MEDIUM', cls: 'tier-mid', dispCls: 'mid' };
+  return { label: '⭐ EASY', cls: 'tier-low', dispCls: 'low' };
+}
+
+function getChipClass(val) {
+  if (val >= 501) return 'chip-epic';
+  if (val >= 201) return 'chip-high';
+  if (val >= 51)  return 'chip-mid';
+  return 'chip-low';
+}
+
+// ---- History ----
+function updateHistory() {
+  const wrap = document.getElementById('history-wrap');
+  if (historyList.length === 0) { wrap.classList.remove('show'); return; }
+  wrap.classList.add('show');
+  document.getElementById('history-row').innerHTML = historyList.slice(-10).reverse()
+    .map(v => `<span class="history-chip ${getChipClass(v)}">${v}x</span>`).join('');
+}
+
+// ---- Spin ----
+function spin() {
+  if (spinning) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  spinning = true;
+
+  const btn = document.getElementById('spin-btn');
+  const disp = document.getElementById('mult-display');
+  const tier = document.getElementById('result-tier');
+  const gauge = document.getElementById('gauge-fill');
+
+  btn.disabled = true;
+  tier.className = 'result-tier';
+  disp.className = 'mult-display rolling';
+
+  const final = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
+  const totalFrames = 28;
+  let frame = 0;
+
+  const interval = setInterval(() => {
+    frame++;
+    const progress = frame / totalFrames;
+    // roll numbers: fast at start, slow at end
+    const fakeVal = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
+    disp.textContent = fakeVal + 'x';
+
+    // pitch goes up as we approach final
+    playRollSound(200 + progress * 600);
+
+    if (frame >= totalFrames) {
+      clearInterval(interval);
+
+      // Final reveal
+      disp.textContent = final + 'x';
+      const t = getTier(final);
+      disp.className = 'mult-display ' + t.dispCls;
+
+      // Gauge
+      const pct = ((final - minVal) / (maxVal - minVal)) * 100;
+      gauge.style.width = pct + '%';
+
+      // Tier label
+      setTimeout(() => {
+        tier.textContent = t.label;
+        tier.className = 'result-tier show ' + t.cls;
+      }, 200);
+
+      // Sound + particles
+      setTimeout(() => {
+        playWin(final);
+        const rect = disp.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const isEpic = final >= 501;
+        spawnParticles(cx, cy, isEpic ? 40 : 20, isEpic);
+        if (isEpic) spawnRocket(cx, cy);
+      }, 250);
+
+      historyList.push(final);
+      updateHistory();
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '🎲 اسحب مرة ثانية';
+        spinning = false;
+      }, 800);
+    }
+  }, 80);
+}
+
+// ---- Range buttons ----
+document.querySelectorAll('.range-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    minVal = parseInt(btn.dataset.min);
+    maxVal = parseInt(btn.dataset.max);
+    document.getElementById('mult-display').textContent = '?';
+    document.getElementById('mult-display').className = 'mult-display';
+    document.getElementById('result-tier').className = 'result-tier';
+    document.getElementById('gauge-fill').style.width = '0%';
+  });
+});
+
+document.getElementById('spin-btn').addEventListener('click', spin);
+</script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stake Casino - الرئيسية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #f5c842;
+    --gold-dark: #c9a020;
+    --gold-glow: rgba(245,200,66,0.35);
+    --bg: #0a0a0a;
+    --card: #131313;
+    --card2: #1c1c1c;
+    --border: #252525;
+    --text: #f0f0f0;
+    --muted: #666;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px 48px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* === BACKGROUND EFFECTS === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,200,66,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,200,66,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orbDrift 12s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 400px; height: 400px; background: rgba(245,200,66,0.06); top: -120px; left: -120px; animation-delay: 0s; }
+  .orb2 { width: 300px; height: 300px; background: rgba(245,150,66,0.04); bottom: -80px; right: -80px; animation-delay: -5s; }
+  @keyframes orbDrift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(40px, 30px) scale(1.1); }
+  }
+
+  /* === WRAPPER === */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* === LOGO / HEADER === */
+  .logo-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-icon {
+    font-size: 64px;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards, pulse 3s ease-in-out 1s infinite;
+    filter: drop-shadow(0 0 24px rgba(245,200,66,0.5));
+  }
+  @keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(245,200,66,0.4)); transform: scale(1); }
+    50%       { filter: drop-shadow(0 0 40px rgba(245,200,66,0.7)); transform: scale(1.05); }
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+  h1 span {
+    background: linear-gradient(135deg, var(--gold) 0%, #fff 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.8;
+    max-width: 400px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  /* === DIVIDER === */
+  .divider {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.5s forwards;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+  .divider span {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* === SERVICE CARDS === */
+  .services {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  .service-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 22px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    opacity: 0;
+  }
+
+  .service-card:nth-child(1) { animation: fadeUp 0.55s ease 0.55s forwards; }
+  .service-card:nth-child(2) { animation: fadeUp 0.55s ease 0.65s forwards; }
+  .service-card:nth-child(3) { animation: fadeUp 0.55s ease 0.75s forwards; }
+
+  /* glow on hover via pseudo */
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(245,200,66,0.07) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .service-card:hover::before { opacity: 1; }
+
+  .service-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold-dark);
+    box-shadow: 0 8px 32px rgba(245,200,66,0.12), 0 0 0 1px rgba(245,200,66,0.08);
+  }
+  .service-card:active { transform: scale(0.98); }
+
+  /* accent stripe on right */
+  .service-card::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    border-radius: 2px 0 0 2px;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.3s, top 0.3s, bottom 0.3s;
+  }
+  .service-card:hover::after { opacity: 1; top: 10%; bottom: 10%; }
+
+  .card-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 10px rgba(245,200,66,0.3));
+    transition: transform 0.3s ease;
+  }
+  .service-card:hover .card-icon { transform: scale(1.15) rotate(-5deg); }
+
+  .card-body { flex: 1; text-align: right; }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .card-arrow {
+    font-size: 20px;
+    color: var(--gold);
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+    flex-shrink: 0;
+  }
+  .service-card:hover .card-arrow { opacity: 1; transform: translateX(-4px); }
+
+  /* === FOOTER NOTE === */
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 1s forwards;
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === STAR PARTICLES === */
+  .star {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: starTwinkle var(--dur) ease-in-out infinite alternate;
+    opacity: 0;
+  }
+  @keyframes starTwinkle {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 0.7; transform: scale(1.5); }
+  }
+</style>
+</head>
+<body>
+
+<!-- bg effects -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="wrap">
+
+  <div class="logo-badge">🎰 Stake Casino Tools</div>
+  <div class="hero-icon">💎</div>
+
+  <h1>مرحباً بك في<br><span>أدوات Stake</span></h1>
+
+  <p class="hero-desc">
+    منصة متكاملة تضم ثلاث أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
+    اختر الأداة التي تناسبك وابدأ الآن.
+  </p>
+
+  <div class="divider"><span>اختر الخدمة</span></div>
+
+  <div class="services">
+
+    <!-- Slot Picker -->
+    <a class="service-card" href="slots.html">
+      <div class="card-icon">🎰</div>
+      <div class="card-body">
+        <div class="card-title">سلوت عشوائي</div>
+        <div class="card-desc">يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake</div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- Multiplier -->
+    <a class="service-card" href="multiplier.html">
+      <div class="card-icon">🚀</div>
+      <div class="card-body">
+        <div class="card-title">اختيار الاكس العشوائي</div>
+        <div class="card-desc">يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert</div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- Wheel -->
+    <a class="service-card" href="wheel.html">
+      <div class="card-icon">🎡</div>
+      <div class="card-body">
+        <div class="card-title">دولاب الحظ</div>
+        <div class="card-desc">أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لتوزيع السلوتات أو اتخاذ القرارات بشكل عشوائي</div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+  </div>
+
+  <p class="footer-note">جميع الأدوات تعمل محلياً في المتصفح بدون أي بيانات خارجية ✦</p>
+
+</div>
+
+<script>
+  // spawn subtle gold stars in background
+  for (let i = 0; i < 30; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.top  = Math.random() * 100 + 'vh';
+    s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+    s.style.animationDelay = (Math.random() * 5) + 's';
+    document.body.appendChild(s);
+  }
+</script>
+</body>
+</html>
