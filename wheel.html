@@ -373,6 +373,87 @@
     line-height: 1.2;
   }
 
+
+  /* Assign buttons row */
+  .assign-btns-row {
+    width: 100%; max-width: 520px;
+    display: flex; gap: 10px; margin-bottom: 20px;
+  }
+  .assign-btn-all {
+    flex: 1; padding: 14px 10px;
+    font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; border-radius: 14px;
+    border: 1px solid rgba(245,200,66,0.4);
+    background: rgba(245,200,66,0.08); color: var(--gold);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .assign-btn-all:hover { background: rgba(245,200,66,0.15); transform: translateY(-1px); }
+
+  .assign-btn-one {
+    flex: 1; padding: 14px 10px;
+    font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; border-radius: 14px;
+    border: 1px solid rgba(64,196,255,0.4);
+    background: rgba(64,196,255,0.07); color: #40c4ff;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .assign-btn-one:hover { background: rgba(64,196,255,0.14); transform: translateY(-1px); }
+
+  /* One-by-one popup */
+  .obo-popup {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.82);
+    align-items: center; justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+  .obo-popup.show { display: flex; }
+
+  .obo-box {
+    background: var(--card);
+    border: 1px solid var(--gold-dark);
+    border-radius: 24px;
+    padding: 32px 24px 24px;
+    text-align: center;
+    max-width: 340px; width: 92%;
+    box-shadow: 0 0 60px rgba(245,200,66,0.18);
+    animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+
+  .obo-progress {
+    font-size: 11px; color: var(--muted); letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .obo-person {
+    font-size: 22px; font-weight: 900; color: #fff;
+    margin-bottom: 6px;
+  }
+  .obo-arrow { color: var(--gold); font-size: 20px; margin: 10px 0; }
+  .obo-slot {
+    font-size: 24px; font-weight: 900; color: var(--gold);
+    line-height: 1.3; margin-bottom: 24px;
+    animation: reveal 0.5s ease;
+  }
+  @keyframes reveal {
+    from { transform: rotateY(90deg); opacity: 0; }
+    to   { transform: rotateY(0deg); opacity: 1; }
+  }
+
+  .obo-actions { display: flex; flex-direction: column; gap: 10px; }
+  .obo-next {
+    padding: 13px; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700;
+    border-radius: 12px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #0d0d0d; transition: opacity 0.2s;
+  }
+  .obo-next:hover { opacity: 0.9; }
+  .obo-next:disabled { opacity: 0.35; cursor: not-allowed; }
+  .obo-close {
+    padding: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 600;
+    border-radius: 10px; border: 1px solid var(--border); cursor: pointer;
+    background: transparent; color: var(--muted); transition: color 0.2s;
+  }
+  .obo-close:hover { color: var(--text); }
+
   /* Particles */
   .particle {
     position: fixed; pointer-events: none; z-index: 999;
@@ -440,8 +521,11 @@
   <div class="history-list" id="history-list"></div>
 </div>
 
-<!-- Assign slots button -->
-<button class="assign-btn" id="assign-btn">🎰 وزّع سلوت عشوائي على كل خيار</button>
+<!-- Assign slots buttons -->
+<div class="assign-btns-row" id="assign-btns-row" style="display:none">
+  <button class="assign-btn-all" id="assign-btn">🎰 وزّع على الكل دفعة</button>
+  <button class="assign-btn-one" id="assign-one-btn">👤 واحد واحد</button>
+</div>
 
 <!-- Assign section -->
 <div class="assign-section" id="assign-section">
@@ -450,6 +534,21 @@
     <button class="reshuffle-btn" id="reshuffle-btn">🔀 إعادة التوزيع</button>
   </div>
   <div class="assign-list" id="assign-list"></div>
+</div>
+
+
+<!-- One-by-one popup -->
+<div class="obo-popup" id="obo-popup">
+  <div class="obo-box">
+    <div class="obo-progress" id="obo-progress">1 / 1</div>
+    <div class="obo-person" id="obo-person">—</div>
+    <div class="obo-arrow">↓</div>
+    <div class="obo-slot" id="obo-slot">🎰 —</div>
+    <div class="obo-actions">
+      <button class="obo-next" id="obo-next">الشخص التالي ←</button>
+      <button class="obo-close" id="obo-close">إغلاق</button>
+    </div>
+  </div>
 </div>
 
 <!-- Result popup -->
@@ -2335,14 +2434,14 @@ function addHistory(entry, action) {
 function renderHistory() {
   const section = document.getElementById('history-section');
   const list = document.getElementById('history-list');
-  const assignBtn = document.getElementById('assign-btn');
+  const assignBtnsRow = document.getElementById('assign-btns-row');
   if (spinHistory.length === 0) {
     section.classList.remove('show');
-    assignBtn.classList.remove('show');
+    assignBtnsRow.style.display = 'none';
     return;
   }
   section.classList.add('show');
-  assignBtn.classList.add('show');
+  assignBtnsRow.style.display = 'flex';
   list.innerHTML = spinHistory.slice(0, 20).map((h, i) =>
     `<div class="history-item">
       <div class="history-num">${i+1}</div>
@@ -2418,6 +2517,64 @@ document.getElementById('clear-hist-btn').addEventListener('click', () => {
 
 document.getElementById('assign-btn').addEventListener('click', assignSlots);
 document.getElementById('reshuffle-btn').addEventListener('click', assignSlots);
+
+// ---- One-by-one assign ----
+let oboList = [];   // [{name, slot}]
+let oboIndex = 0;
+
+function startOneByOne() {
+  const names = [...new Set(spinHistory.map(h => h.name))];
+  if (names.length === 0) return;
+
+  const shuffled = [...SLOTS_RAW].sort(() => Math.random() - 0.5);
+  oboList = names.map((name, i) => ({ name, slot: (shuffled[i] || { name: '—' }).name }));
+  oboIndex = 0;
+  showOboStep();
+  document.getElementById('obo-popup').classList.add('show');
+}
+
+function showOboStep() {
+  const item = oboList[oboIndex];
+  document.getElementById('obo-progress').textContent = (oboIndex + 1) + ' / ' + oboList.length;
+  document.getElementById('obo-person').textContent = item.name;
+
+  // animate slot reveal
+  const slotEl = document.getElementById('obo-slot');
+  slotEl.style.animation = 'none';
+  slotEl.textContent = '🎰 ...';
+  setTimeout(() => {
+    slotEl.textContent = '🎰 ' + item.slot;
+    slotEl.style.animation = 'reveal 0.5s ease';
+  }, 150);
+
+  // particles
+  spawnParticles(window.innerWidth / 2, window.innerHeight / 2);
+  playWin();
+
+  const nextBtn = document.getElementById('obo-next');
+  if (oboIndex >= oboList.length - 1) {
+    nextBtn.textContent = '✅ انتهى الجميع';
+    nextBtn.disabled = true;
+  } else {
+    nextBtn.textContent = 'الشخص التالي ←';
+    nextBtn.disabled = false;
+  }
+}
+
+document.getElementById('assign-one-btn').addEventListener('click', startOneByOne);
+document.getElementById('obo-next').addEventListener('click', () => {
+  if (oboIndex < oboList.length - 1) {
+    oboIndex++;
+    showOboStep();
+  }
+});
+document.getElementById('obo-close').addEventListener('click', () => {
+  document.getElementById('obo-popup').classList.remove('show');
+});
+document.getElementById('obo-popup').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('obo-popup'))
+    document.getElementById('obo-popup').classList.remove('show');
+});
 
 // init
 renderEntries();
