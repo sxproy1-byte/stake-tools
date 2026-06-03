@@ -317,6 +317,13 @@
   }
   .tag-kept { background: rgba(245,200,66,0.1); color: var(--gold); }
   .tag-removed { background: rgba(255,82,82,0.1); color: var(--red); }
+  .hist-del {
+    background: rgba(255,82,82,0.12); border: 1px solid rgba(255,82,82,0.35);
+    color: var(--red); font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700;
+    padding: 4px 10px; border-radius: 7px; cursor: pointer;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .hist-del:hover { background: rgba(255,82,82,0.25); }
 
   /* Assign slots section */
   .assign-btn {
@@ -2451,9 +2458,17 @@ function renderHistory() {
     `<div class="history-item">
       <div class="history-num">${i+1}</div>
       <div class="history-name">${h.name}</div>
-      <div class="history-tag ${h.action === 'kept' ? 'tag-kept' : 'tag-removed'}">${h.action === 'kept' ? 'بقي' : 'حُذف'}</div>
+      <button class="hist-del" data-idx="${i}">حذف</button>
     </div>`
   ).join('');
+
+  list.querySelectorAll('.hist-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      spinHistory.splice(idx, 1);
+      renderHistory();
+    });
+  });
 }
 
 // ---- Assign slots ----
