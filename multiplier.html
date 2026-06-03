@@ -202,15 +202,23 @@
     padding: 20px; margin-bottom: 20px;
   }
   .range-title { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
-  .range-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .range-btn {
-    padding: 10px 6px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
-    border-radius: 10px; border: 1px solid var(--border);
-    background: #1a1a1a; color: var(--muted); cursor: pointer;
-    transition: all 0.2s;
+  .range-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .range-field label {
+    display: block; font-size: 11px; color: var(--muted);
+    margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase;
   }
-  .range-btn:hover { border-color: var(--gold-dark); color: var(--gold); }
-  .range-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #000; border-color: var(--gold); }
+  .range-field input {
+    width: 100%; padding: 10px 14px;
+    font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700;
+    background: #1a1a1a; border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    outline: none; transition: border-color 0.2s;
+    text-align: center;
+  }
+  .range-field input:focus { border-color: var(--gold); }
+  .range-field input::-webkit-inner-spin-button,
+  .range-field input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .range-error { font-size: 12px; color: var(--red); margin-top: 10px; min-height: 18px; text-align: center; }
 
   /* History */
   .history-wrap {
@@ -268,7 +276,7 @@
   <div class="header">
     <div class="logo">🚀 Stake Casino</div>
     <h1>اختيار الاكس العشوائي</h1>
-    <div class="sub">بين 10x و 1000x</div>
+
   </div>
 
   <div class="display-wrap">
@@ -282,13 +290,17 @@
 
   <div class="range-wrap">
     <div class="range-title">🎯 نطاق الاكس</div>
-    <div class="range-btns">
-      <button class="range-btn active" data-min="10" data-max="1000">10 - 1000x</button>
-      <button class="range-btn" data-min="10" data-max="500">10 - 500x</button>
-      <button class="range-btn" data-min="10" data-max="100">10 - 100x</button>
-      <button class="range-btn" data-min="100" data-max="500">100 - 500x</button>
-      <button class="range-btn" data-min="500" data-max="1000">500 - 1000x</button>
+    <div class="range-inputs">
+      <div class="range-field">
+        <label>الحد الأدنى</label>
+        <input type="number" id="input-min" value="10" min="1" placeholder="مثال: 10">
+      </div>
+      <div class="range-field">
+        <label>الحد الأقصى</label>
+        <input type="number" id="input-max" value="1000" min="2" placeholder="مثال: 1000">
+      </div>
     </div>
+    <div class="range-error" id="range-error"></div>
   </div>
 
   <div class="history-wrap" id="history-wrap">
@@ -417,6 +429,7 @@ function updateHistory() {
 // ---- Spin ----
 function spin() {
   if (spinning) return;
+  if (!validateRange()) return;
   if (ctx.state === 'suspended') ctx.resume();
   spinning = true;
 
@@ -484,19 +497,34 @@ function spin() {
   }, 80);
 }
 
-// ---- Range buttons ----
-document.querySelectorAll('.range-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    minVal = parseInt(btn.dataset.min);
-    maxVal = parseInt(btn.dataset.max);
-    document.getElementById('mult-display').textContent = '?';
-    document.getElementById('mult-display').className = 'mult-display';
-    document.getElementById('result-tier').className = 'result-tier';
-    document.getElementById('gauge-fill').style.width = '0%';
-  });
-});
+// ---- Range inputs ----
+function validateRange() {
+  const minInput = document.getElementById('input-min');
+  const maxInput = document.getElementById('input-max');
+  const errEl = document.getElementById('range-error');
+  const newMin = parseInt(minInput.value);
+  const newMax = parseInt(maxInput.value);
+
+  if (isNaN(newMin) || isNaN(newMax)) {
+    errEl.textContent = '⚠️ أدخل أرقاماً صحيحة';
+    return false;
+  }
+  if (newMin < 1) {
+    errEl.textContent = '⚠️ الحد الأدنى لازم يكون 1 على الأقل';
+    return false;
+  }
+  if (newMax <= newMin) {
+    errEl.textContent = '⚠️ الحد الأقصى لازم يكون أكبر من الأدنى';
+    return false;
+  }
+  errEl.textContent = '';
+  minVal = newMin;
+  maxVal = newMax;
+  return true;
+}
+
+document.getElementById('input-min').addEventListener('input', validateRange);
+document.getElementById('input-max').addEventListener('input', validateRange);
 
 document.getElementById('spin-btn').addEventListener('click', spin);
 </script>
