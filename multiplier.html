@@ -29,7 +29,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 24px 16px 60px;
+    padding: 0 16px 60px;
     overflow-x: hidden;
     position: relative;
   }
@@ -46,6 +46,40 @@
     pointer-events: none;
     z-index: 0;
   }
+
+
+  /* === NAVBAR === */
+  .navbar {
+    width: 100vw; background: #111; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 16px; margin-bottom: 28px; position: sticky; top: 0; z-index: 50;
+  }
+  .navbar-inner {
+    width: 100%; max-width: 700px;
+    display: flex; align-items: center; gap: 6px;
+    overflow-x: auto; padding: 10px 0;
+  }
+  .navbar-inner::-webkit-scrollbar { display: none; }
+  .nav-home {
+    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--muted); text-decoration: none;
+    padding: 7px 14px; border-radius: 10px;
+    border: 1px solid var(--border); background: transparent;
+    white-space: nowrap; transition: color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+  }
+  .nav-home:hover { color: var(--gold); border-color: var(--gold-dark); }
+  .nav-sep { color: #333; font-size: 18px; flex-shrink: 0; padding: 0 2px; }
+  .nav-link {
+    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--muted); text-decoration: none;
+    padding: 7px 14px; border-radius: 10px;
+    border: 1px solid transparent; white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+  }
+  .nav-link:hover { color: var(--gold); border-color: var(--border); background: var(--card); }
+  .nav-link.active { color: var(--gold); background: rgba(245,200,66,0.08); border-color: rgba(245,200,66,0.2); }
 
   .page-wrap {
     position: relative; z-index: 1;
@@ -220,9 +254,16 @@
 </style>
 </head>
 <body>
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="nav-home" href="index.html">🏠 الرئيسية</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-link" href="slots.html">🎰 سلوت عشوائي</a>
+    <a class="nav-link active" href="multiplier.html">🚀 الاكس العشوائي</a>
+    <a class="nav-link" href="wheel.html">🎡 دولاب الحظ</a>
+  </div>
+</nav>
 <div class="page-wrap">
-
-  <a class="nav-back" href="index.html">← العودة للرئيسية</a>
 
   <div class="header">
     <div class="logo">🚀 Stake Casino</div>
