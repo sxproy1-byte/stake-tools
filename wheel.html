@@ -2407,9 +2407,14 @@ function renderEntries() {
     `<div class="entry-item">
       <div class="entry-color" style="background:${COLORS[i % COLORS.length]}"></div>
       <div class="entry-name">${e.name}</div>
-      <button class="entry-del" onclick="removeEntry('${e.name.replace(/'/g, "\\'")}')">✕</button>
+      <button class="entry-del" data-name="${e.name.replace(/"/g, '&quot;')}">✕</button>
     </div>`
   ).join('');
+
+  // attach delete events
+  list.querySelectorAll('.entry-del').forEach(btn => {
+    btn.addEventListener('click', () => removeEntry(btn.dataset.name));
+  });
 }
 
 function renderWheel() {
