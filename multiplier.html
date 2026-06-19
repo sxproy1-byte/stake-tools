@@ -125,6 +125,39 @@
     pointer-events: none;
   }
 
+  /* Crash-style rising graph */
+  .crash-graph {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    margin-bottom: 14px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(245,200,66,0.04), transparent 60%);
+    border: 1px solid rgba(245,200,66,0.08);
+  }
+  .crash-graph canvas {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .crash-rocket {
+    position: absolute;
+    font-size: 30px;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 0 10px rgba(245,200,66,0.7));
+    opacity: 0;
+    z-index: 5;
+    transition: opacity 0.15s;
+  }
+  .crash-rocket.show { opacity: 1; }
+  .crash-graph.flash { animation: crashFlash 0.45s ease; }
+  @keyframes crashFlash {
+    0%   { background: rgba(255,82,82,0.4); }
+    100% { background: linear-gradient(180deg, rgba(245,200,66,0.04), transparent 60%); }
+  }
+
   .mult-label {
     font-size: 11px; color: var(--muted); letter-spacing: 3px;
     text-transform: uppercase; margin-bottom: 12px;
@@ -280,6 +313,10 @@
   </div>
 
   <div class="display-wrap">
+    <div class="crash-graph" id="crash-graph">
+      <canvas id="crash-canvas"></canvas>
+      <div class="crash-rocket" id="crash-rocket">🚀</div>
+    </div>
     <div class="mult-label">المضاعف العشوائي</div>
     <div class="mult-display" id="mult-display">?</div>
     <div class="result-tier" id="result-tier"></div>
@@ -375,6 +412,28 @@ function playRollSound(freq) {
   o.start(); o.stop(ctx.currentTime + 0.07);
 }
 
+function playCrash() {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(180, ctx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.32);
+  g.gain.setValueAtTime(0.32, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.38);
+  o.start(); o.stop(ctx.currentTime + 0.38);
+
+  const o2 = ctx.createOscillator();
+  const g2 = ctx.createGain();
+  o2.connect(g2); g2.connect(ctx.destination);
+  o2.type = 'square';
+  o2.frequency.setValueAtTime(900, ctx.currentTime);
+  o2.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.12);
+  g2.gain.setValueAtTime(0.15, ctx.currentTime);
+  g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+  o2.start(); o2.stop(ctx.currentTime + 0.15);
+}
+
 // ---- Particles ----
 function spawnParticles(x, y, count, isEpic) {
   const colors = isEpic
@@ -426,7 +485,7 @@ function updateHistory() {
     .map(v => `<span class="history-chip ${getChipClass(v)}">${v}x</span>`).join('');
 }
 
-// ---- Spin ----
+// ---- Spin (Crash-style) ----
 function spin() {
   if (spinning) return;
   if (!validateRange()) return;
@@ -437,49 +496,133 @@ function spin() {
   const disp = document.getElementById('mult-display');
   const tier = document.getElementById('result-tier');
   const gauge = document.getElementById('gauge-fill');
+  const graph = document.getElementById('crash-graph');
+  const rocket = document.getElementById('crash-rocket');
+  const canvas = document.getElementById('crash-canvas');
+  const cctx = canvas.getContext('2d');
 
   btn.disabled = true;
   tier.className = 'result-tier';
   disp.className = 'mult-display rolling';
+  gauge.style.width = '0%';
+  rocket.textContent = '🚀';
+  rocket.classList.add('show');
+
+  // size canvas crisply for current box
+  const rect = graph.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const W = rect.width, H = rect.height;
+  cctx.clearRect(0, 0, W, H);
 
   const final = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-  const totalFrames = 28;
-  let frame = 0;
+  const duration = Math.min(1300 + Math.log2(final + 1) * 380, 4200);
+  const startTime = performance.now();
+  const points = [];
+  let lastTick = 0;
 
-  const interval = setInterval(() => {
-    frame++;
-    const progress = frame / totalFrames;
-    // roll numbers: fast at start, slow at end
-    const fakeVal = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-    disp.textContent = fakeVal + 'x';
+  // Where along the width the curve crashes — small multipliers pop early (left),
+  // big multipliers travel further across the graph (toward the right edge)
+  const padX = W * 0.05;
+  const usableW = W - padX * 2;
+  const logMin = Math.log(minVal + 1);
+  const logMax = Math.log(maxVal + 1);
+  const logFinalForX = Math.log(final + 1);
+  let xFrac = logMax > logMin ? (logFinalForX - logMin) / (logMax - logMin) : 1;
+  xFrac = Math.max(0.08, Math.min(1, xFrac));
+  const xTarget = padX + xFrac * usableW;
 
-    // pitch goes up as we approach final
-    playRollSound(200 + progress * 600);
+  function frame(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // accelerating growth curve, like a crash multiplier climbing
+    const value = 1 + (final - 1) * Math.pow(progress, 1.8);
 
-    if (frame >= totalFrames) {
-      clearInterval(interval);
+    disp.textContent = value.toFixed(value < 10 ? 2 : (value < 100 ? 1 : 0)) + 'x';
 
-      // Final reveal
+    if (elapsed - lastTick > 65) {
+      lastTick = elapsed;
+      playRollSound(180 + progress * 520);
+    }
+
+    // log scale on Y so the curve stays visible even for huge multipliers
+    const x = padX + progress * (xTarget - padX);
+    const logFinal = Math.log(final + 1);
+    const logVal = Math.log(value + 1);
+    const y = H - (logVal / logFinal) * (H - 22) - 12;
+    points.push({ x, y });
+
+    cctx.clearRect(0, 0, W, H);
+    if (points.length > 1) {
+      // fill under the curve
+      cctx.beginPath();
+      cctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) cctx.lineTo(points[i].x, points[i].y);
+      cctx.lineTo(points[points.length - 1].x, H);
+      cctx.lineTo(points[0].x, H);
+      cctx.closePath();
+      const grad = cctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, 'rgba(245,200,66,0.32)');
+      grad.addColorStop(1, 'rgba(245,200,66,0)');
+      cctx.fillStyle = grad;
+      cctx.fill();
+
+      // the line itself
+      cctx.beginPath();
+      cctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) cctx.lineTo(points[i].x, points[i].y);
+      cctx.strokeStyle = '#f5c842';
+      cctx.lineWidth = 3;
+      cctx.lineJoin = 'round';
+      cctx.lineCap = 'round';
+      cctx.shadowColor = 'rgba(245,200,66,0.75)';
+      cctx.shadowBlur = 10;
+      cctx.stroke();
+      cctx.shadowBlur = 0;
+    }
+
+    // rocket follows the tip of the curve
+    const last = points[points.length - 1];
+    rocket.style.left = last.x + 'px';
+    rocket.style.top = last.y + 'px';
+    if (points.length > 3) {
+      const prev = points[points.length - 4];
+      const angle = Math.atan2(last.y - prev.y, last.x - prev.x) * 180 / Math.PI;
+      rocket.style.transform = `translate(-50%,-50%) rotate(${angle + 45}deg)`;
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      // ===== CRASH =====
       disp.textContent = final + 'x';
       const t = getTier(final);
       disp.className = 'mult-display ' + t.dispCls;
 
-      // Gauge
+      graph.classList.add('flash');
+      setTimeout(() => graph.classList.remove('flash'), 450);
+      playCrash();
+      rocket.textContent = '💥';
+      setTimeout(() => {
+        rocket.classList.remove('show');
+        rocket.textContent = '🚀';
+      }, 500);
+
       const pct = ((final - minVal) / (maxVal - minVal)) * 100;
       gauge.style.width = pct + '%';
 
-      // Tier label
       setTimeout(() => {
         tier.textContent = t.label;
         tier.className = 'result-tier show ' + t.cls;
       }, 200);
 
-      // Sound + particles
       setTimeout(() => {
         playWin(final);
-        const rect = disp.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
+        const drect = disp.getBoundingClientRect();
+        const cx = drect.left + drect.width / 2;
+        const cy = drect.top + drect.height / 2;
         const isEpic = final >= 501;
         spawnParticles(cx, cy, isEpic ? 40 : 20, isEpic);
         if (isEpic) spawnRocket(cx, cy);
@@ -494,7 +637,9 @@ function spin() {
         spinning = false;
       }, 800);
     }
-  }, 80);
+  }
+
+  requestAnimationFrame(frame);
 }
 
 // ---- Range inputs ----
