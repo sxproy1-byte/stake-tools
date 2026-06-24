@@ -45,6 +45,8 @@
   .filter-btn.select-all:hover { background: rgba(46,204,113,0.25); }
   .filter-btn.deselect-all { background: rgba(231,76,60,0.15); color: var(--red); border-color: rgba(231,76,60,0.3); }
   .filter-btn.deselect-all:hover { background: rgba(231,76,60,0.25); }
+  .filter-btn.select-pinned { background: rgba(245,200,66,0.15); color: var(--gold); border-color: rgba(245,200,66,0.3); }
+  .filter-btn.select-pinned:hover { background: rgba(245,200,66,0.25); }
   .filter-search { width: 100%; padding: 10px 14px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 13px; margin-bottom: 12px; outline: none; }
   .filter-search:focus { border-color: var(--gold-dark); }
   .companies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 320px; overflow-y: auto; padding: 4px; }
@@ -56,7 +58,7 @@
   .company-chip.active { background: rgba(245,200,66,0.08); border-color: rgba(245,200,66,0.3); }
   .company-chip .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all 0.2s; }
   .company-chip.active .dot { background: var(--green); border-color: var(--green); }
-  .company-chip .chip-name { font-size: 12px; font-weight: 600; color: var(--muted); transition: color 0.2s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .company-chip .chip-name { font-size: 12px; font-weight: 600; color: var(--muted); transition: color 0.2s; white-space: normal; word-break: break-word; }
   .company-chip.active .chip-name { color: var(--text); }
   .company-chip .chip-count { font-size: 10px; color: var(--muted); margin-right: auto; flex-shrink: 0; }
   .filter-summary { margin-top: 12px; font-size: 12px; color: var(--muted); text-align: center; }
@@ -172,6 +174,7 @@
     <div class="filter-actions">
       <button class="filter-btn select-all" onclick="selectAllCompanies()">✅ تحديد الكل</button>
       <button class="filter-btn deselect-all" onclick="deselectAllCompanies()">❌ إلغاء الكل</button>
+      <button class="filter-btn select-pinned" onclick="selectPinnedCompanies()">⭐ تحديد الشائعة</button>
     </div>
     <div class="pinned-section" id="pinned-section">
       <div class="pinned-label">⭐ شركات شائعة</div>
@@ -248,14 +251,14 @@ ALL_SLOTS.forEach(g => {
   if (!companyMap[g.company]) companyMap[g.company] = [];
   companyMap[g.company].push(g);
 });
-const PINNED = ["BackSeat Gaming", "BGaming", "Hacksaw Gaming", "Knucklehead Syndicate", "Massive Studios", "Paperclip Gaming", "Pragmatic Play", "Titan Gaming", "Twist Gaming", "Uppercut Gaming"];
+const PINNED = ["BackSeat Gaming", "BGaming", "Black Coffee Studios", "Colorful Play", "Darkbyte", "GG Gaming", "Hacksaw Gaming", "Knucklehead Syndicate", "Massive Studios", "Ovryx Gaming", "Paperclip Gaming", "Phantom Interactive", "Pragmatic Play", "Rabbit Gaming", "Sidequest Studios", "Titan Gaming", "Twist Gaming", "Uppercut Gaming", "Valkyrie"];
 const allCompanies = [
   ...PINNED.filter(c => companyMap[c]),
   ...Object.keys(companyMap).filter(c => !PINNED.includes(c)).sort((a,b) => companyMap[b].length - companyMap[a].length || a.toLowerCase().localeCompare(b.toLowerCase()))
 ];
 
 // State
-let selectedCompanies = new Set(allCompanies);
+let selectedCompanies = new Set();
 let SLOTS_RAW = []; 
 let sessionUsed = new Set();
 let history = [];
@@ -322,6 +325,15 @@ function selectAllCompanies() {
 function deselectAllCompanies() {
   selectedCompanies.clear();
   document.querySelectorAll('.company-chip').forEach(c => c.classList.remove('active'));
+  rebuildSlots();
+  updateFilterSummary();
+}
+
+function selectPinnedCompanies() {
+  selectedCompanies = new Set(PINNED.filter(c => companyMap[c]));
+  document.querySelectorAll(".company-chip").forEach(c => {
+    c.classList.toggle("active", selectedCompanies.has(c.dataset.company));
+  });
   rebuildSlots();
   updateFilterSummary();
 }
