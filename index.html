@@ -4,14 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stake Casino - الرئيسية</title>
+<script>
+  (function(){
+    var l = localStorage.getItem('site-lang') || 'ar';
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  })();
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold: #f5c842;
-    --gold-dark: #c9a020;
-    --gold-glow: rgba(245,200,66,0.35);
+    --gold: #8b6cff;
+    --gold-dark: #6d4fd1;
+    --gold-glow: rgba(139,92,246,0.35);
     --bg: #0a0a0a;
     --card: #131313;
     --card2: #1c1c1c;
@@ -44,8 +51,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(245,200,66,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(245,200,66,0.025) 1px, transparent 1px);
+      linear-gradient(rgba(139,92,246,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.025) 1px, transparent 1px);
     background-size: 48px 48px;
     pointer-events: none;
     z-index: 0;
@@ -60,8 +67,8 @@
     z-index: 0;
     animation: orbDrift 12s ease-in-out infinite alternate;
   }
-  .orb1 { width: 400px; height: 400px; background: rgba(245,200,66,0.06); top: -120px; left: -120px; animation-delay: 0s; }
-  .orb2 { width: 300px; height: 300px; background: rgba(245,150,66,0.04); bottom: -80px; right: -80px; animation-delay: -5s; }
+  .orb1 { width: 400px; height: 400px; background: rgba(139,92,246,0.06); top: -120px; left: -120px; animation-delay: 0s; }
+  .orb2 { width: 300px; height: 300px; background: rgba(59,130,246,0.04); bottom: -80px; right: -80px; animation-delay: -5s; }
   @keyframes orbDrift {
     from { transform: translate(0, 0) scale(1); }
     to   { transform: translate(40px, 30px) scale(1.1); }
@@ -95,11 +102,14 @@
     margin-bottom: 14px;
     opacity: 0;
     animation: fadeUp 0.6s ease 0.2s forwards, pulse 3s ease-in-out 1s infinite;
-    filter: drop-shadow(0 0 24px rgba(245,200,66,0.5));
+    filter: drop-shadow(0 0 24px rgba(139,92,246,0.5));
   }
   @keyframes pulse {
-    0%, 100% { filter: drop-shadow(0 0 20px rgba(245,200,66,0.4)); transform: scale(1); }
-    50%       { filter: drop-shadow(0 0 40px rgba(245,200,66,0.7)); transform: scale(1.05); }
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(139,92,246,0.4)); transform: scale(1); }
+    50%       { filter: drop-shadow(0 0 40px rgba(139,92,246,0.7)); transform: scale(1.05); }
+  }
+  @keyframes shine {
+    to { background-position: 200% center; }
   }
 
   h1 {
@@ -113,7 +123,9 @@
     animation: fadeUp 0.6s ease 0.3s forwards;
   }
   h1 span {
-    background: linear-gradient(135deg, var(--gold) 0%, #fff 50%, var(--gold) 100%);
+    background: linear-gradient(135deg, #4d8dff 0%, #fff 35%, #a86cff 65%, #4d8dff 100%);
+    background-size: 200% auto;
+    animation: shine 5s linear infinite;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -177,7 +189,7 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.35s cubic-bezier(.22,1,.36,1), border-color 0.3s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1);
     opacity: 0;
   }
 
@@ -190,7 +202,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(245,200,66,0.07) 0%, transparent 70%);
+    background: radial-gradient(ellipse at 30% 50%, rgba(139,92,246,0.07) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s;
   }
@@ -199,7 +211,7 @@
   .service-card:hover {
     transform: translateY(-3px);
     border-color: var(--gold-dark);
-    box-shadow: 0 8px 32px rgba(245,200,66,0.12), 0 0 0 1px rgba(245,200,66,0.08);
+    box-shadow: 0 8px 32px rgba(139,92,246,0.12), 0 0 0 1px rgba(139,92,246,0.08);
   }
   .service-card:active { transform: scale(0.98); }
 
@@ -219,12 +231,12 @@
   .card-icon {
     font-size: 36px;
     flex-shrink: 0;
-    filter: drop-shadow(0 0 10px rgba(245,200,66,0.3));
-    transition: transform 0.3s ease;
+    filter: drop-shadow(0 0 10px rgba(139,92,246,0.3));
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
   }
   .service-card:hover .card-icon { transform: scale(1.15) rotate(-5deg); }
 
-  .card-body { flex: 1; text-align: right; }
+  .card-body { flex: 1; text-align: start; }
 
   .card-title {
     font-size: 18px;
@@ -279,6 +291,43 @@
     from { opacity: 0; transform: scale(0.5); }
     to   { opacity: 0.7; transform: scale(1.5); }
   }
+
+  /* === LANGUAGE TOGGLE === */
+  .lang-toggle {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
+  }
+  .lang-toggle:hover {
+    border-color: var(--gold-dark);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 26px rgba(139,92,246,0.3);
+    background: var(--card2);
+  }
+  .lang-toggle:active { transform: scale(0.96); }
+  .lang-toggle .globe { font-size: 15px; transition: transform 0.4s ease; }
+  .lang-toggle:hover .globe { transform: rotate(180deg); }
+
+  /* smoother global transitions on language / theme swap */
+  * { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  body, .wrap, [data-i18n] { transition: opacity 0.25s ease; }
+  body.lang-fade [data-i18n], body.lang-fade [data-i18n-html] { opacity: 0; }
 </style>
 </head>
 <body>
@@ -287,19 +336,24 @@
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 
+<button class="lang-toggle" id="lang-toggle" type="button">
+  <span class="globe">🌐</span>
+  <span id="lang-toggle-label">English</span>
+</button>
+
 <div class="wrap">
 
-  <div class="logo-badge">🎰 Stake Casino Tools</div>
+  <div class="logo-badge" data-i18n="badge">🎰 Stake Casino Tools</div>
   <div class="hero-icon">💎</div>
 
-  <h1>مرحباً بك في<br><span>أدوات Stake</span></h1>
+  <h1 data-i18n-html="title">مرحباً بك في<br><span>أدوات Stake</span></h1>
 
-  <p class="hero-desc">
+  <p class="hero-desc" data-i18n="desc">
     منصة متكاملة تضم ثلاث أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
     اختر الأداة التي تناسبك وابدأ الآن.
   </p>
 
-  <div class="divider"><span>اختر الخدمة</span></div>
+  <div class="divider"><span data-i18n="chooseService">اختر الخدمة</span></div>
 
   <div class="services">
 
@@ -307,30 +361,30 @@
     <a class="service-card" href="slots.html">
       <div class="card-icon">🎰</div>
       <div class="card-body">
-        <div class="card-title">سلوت عشوائي</div>
-        <div class="card-desc">يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake</div>
+        <div class="card-title" data-i18n="slotsTitle">سلوت عشوائي</div>
+        <div class="card-desc" data-i18n="slotsDesc">يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake</div>
       </div>
-      <div class="card-arrow">←</div>
+      <div class="card-arrow" id="arrow1">←</div>
     </a>
 
     <!-- Multiplier -->
     <a class="service-card" href="multiplier.html">
       <div class="card-icon">🚀</div>
       <div class="card-body">
-        <div class="card-title">اختيار الاكس العشوائي</div>
-        <div class="card-desc">يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert</div>
+        <div class="card-title" data-i18n="multTitle">اختيار الاكس العشوائي</div>
+        <div class="card-desc" data-i18n="multDesc">يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert</div>
       </div>
-      <div class="card-arrow">←</div>
+      <div class="card-arrow" id="arrow2">←</div>
     </a>
 
     <!-- Wheel -->
     <a class="service-card" href="wheel.html">
       <div class="card-icon">🎡</div>
       <div class="card-body">
-        <div class="card-title">دولاب الحظ</div>
-        <div class="card-desc">أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي</div>
+        <div class="card-title" data-i18n="wheelTitle">دولاب الحظ</div>
+        <div class="card-desc" data-i18n="wheelDesc">أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي</div>
       </div>
-      <div class="card-arrow">←</div>
+      <div class="card-arrow" id="arrow3">←</div>
     </a>
 
   </div>
@@ -339,7 +393,7 @@
 </div>
 
 <script>
-  // spawn subtle gold stars in background
+  // spawn subtle stars in background
   for (let i = 0; i < 30; i++) {
     const s = document.createElement('div');
     s.className = 'star';
@@ -349,11 +403,77 @@
     s.style.animationDelay = (Math.random() * 5) + 's';
     document.body.appendChild(s);
   }
+
+  // ---- i18n ----
+  const I18N = {
+    ar: {
+      badge: '🎰 Stake Casino Tools',
+      title: 'مرحباً بك في<br><span>أدوات Stake</span>',
+      desc: 'منصة متكاملة تضم ثلاث أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
+      chooseService: 'اختر الخدمة',
+      slotsTitle: 'سلوت عشوائي',
+      slotsDesc: 'يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake',
+      multTitle: 'اختيار الاكس العشوائي',
+      multDesc: 'يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert',
+      wheelTitle: 'دولاب الحظ',
+      wheelDesc: 'أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي',
+      footer: 'طُوِّر بـ ❤️ من قِبَل',
+      toggleLabel: 'English',
+      arrow: '←'
+    },
+    en: {
+      badge: '🎰 Stake Casino Tools',
+      title: 'Welcome to<br><span>Stake Tools</span>',
+      desc: 'An all-in-one platform with three professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
+      chooseService: 'Choose a Service',
+      slotsTitle: 'Random Slot',
+      slotsDesc: 'Picks a random slot for you from hundreds of games available on Stake',
+      multTitle: 'Random Multiplier',
+      multDesc: 'Generates a random multiplier (X) within a range you choose — from Easy to Expert',
+      wheelTitle: 'Wheel of Fortune',
+      wheelDesc: 'Add the options you want and spin the wheel — perfect for making random decisions',
+      footer: 'Built with ❤️ by',
+      toggleLabel: 'عربي',
+      arrow: '→'
+    }
+  };
+
+  function applyLang(lang) {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.body.classList.add('lang-fade');
+    setTimeout(() => {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[lang][key]) el.textContent = I18N[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (I18N[lang][key]) el.innerHTML = I18N[lang][key];
+      });
+      document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
+      document.getElementById('footer-text').textContent = I18N[lang].footer;
+      ['arrow1','arrow2','arrow3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = I18N[lang].arrow;
+      });
+      document.body.classList.remove('lang-fade');
+    }, 180);
+    localStorage.setItem('site-lang', lang);
+  }
+
+  const savedLang = localStorage.getItem('site-lang') || 'ar';
+  applyLang(savedLang);
+
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    const current = document.documentElement.lang === 'ar' ? 'ar' : 'en';
+    applyLang(current === 'ar' ? 'en' : 'ar');
+  });
 </script>
 
 <div style="text-align:center; padding: 32px 16px 20px; color: #444; font-size: 13px; font-family: 'Cairo', sans-serif;">
-  طُوِّر بـ ❤️ من قِبَل
-  <a href="https://guns.lol/roy_5x" target="_blank" style="color: #f5c842; font-weight: 700; text-decoration: none; margin: 0 4px;">Roy</a>
+  <span id="footer-text">طُوِّر بـ ❤️ من قِبَل</span>
+  <a href="https://guns.lol/roy_5x" target="_blank" style="color: #8b6cff; font-weight: 700; text-decoration: none; margin: 0 4px;">Roy</a>
 </div>
 </body>
 </html>
