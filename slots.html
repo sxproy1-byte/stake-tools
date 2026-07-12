@@ -185,7 +185,6 @@
 <div class="header">
   <div class="logo">🎰 xTools</div>
   <h1 data-i18n="pageTitle">سلوت عشوائي</h1>
-  <div class="subtitle" id="load-status" data-i18n="loading">جاري التحميل...</div>
 </div>
 
 <!-- COMPANY FILTER PANEL -->
@@ -846,7 +845,6 @@ applyLang(currentLang);
 document.getElementById('lang-toggle').addEventListener('click', () => {
   applyLang(currentLang === 'ar' ? 'en' : 'ar');
 });
-document.getElementById('load-status').textContent = I18N[currentLang].lastUpdate(new Date().toLocaleTimeString(currentLang === 'ar' ? 'ar' : 'en-US'));
 document.getElementById('refresh-note').textContent = I18N[currentLang].refreshNote(ALL_SLOTS.length);
 </script>
 
