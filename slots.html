@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سلوت عشوائي - Stake</title>
+<title>سلوت عشوائي - xTools</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234d8dff'/%3E%3Cstop offset='50%25' stop-color='%238b6cff'/%3E%3Cstop offset='100%25' stop-color='%236d4fd1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='url(%23g)' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Arial, Helvetica, sans-serif' font-weight='900' font-size='36' text-anchor='middle' fill='url(%23g)'%3EX%3C/text%3E%3C/svg%3E">
 <script>
   (function(){
     var l = localStorage.getItem('site-lang') || 'ar';
@@ -182,7 +183,7 @@
 </nav>
 
 <div class="header">
-  <div class="logo">🎰 Stake Casino</div>
+  <div class="logo">🎰 xTools</div>
   <h1 data-i18n="pageTitle">سلوت عشوائي</h1>
   <div class="subtitle" id="load-status" data-i18n="loading">جاري التحميل...</div>
 </div>
@@ -231,6 +232,17 @@
   <div class="action-section">
     <div class="section-label" data-i18n="singleSpinLabel">🎲 سلوت واحد</div>
     <button class="spin-btn" id="spin-btn" onclick="spinSingle()" disabled data-i18n="spinSingleBtn">🎲 اختر سلوت عشوائي واحد</button>
+
+    <div class="shuffle-area" id="shuffle-area"></div>
+
+    <!-- Result for Option 1 (single spin) -->
+    <div class="result-card" id="result-card">
+      <div class="result-label" data-i18n="resultLabel">✦ النتيجة النهائية ✦</div>
+      <img class="result-img" id="result-img" src="" alt="" style="display:none;">
+      <div class="result-name" id="result-name">—</div>
+      <div class="result-company" id="result-company"></div>
+      <div class="session-note" data-i18n="sessionNote">لن يظهر مجدداً في هذه الجلسة</div>
+    </div>
   </div>
 
   <div class="section-divider-wrap">
@@ -249,28 +261,18 @@
       </div>
       <button class="spin-btn spin-triple-btn" id="spin-triple-btn" onclick="pickMultiSlotsGradually()" disabled data-i18n="spinTripleBtn">🔮 سحب عشوائي</button>
     </div>
+
+    <!-- Result for Option 2 (multi spin) -->
+    <div class="slots-selection-panel" id="slots-panel">
+      <div class="selection-title" data-i18n="selectionTitle">👇 اضغط على أي لعبة لتغييرها عشوائياً قبل لف الدولاب:</div>
+      <div class="choices-grid" id="choices-grid"></div>
+    </div>
+
+    <button class="wheel-trigger-btn" id="wheel-btn" onclick="spinWheel()" data-i18n="wheelBtn">🎡 لف دولاب الحظ</button>
   </div>
 </div>
 
-<div class="shuffle-area" id="shuffle-area"></div>
-
-<!-- 3 SLOTS CHOICES AREA -->
-<div class="slots-selection-panel" id="slots-panel">
-  <div class="selection-title" data-i18n="selectionTitle">👇 اضغط على أي لعبة لتغييرها عشوائياً قبل لف الدولاب:</div>
-  <div class="choices-grid" id="choices-grid"></div>
-</div>
-
-<button class="wheel-trigger-btn" id="wheel-btn" onclick="spinWheel()" data-i18n="wheelBtn">🎡 لف دولاب الحظ</button>
 <button class="reset-btn" id="reset-btn" data-i18n="resetBtn">🔄 ريست الجلسة</button>
-
-<!-- Results -->
-<div class="result-card" id="result-card">
-  <div class="result-label" data-i18n="resultLabel">✦ النتيجة النهائية ✦</div>
-  <img class="result-img" id="result-img" src="" alt="" style="display:none;">
-  <div class="result-name" id="result-name">—</div>
-  <div class="result-company" id="result-company"></div>
-  <div class="session-note" data-i18n="sessionNote">لن يظهر مجدداً في هذه الجلسة</div>
-</div>
 
 <div class="recent-card" id="recent-list">
   <div class="recent-title" data-i18n="recentTitle">⏱ آخر النتائج الفائزة</div>
