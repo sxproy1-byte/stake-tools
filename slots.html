@@ -619,8 +619,14 @@ function spinSingle() {
         nameEl.className = 'result-name reveal';
         document.getElementById('result-company').textContent = '🏢 ' + chosen.company;
         const imgEl = document.getElementById('result-img');
-        if (chosen.img) { imgEl.src = chosen.img; imgEl.alt = chosen.name; imgEl.style.display = 'block'; }
-        else { imgEl.style.display = 'none'; }
+        imgEl.style.display = 'none';
+        if (chosen.img) {
+          imgEl.onload = () => { imgEl.style.display = 'block'; };
+          imgEl.src = chosen.img;
+          imgEl.alt = chosen.name;
+        } else {
+          imgEl.removeAttribute('src');
+        }
         document.getElementById('result-card').classList.add('show');
         playWin();
         const rect = document.getElementById('result-card').getBoundingClientRect();
@@ -773,8 +779,14 @@ function spinWheel() {
         nameEl.className = 'result-name reveal';
         document.getElementById('result-company').textContent = '🏢 ' + winner.company;
         const imgEl = document.getElementById('result-img');
-        if (winner.img) { imgEl.src = winner.img; imgEl.alt = winner.name; imgEl.style.display = 'block'; }
-        else { imgEl.style.display = 'none'; }
+        imgEl.style.display = 'none';
+        if (winner.img) {
+          imgEl.onload = () => { imgEl.style.display = 'block'; };
+          imgEl.src = winner.img;
+          imgEl.alt = winner.name;
+        } else {
+          imgEl.removeAttribute('src');
+        }
         document.getElementById('result-card').classList.add('show');
         
         playWin();
