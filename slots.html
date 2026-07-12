@@ -139,8 +139,8 @@
 
   /* Result Card */
   .result-card { background: var(--card); border: 1px solid var(--gold-dark); border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 700px; margin-bottom: 20px; display: none; text-align: center; box-shadow: 0 0 40px rgba(139,92,246,0.15); }
-  .result-img { width: 220px; height: 220px; max-width: 90%; object-fit: cover; border-radius: 16px; margin: 0 auto 14px; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
-  .choice-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 8px; margin-bottom: 6px; display: block; }
+  .result-img { width: 220px; max-width: 90%; height: auto; border-radius: 16px; margin: 0 auto 14px; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+  .choice-img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 6px; display: block; }
   .result-card.show { display: block; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   @keyframes popIn { 0% { transform: scale(0.7) rotate(-3deg); opacity: 0; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
   .result-label { font-size: 11px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
@@ -770,7 +770,7 @@ function spinWheel() {
   if (isSpinning) return;
   lockUI();
   
-  let currentHighlight = 0;
+  let currentHighlight = -1;
   let duration = 80; 
   let iterations = 0;
   const totalSteps = 22 + Math.floor(Math.random() * 10);
