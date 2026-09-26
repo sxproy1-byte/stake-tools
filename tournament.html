@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بطولة السلوتات · xTools</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234d8dff'/%3E%3Cstop offset='50%25' stop-color='%238b6cff'/%3E%3Cstop offset='100%25' stop-color='%236d4fd1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='url(%23g)' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Arial, Helvetica, sans-serif' font-weight='900' font-size='36' text-anchor='middle' fill='url(%23g)'%3EX%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #8b6cff; --gold-dark: #6d4fd1;
+    --bg: #0d0d0d; --card: #161616; --card2: #1e1e1e;
+    --border: #2a2a2a; --text: #f0f0f0; --muted: #888;
+    --green: #2ecc71; --green-dark: #27ae60; --red: #e74c3c;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 16px 40px; overflow-x: hidden; margin: 0; }
+
+  .navbar { width: 100vw; background: #111; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; padding: 0 16px; margin-bottom: 28px; position: sticky; top: 0; z-index: 50; }
+  .navbar-inner { display: flex; align-items: center; gap: 6px; max-width: 900px; width: 100%; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+  .navbar-inner::-webkit-scrollbar { display: none; }
+  .nav-sep { color: var(--border); flex-shrink: 0; }
+  .nav-home, .nav-link { font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 10px; border: 1px solid transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s, background 0.2s; flex-shrink: 0; }
+  .nav-home { border: 1px solid var(--border); }
+  .nav-home:hover { color: var(--gold); border-color: var(--gold-dark); }
+  .nav-link:hover { color: var(--gold); border-color: var(--border); background: var(--card); }
+  .nav-link.active { color: var(--gold); background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+  .nav-lang { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); background: linear-gradient(135deg, rgba(77,109,255,0.12), rgba(168,108,255,0.12)); padding: 7px 14px; border-radius: 10px; border: 1px solid rgba(139,92,246,0.25); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+
+  .header { text-align: center; margin-bottom: 24px; }
+  .header .logo { font-size: 13px; font-weight: 600; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 26px; font-weight: 900; margin: 0; }
+  .header p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+  .wrap { width: 100%; max-width: 700px; }
+
+  /* Setup screen */
+  .setup-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 20px; }
+  .setup-label { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 12px; }
+  .size-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .size-btn { flex: 1; padding: 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card2); color: var(--text); font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+  .size-btn.active { border-color: var(--gold); background: rgba(139,92,246,0.12); color: var(--gold); }
+  .names-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+  .name-input { padding: 10px 12px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; width: 100%; }
+  .name-input:focus { border-color: var(--gold-dark); }
+  .shuffle-note { font-size: 11px; color: var(--muted); margin: 10px 0 4px; text-align: center; }
+
+  /* Company filter */
+  .filter-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px; }
+  .filter-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  .filter-title { font-size: 13px; font-weight: 700; color: var(--gold); }
+  .filter-toggle { color: var(--muted); font-size: 12px; transition: transform 0.2s; }
+  .filter-body { margin-top: 14px; display: none; }
+  .filter-body.open { display: block; }
+  .filter-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+  .filter-btn { flex: 1; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--card2); color: var(--text); cursor: pointer; }
+  .filter-btn:hover { border-color: var(--gold-dark); color: var(--gold); }
+  .filter-search { width: 100%; padding: 10px 14px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 13px; margin-bottom: 10px; outline: none; }
+  .filter-search:focus { border-color: var(--gold-dark); }
+  .filter-count { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .companies-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 220px; overflow-y: auto; padding-left: 2px; }
+  .company-chip { padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card2); font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; user-select: none; transition: all 0.15s; }
+  .company-chip.selected { border-color: var(--gold); background: rgba(139,92,246,0.12); color: var(--gold); }
+
+  .primary-btn { width: 100%; padding: 16px; font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; border-radius: 14px; border: none; background: linear-gradient(135deg, #4d6dff 0%, #a86cff 55%, #c56cf0 100%); color: #fff; box-shadow: 0 4px 20px rgba(139,92,246,0.25); transition: transform 0.2s; }
+  .primary-btn:hover { transform: translateY(-1px); }
+  .ghost-btn { width: 100%; padding: 13px; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 14px; border: 1px solid var(--border); background: transparent; color: var(--muted); margin-top: 10px; transition: all 0.2s; }
+  .ghost-btn:hover { color: var(--text); border-color: var(--gold-dark); }
+
+  /* Roster */
+  .roster-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 20px; }
+  .roster-title { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-bottom: 10px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
+  .roster-list { display: none; }
+  .roster-list.open { display: block; }
+  .roster-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+  .roster-item:last-child { border-bottom: none; }
+  .roster-name { font-size: 13px; font-weight: 700; color: var(--text); flex-shrink: 0; }
+  .roster-power { text-align: left; }
+  .roster-power .p-label { font-size: 12px; font-weight: 700; color: var(--gold); }
+  .roster-power .p-desc { font-size: 10px; color: var(--muted); max-width: 220px; }
+
+  /* Round header */
+  .round-bar { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .round-name { font-size: 18px; font-weight: 900; color: #fff; }
+  .round-progress { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+  /* Match cards */
+  .match-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
+  .match-card.decided { border-color: rgba(46,204,113,0.35); }
+  .duel { display: flex; gap: 10px; align-items: stretch; }
+  .side { flex: 1; background: var(--card2); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px; border: 1px solid transparent; }
+  .side.winner { border-color: var(--green); background: rgba(46,204,113,0.08); }
+  .side.loser { opacity: 0.45; }
+  .side-name { font-size: 13px; font-weight: 800; color: var(--text); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .vs-mid { flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 900; }
+
+  .power-tag { font-size: 10px; text-align: center; color: var(--gold); background: rgba(139,92,246,0.08); border-radius: 8px; padding: 4px 6px; line-height: 1.4; }
+  .power-tag .p-desc { color: var(--muted); display: block; font-size: 9px; margin-top: 2px; }
+  .power-use-btn { font-family: 'Cairo', sans-serif; font-size: 10px; font-weight: 700; padding: 5px; border-radius: 8px; border: 1px dashed var(--gold-dark); background: transparent; color: var(--gold); cursor: pointer; }
+  .power-use-btn:disabled { opacity: 0.3; cursor: not-allowed; border-style: solid; }
+
+  .draw-slot-btn { width: 100%; padding: 10px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 10px; border: 1px dashed var(--gold-dark); background: transparent; color: var(--gold); }
+  .draw-slot-btn:hover { background: rgba(139,92,246,0.08); }
+
+  .slot-box { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+  .slot-box img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
+  .slot-box .s-name { font-size: 11px; font-weight: 800; color: #fff; }
+  .slot-box .s-co { font-size: 9px; color: var(--gold); opacity: 0.8; }
+  .reroll-btn { font-family: 'Cairo', sans-serif; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+  .reroll-btn:hover { color: var(--text); border-color: var(--gold-dark); }
+
+  .double-choice { display: flex; gap: 6px; }
+  .double-choice .opt { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 6px; cursor: pointer; text-align: center; }
+  .double-choice .opt:hover { border-color: var(--gold); }
+  .double-choice .opt img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; }
+  .double-choice .opt .s-name { font-size: 9px; font-weight: 700; color: #fff; margin-top: 3px; }
+
+  .x-field { margin-top: 4px; }
+  .x-field input { width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 800; text-align: center; outline: none; }
+  .x-field input:focus { border-color: var(--gold-dark); }
+
+  .decide-btn { width: 100%; padding: 12px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; border-radius: 12px; border: none; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: #fff; margin-top: 12px; }
+  .decide-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .redo-btn, .revive-btn { width: 100%; padding: 9px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); margin-top: 8px; }
+  .redo-btn:hover { color: var(--text); }
+  .revive-btn { border-color: var(--gold-dark); color: var(--gold); }
+
+  .next-round-btn { width: 100%; padding: 16px; font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; border-radius: 14px; border: none; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: #fff; margin-top: 6px; box-shadow: 0 4px 15px rgba(46,204,113,0.3); display: none; }
+  .next-round-btn.show { display: block; }
+
+  .champion-card { display: none; text-align: center; background: var(--card); border: 1px solid var(--gold-dark); border-radius: 22px; padding: 36px 24px; box-shadow: 0 0 50px rgba(139,92,246,0.2); }
+  .champion-card.show { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .trophy { font-size: 54px; margin-bottom: 10px; }
+  .champion-label { font-size: 12px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+  .champion-name { font-size: 30px; font-weight: 900; color: #fff; margin-bottom: 20px; }
+  .path-list { text-align: right; background: var(--card2); border-radius: 14px; padding: 14px; margin-bottom: 20px; }
+  .path-item { display: flex; justify-content: space-between; font-size: 12px; padding: 7px 0; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .path-item:last-child { border-bottom: none; }
+  .path-item b { color: var(--text); }
+
+  .particle { position: fixed; pointer-events: none; z-index: 999; width: 8px; height: 8px; border-radius: 50%; animation: particleFly 1s ease-out forwards; }
+  @keyframes particleFly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
+
+  .load-note { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 0; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="nav-home" href="index.html">🏠 الرئيسية</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-link" href="slots.html">🎰 سلوت عشوائي</a>
+    <a class="nav-link" href="multiplier.html">🚀 الاكس العشوائي</a>
+    <a class="nav-link" href="wheel.html">🎡 دولاب الحظ</a>
+    <a class="nav-link active" href="tournament.html">🏆 بطولة السلوتات</a>
+    <button class="nav-lang" id="lang-toggle" type="button"><span>🌐</span><span>English</span></button>
+  </div>
+</nav>
+
+<div class="header">
+  <div class="logo">🎰 xTools</div>
+  <h1>🏆 بطولة السلوتات</h1>
+  <p>كل واحد سلوته الخاص، وممنوع يتكرر بين أي حد بكل البطولة</p>
+</div>
+
+<div class="wrap">
+
+  <div class="load-note" id="load-note">جاري تحميل قائمة الألعاب...</div>
+
+  <!-- SETUP SCREEN -->
+  <div class="setup-card hidden" id="setup-screen">
+    <div class="setup-label">📋 عدد المتسابقين</div>
+    <div class="size-row">
+      <button class="size-btn active" data-size="8" onclick="chooseSize(8)">8 أشخاص</button>
+      <button class="size-btn" data-size="16" onclick="chooseSize(16)">16 شخص</button>
+    </div>
+
+    <div class="setup-label">✏️ أسماء المتسابقين</div>
+    <div class="names-grid" id="names-grid"></div>
+    <div class="shuffle-note">بيتحدد الترتيب والمباريات وقدرة كل واحد عشوائياً عند البدء</div>
+  </div>
+
+  <div class="filter-panel hidden" id="filter-panel">
+    <div class="filter-header" onclick="toggleFilter()">
+      <span class="filter-title">🏢 الشركات المسموح تنسحب منها الألعاب</span>
+      <span class="filter-toggle" id="filter-toggle">▼</span>
+    </div>
+    <div class="filter-body" id="filter-body">
+      <div class="filter-actions">
+        <button class="filter-btn" onclick="selectAllCompanies()">✅ تحديد الكل</button>
+        <button class="filter-btn" onclick="deselectAllCompanies()">❌ إلغاء الكل</button>
+      </div>
+      <input class="filter-search" id="company-search" placeholder="ابحث عن شركة..." oninput="renderCompanyChips()">
+      <div class="filter-count" id="filter-count"></div>
+      <div class="companies-grid" id="companies-grid"></div>
+    </div>
+  </div>
+
+  <button class="primary-btn hidden" id="start-btn" onclick="startTournament()">🚀 ابدأ البطولة</button>
+
+  <!-- ROSTER -->
+  <div class="roster-card hidden" id="roster-card">
+    <div class="roster-title" onclick="toggleRoster()"><span>👥 المتسابقون وقدراتهم</span><span id="roster-toggle">▼</span></div>
+    <div class="roster-list" id="roster-list"></div>
+  </div>
+
+  <!-- ROUND SCREEN -->
+  <div id="round-screen" class="hidden">
+    <div class="round-bar">
+      <div class="round-name" id="round-name"></div>
+      <div class="round-progress" id="round-progress"></div>
+    </div>
+    <div id="matches-list"></div>
+    <button class="next-round-btn" id="next-round-btn" onclick="goNextRound()">➡️ الجولة التالية</button>
+    <button class="ghost-btn" onclick="resetTournament()">🔄 إلغاء وبدء بطولة جديدة</button>
+  </div>
+
+  <!-- CHAMPION SCREEN -->
+  <div class="champion-card" id="champion-screen">
+    <div class="trophy">🏆</div>
+    <div class="champion-label">✦ بطل البطولة ✦</div>
+    <div class="champion-name" id="champion-name">—</div>
+    <div class="path-list" id="champion-path"></div>
+    <button class="primary-btn" onclick="resetTournament()">🔄 بطولة جديدة</button>
+  </div>
+
+</div>
+
+<script>
+const POWERS = [
+  { key:'double',  label:'⚡ المضاعف',       desc:'يضاعف نتيجتك (x2) وقت حساب الفوز في مباراة واحدة.' },
+  { key:'curse',   label:'💀 اللعنة',        desc:'تجبر خصمك المباشر يعيد سحب سلوته من جديد.' },
+  { key:'steal',   label:'🕵️ السرقة',        desc:'تاخذ نتيجة خصمك المباشر وتصير هي نتيجتك.' },
+  { key:'weaken',  label:'🔻 التخفيض',       desc:'تنصّف نتيجة خصمك المباشر قبل حساب الفوز.' },
+  { key:'shield',  label:'🛡️ الدرع',         desc:'يصدّ أي قدرة هجومية (لعنة/سرقة/تخفيض) موجّهة ضدك.' },
+  { key:'redraw2', label:'🎯 السحب المزدوج', desc:'تسحب سلوتين مرة وحدة وتختار الأفضل منهم.' },
+  { key:'revive',  label:'🔁 الإنعاش',       desc:'لو خسرت مباراتك، تقدر تعيدها مرة بسلوتين جديدين.' },
+  { key:'none',    label:'🚫 بدون قدرة',     desc:'حظك السليم بس، بدون أي ميزة إضافية.' }
+];
+
+let ALL_SLOTS = [];
+let ALL_COMPANIES = [];
+let selectedCompanies = new Set();
+let usedSlotNames = new Set();
+let bracketSize = 8;
+let players = {}; // name -> { power, powerUsed, shielded }
+let rounds = [];
+let currentRoundIndex = 0;
+
+fetch('slots.html')
+  .then(r => r.text())
+  .then(html => {
+    const m = html.match(/const ALL_SLOTS = (\[.*?\]);/s);
+    if (m) { try { ALL_SLOTS = JSON.parse(m[1]).filter(g => g.img); } catch(e) { ALL_SLOTS = []; } }
+    ALL_COMPANIES = [...new Set(ALL_SLOTS.map(g => g.company))].sort((a,b)=>a.localeCompare(b));
+    selectedCompanies = new Set(ALL_COMPANIES);
+    document.getElementById('load-note').classList.add('hidden');
+    document.getElementById('setup-screen').classList.remove('hidden');
+    document.getElementById('filter-panel').classList.remove('hidden');
+    document.getElementById('start-btn').classList.remove('hidden');
+    buildNameInputs();
+    renderCompanyChips();
+  })
+  .catch(() => {
+    document.getElementById('load-note').textContent = 'تعذّر تحميل قائمة الألعاب. تأكد إن الصفحة على نفس الموقع مع slots.html.';
+  });
+
+function buildNameInputs() {
+  const grid = document.getElementById('names-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= bracketSize; i++) {
+    const inp = document.createElement('input');
+    inp.className = 'name-input';
+    inp.id = 'name-' + i;
+    inp.value = 'اللاعب ' + i;
+    inp.maxLength = 24;
+    grid.appendChild(inp);
+  }
+}
+
+function chooseSize(size) {
+  bracketSize = size;
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.size) === size));
+  buildNameInputs();
+}
+
+function toggleFilter() {
+  document.getElementById('filter-body').classList.toggle('open');
+  document.getElementById('filter-toggle').textContent = document.getElementById('filter-body').classList.contains('open') ? '▲' : '▼';
+}
+
+function renderCompanyChips() {
+  const q = (document.getElementById('company-search').value || '').toLowerCase();
+  const grid = document.getElementById('companies-grid');
+  grid.innerHTML = '';
+  ALL_COMPANIES.filter(c => c.toLowerCase().includes(q)).forEach(c => {
+    const chip = document.createElement('div');
+    chip.className = 'company-chip' + (selectedCompanies.has(c) ? ' selected' : '');
+    chip.textContent = c;
+    chip.onclick = () => {
+      if (selectedCompanies.has(c)) selectedCompanies.delete(c); else selectedCompanies.add(c);
+      renderCompanyChips();
+    };
+    grid.appendChild(chip);
+  });
+  document.getElementById('filter-count').textContent = `محدّد ${selectedCompanies.size} من ${ALL_COMPANIES.length} شركة`;
+}
+function selectAllCompanies() { selectedCompanies = new Set(ALL_COMPANIES); renderCompanyChips(); }
+function deselectAllCompanies() { selectedCompanies = new Set(); renderCompanyChips(); }
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function randomPower() {
+  return { ...POWERS[Math.floor(Math.random() * POWERS.length)] };
+}
+
+function startTournament() {
+  if (selectedCompanies.size === 0) { alert('لازم تختار شركة واحدة على الأقل!'); return; }
+  const names = [];
+  for (let i = 1; i <= bracketSize; i++) {
+    const v = document.getElementById('name-' + i).value.trim();
+    names.push(v || ('اللاعب ' + i));
+  }
+  const shuffled = shuffle(names);
+  usedSlotNames = new Set();
+  players = {};
+  shuffled.forEach(n => { players[n] = { power: randomPower(), powerUsed: false }; });
+
+  const firstRound = [];
+  for (let i = 0; i < shuffled.length; i += 2) {
+    firstRound.push(makeMatch(shuffled[i], shuffled[i+1]));
+  }
+  rounds = [firstRound];
+  currentRoundIndex = 0;
+
+  document.getElementById('setup-screen').classList.add('hidden');
+  document.getElementById('filter-panel').classList.add('hidden');
+  document.getElementById('start-btn').classList.add('hidden');
+  document.getElementById('roster-card').classList.remove('hidden');
+  document.getElementById('round-screen').classList.remove('hidden');
+  renderRoster();
+  renderRound();
+}
+
+function renderRoster() {
+  const list = document.getElementById('roster-list');
+  list.innerHTML = '';
+  Object.keys(players).forEach(name => {
+    const p = players[name];
+    const row = document.createElement('div');
+    row.className = 'roster-item';
+    row.innerHTML = `<div class="roster-name">${name}</div><div class="roster-power"><div class="p-label">${p.power.label}</div><div class="p-desc">${p.power.desc}</div></div>`;
+    list.appendChild(row);
+  });
+}
+function toggleRoster() {
+  document.getElementById('roster-list').classList.toggle('open');
+  document.getElementById('roster-toggle').textContent = document.getElementById('roster-list').classList.contains('open') ? '▲' : '▼';
+}
+
+function makeMatch(p1, p2) {
+  return { p1, p2, slot1: null, slot2: null, x1: null, x2: null, winner: null,
+           p1MultActive: false, p2MultActive: false, p1ReduceIncoming: false, p2ReduceIncoming: false,
+           revivedFor: null };
+}
+
+function roundLabel(matchCount) {
+  if (matchCount >= 8) return 'دور الـ' + (matchCount * 2);
+  if (matchCount === 4) return 'ربع النهائي';
+  if (matchCount === 2) return 'نصف النهائي';
+  return 'النهائي';
+}
+
+function renderRound() {
+  const round = rounds[currentRoundIndex];
+  document.getElementById('round-name').textContent = '🥊 ' + roundLabel(round.length);
+  document.getElementById('round-progress').textContent = 'الجولة ' + (currentRoundIndex + 1) + ' من ' + Math.log2(bracketSize);
+  const list = document.getElementById('matches-list');
+  list.innerHTML = '';
+  round.forEach((match, idx) => list.appendChild(buildMatchCard(match, idx)));
+  updateNextRoundBtn();
+}
+
+function pool() {
+  return ALL_SLOTS.filter(g => selectedCompanies.has(g.company));
+}
+
+function pickRandomSlot() {
+  const available = pool().filter(g => !usedSlotNames.has(g.name));
+  const source = available.length > 0 ? available : pool();
+  if (source.length === 0) return null;
+  return source[Math.floor(Math.random() * source.length)];
+}
+
+function pickTwoRandomSlots() {
+  const a = pickRandomSlot();
+  if (!a) return [null, null];
+  usedSlotNames.add(a.name);
+  const b = pickRandomSlot();
+  usedSlotNames.delete(a.name);
+  return [a, b];
+}
+
+function releaseSlot(slot) { if (slot) usedSlotNames.delete(slot.name); }
+function claimSlot(slot) { if (slot) usedSlotNames.add(slot.name); }
+
+function buildMatchCard(match, idx) {
+  const card = document.createElement('div');
+  card.className = 'match-card' + (match.winner ? ' decided' : '');
+  const duel = document.createElement('div');
+  duel.className = 'duel';
+  duel.appendChild(buildSide(match, idx, 'p1'));
+  const mid = document.createElement('div');
+  mid.className = 'vs-mid';
+  mid.textContent = 'VS';
+  duel.appendChild(mid);
+  duel.appendChild(buildSide(match, idx, 'p2'));
+  card.appendChild(duel);
+
+  if (match.slot1 && match.slot2 && !match.winner) {
+    const decideBtn = document.createElement('button');
+    decideBtn.className = 'decide-btn';
+    decideBtn.textContent = '✅ تحديد الفائز';
+    decideBtn.onclick = () => decideMatch(match, idx);
+    card.appendChild(decideBtn);
+  }
+
+  if (match.winner) {
+    const redo = document.createElement('button');
+    redo.className = 'redo-btn';
+    redo.textContent = '↩️ تعديل النتيجة';
+    redo.onclick = () => { match.winner = null; renderRound(); };
+    card.appendChild(redo);
+
+    const loser = match.winner === match.p1 ? match.p2 : match.p1;
+    const loserPower = players[loser].power;
+    if (loserPower.key === 'revive' && !players[loser].powerUsed && match.revivedFor !== loser) {
+      const revive = document.createElement('button');
+      revive.className = 'revive-btn';
+      revive.textContent = '🔁 ' + loser + ' يستخدم الإنعاش (إعادة المباراة)';
+      revive.onclick = () => {
+        releaseSlot(match.slot1); releaseSlot(match.slot2);
+        Object.assign(match, makeMatch(match.p1, match.p2));
+        match.revivedFor = loser;
+        players[loser].powerUsed = true;
+        renderRound();
+      };
+      card.appendChild(revive);
+    }
+  }
+
+  return card;
+}
+
+function buildSide(match, idx, which) {
+  const name = match[which];
+  const p = players[name];
+  const winner = match.winner;
+  const side = document.createElement('div');
+  side.className = 'side' + (winner ? (winner === name ? ' winner' : ' loser') : '');
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'side-name';
+  nameEl.textContent = name;
+  side.appendChild(nameEl);
+
+  const powerTag = document.createElement('div');
+  powerTag.className = 'power-tag';
+  powerTag.innerHTML = `${p.power.label}<span class="p-desc">${p.power.desc}</span>`;
+  side.appendChild(powerTag);
+
+  const slotKey = which === 'p1' ? 'slot1' : 'slot2';
+  const slot = match[slotKey];
+
+  if (!slot) {
+    const canDouble = p.power.key === 'redraw2' && !p.powerUsed;
+    const btn = document.createElement('button');
+    btn.className = 'draw-slot-btn';
+    btn.textContent = canDouble ? '🎯 اسحب سلوتين واختر' : '🎰 اسحب سلوت';
+    btn.onclick = () => {
+      if (canDouble) {
+        showDoubleChoice(side, match, slotKey, name);
+      } else {
+        const s = pickRandomSlot();
+        if (!s) { alert('مافي ألعاب متاحة بالشركات المختارة!'); return; }
+        claimSlot(s);
+        match[slotKey] = s;
+        renderRound();
+      }
+    };
+    side.appendChild(btn);
+  } else {
+    const box = document.createElement('div');
+    box.className = 'slot-box';
+    box.innerHTML = `<img src="${slot.img}" alt=""><div class="s-name">${slot.name}</div><div class="s-co">🏢 ${slot.company}</div>`;
+    side.appendChild(box);
+
+    if (!match.winner) {
+      const reroll = document.createElement('button');
+      reroll.className = 'reroll-btn';
+      reroll.textContent = '🔄 غيّر السلوت';
+      reroll.onclick = () => {
+        releaseSlot(slot);
+        const s = pickRandomSlot();
+        if (!s) { alert('مافي ألعاب بديلة متاحة!'); return; }
+        claimSlot(s);
+        match[slotKey] = s;
+        renderRound();
+      };
+      side.appendChild(reroll);
+
+      const xField = document.createElement('div');
+      xField.className = 'x-field';
+      const xKey = which === 'p1' ? 'x1' : 'x2';
+      xField.innerHTML = `<input type="number" step="0.01" min="0" id="${xKey}-${idx}" placeholder="الإكس اللي طلعلك" value="${match[xKey] ?? ''}">`;
+      side.appendChild(xField);
+
+      if (p.power.key !== 'none' && !p.powerUsed) {
+        const useBtn = document.createElement('button');
+        useBtn.className = 'power-use-btn';
+        useBtn.textContent = '🔮 استخدم القدرة';
+        useBtn.onclick = () => usePower(match, idx, which, name);
+        side.appendChild(useBtn);
+      } else if (p.powerUsed && p.power.key !== 'none') {
+        const used = document.createElement('div');
+        used.className = 'power-use-btn';
+        used.textContent = '✅ مستخدمة';
+        used.style.opacity = 0.5;
+        side.appendChild(used);
+      }
+    }
+  }
+
+  return side;
+}
+
+function showDoubleChoice(side, match, slotKey, name) {
+  const [a, b] = pickTwoRandomSlots();
+  if (!a) { alert('مافي ألعاب متاحة بالشركات المختارة!'); return; }
+  const wrap = document.createElement('div');
+  wrap.className = 'double-choice';
+  [a, b].filter(Boolean).forEach(s => {
+    const opt = document.createElement('div');
+    opt.className = 'opt';
+    opt.innerHTML = `<img src="${s.img}" alt=""><div class="s-name">${s.name}</div>`;
+    opt.onclick = () => {
+      claimSlot(s);
+      match[slotKey] = s;
+      players[name].powerUsed = true;
+      renderRound();
+    };
+    wrap.appendChild(opt);
+  });
+  side.appendChild(wrap);
+  side.querySelector('.draw-slot-btn')?.remove();
+}
+
+function usePower(match, idx, which, name) {
+  const p = players[name];
+  const oppWhich = which === 'p1' ? 'p2' : 'p1';
+  const oppName = match[oppWhich];
+  const opp = players[oppName];
+  const attacking = ['curse','steal','weaken'].includes(p.power.key);
+
+  if (attacking && opp.shielded) {
+    alert(oppName + ' كان محمي بالدرع 🛡️ — القدرة اتصدّت!');
+    opp.shielded = false;
+    renderRound();
+    return;
+  }
+
+  switch (p.power.key) {
+    case 'double':
+      match[which + 'MultActive'] = true;
+      break;
+    case 'shield':
+      p.shielded = true;
+      break;
+    case 'curse': {
+      const oppSlotKey = oppWhich === 'p1' ? 'slot1' : 'slot2';
+      releaseSlot(match[oppSlotKey]);
+      match[oppSlotKey] = null;
+      break;
+    }
+    case 'steal': {
+      const xKeyMine = which === 'p1' ? 'x1' : 'x2';
+      const xKeyOpp = oppWhich === 'p1' ? 'x1' : 'x2';
+      const oppInput = document.getElementById(xKeyOpp + '-' + idx);
+      const myInput = document.getElementById(xKeyMine + '-' + idx);
+      if (!oppInput || !oppInput.value) { alert('لازم ' + oppName + ' يدخل الإكس تبعه أول!'); return; }
+      if (myInput) myInput.value = oppInput.value;
+      match[xKeyMine] = parseFloat(oppInput.value);
+      break;
+    }
+    case 'weaken':
+      match[oppWhich + 'ReduceIncoming'] = true;
+      break;
+  }
+  p.powerUsed = true;
+  renderRound();
+}
+
+function decideMatch(match, idx) {
+  const x1raw = parseFloat(document.getElementById('x1-' + idx).value);
+  const x2raw = parseFloat(document.getElementById('x2-' + idx).value);
+  if (isNaN(x1raw) || isNaN(x2raw)) { alert('لازم تدخل الإكس لكلا الشخصين!'); return; }
+  match.x1 = x1raw; match.x2 = x2raw;
+
+  let eff1 = x1raw * (match.p1MultActive ? 2 : 1) * (match.p1ReduceIncoming ? 0.5 : 1);
+  let eff2 = x2raw * (match.p2MultActive ? 2 : 1) * (match.p2ReduceIncoming ? 0.5 : 1);
+
+  match.winner = eff1 >= eff2 ? match.p1 : match.p2;
+  renderRound();
+  spawnParticles(window.innerWidth/2, 200);
+}
+
+function updateNextRoundBtn() {
+  const round = rounds[currentRoundIndex];
+  const allDecided = round.every(m => m.winner);
+  const btn = document.getElementById('next-round-btn');
+  btn.classList.toggle('show', allDecided && round.length > 1);
+  if (allDecided && round.length === 1) showChampion(round[0].winner);
+}
+
+function goNextRound() {
+  const round = rounds[currentRoundIndex];
+  const winners = round.map(m => m.winner);
+  const nextRound = [];
+  for (let i = 0; i < winners.length; i += 2) nextRound.push(makeMatch(winners[i], winners[i+1]));
+  rounds.push(nextRound);
+  currentRoundIndex++;
+  renderRound();
+}
+
+function showChampion(name) {
+  document.getElementById('round-screen').classList.add('hidden');
+  document.getElementById('roster-card').classList.add('hidden');
+  document.getElementById('champion-screen').classList.add('show');
+  document.getElementById('champion-name').textContent = '👑 ' + name;
+
+  const pathList = document.getElementById('champion-path');
+  pathList.innerHTML = '';
+  rounds.forEach(round => {
+    const match = round.find(m => m.p1 === name || m.p2 === name);
+    if (!match) return;
+    const iAmP1 = match.p1 === name;
+    const opp = iAmP1 ? match.p2 : match.p1;
+    const mySlot = iAmP1 ? match.slot1 : match.slot2;
+    const myX = iAmP1 ? match.x1 : match.x2;
+    if (!mySlot) return;
+    const item = document.createElement('div');
+    item.className = 'path-item';
+    item.innerHTML = `<span>ضد ${opp} على ${mySlot.name}</span><b>x${myX}</b>`;
+    pathList.appendChild(item);
+  });
+
+  for (let i = 0; i < 40; i++) setTimeout(() => spawnParticles(window.innerWidth/2, window.innerHeight/3), i*20);
+}
+
+function spawnParticles(x, y) {
+  const colors = ['#8b6cff', '#c56cf0', '#4d6dff', '#2ecc71'];
+  for (let i = 0; i < 10; i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    const angle = Math.random()*Math.PI*2, dist = 60+Math.random()*80;
+    el.style.setProperty('--dx', Math.cos(angle)*dist+'px');
+    el.style.setProperty('--dy', Math.sin(angle)*dist+'px');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  }
+}
+
+function resetTournament() {
+  document.getElementById('champion-screen').classList.remove('show');
+  document.getElementById('round-screen').classList.add('hidden');
+  document.getElementById('roster-card').classList.add('hidden');
+  document.getElementById('setup-screen').classList.remove('hidden');
+  document.getElementById('filter-panel').classList.remove('hidden');
+  document.getElementById('start-btn').classList.remove('hidden');
+  rounds = []; currentRoundIndex = 0; usedSlotNames = new Set(); players = {};
+  buildNameInputs();
+}
+</script>
+
+</body>
+</html>
