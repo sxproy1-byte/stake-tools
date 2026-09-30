@@ -34,7 +34,6 @@
 
   .wrap { width: 100%; max-width: 700px; }
 
-  /* Setup screen */
   .setup-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 20px; }
   .setup-label { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 12px; }
   .size-row { display: flex; gap: 10px; margin-bottom: 20px; }
@@ -45,19 +44,22 @@
   .name-input:focus { border-color: var(--gold-dark); }
   .shuffle-note { font-size: 11px; color: var(--muted); margin: 10px 0 4px; text-align: center; }
 
-  /* Company filter */
   .filter-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px; }
   .filter-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .filter-title { font-size: 13px; font-weight: 700; color: var(--gold); }
-  .filter-toggle { color: var(--muted); font-size: 12px; transition: transform 0.2s; }
+  .filter-toggle { color: var(--muted); font-size: 12px; }
   .filter-body { margin-top: 14px; display: none; }
   .filter-body.open { display: block; }
-  .filter-actions { display: flex; gap: 8px; margin-bottom: 10px; }
-  .filter-btn { flex: 1; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--card2); color: var(--text); cursor: pointer; }
+  .filter-actions { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .filter-btn { flex: 1; min-width: 100px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--card2); color: var(--text); cursor: pointer; }
   .filter-btn:hover { border-color: var(--gold-dark); color: var(--gold); }
+  .filter-btn.select-pinned { background: rgba(139,92,246,0.15); color: var(--gold); border-color: rgba(139,92,246,0.3); }
   .filter-search { width: 100%; padding: 10px 14px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 13px; margin-bottom: 10px; outline: none; }
   .filter-search:focus { border-color: var(--gold-dark); }
   .filter-count { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .pinned-section { margin-bottom: 14px; }
+  .pinned-label { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .all-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
   .companies-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 220px; overflow-y: auto; padding-left: 2px; }
   .company-chip { padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card2); font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; user-select: none; transition: all 0.15s; }
   .company-chip.selected { border-color: var(--gold); background: rgba(139,92,246,0.12); color: var(--gold); }
@@ -67,7 +69,6 @@
   .ghost-btn { width: 100%; padding: 13px; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 14px; border: 1px solid var(--border); background: transparent; color: var(--muted); margin-top: 10px; transition: all 0.2s; }
   .ghost-btn:hover { color: var(--text); border-color: var(--gold-dark); }
 
-  /* Roster */
   .roster-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; margin-bottom: 20px; }
   .roster-title { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-bottom: 10px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
   .roster-list { display: none; }
@@ -78,13 +79,12 @@
   .roster-power { text-align: left; }
   .roster-power .p-label { font-size: 12px; font-weight: 700; color: var(--gold); }
   .roster-power .p-desc { font-size: 10px; color: var(--muted); max-width: 220px; }
+  .roster-power .p-slot { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
-  /* Round header */
   .round-bar { width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .round-name { font-size: 18px; font-weight: 900; color: #fff; }
   .round-progress { font-size: 12px; color: var(--muted); font-weight: 600; }
 
-  /* Match cards */
   .match-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
   .match-card.decided { border-color: rgba(46,204,113,0.35); }
   .duel { display: flex; gap: 10px; align-items: stretch; }
@@ -96,11 +96,7 @@
 
   .power-tag { font-size: 10px; text-align: center; color: var(--gold); background: rgba(139,92,246,0.08); border-radius: 8px; padding: 4px 6px; line-height: 1.4; }
   .power-tag .p-desc { color: var(--muted); display: block; font-size: 9px; margin-top: 2px; }
-  .power-use-btn { font-family: 'Cairo', sans-serif; font-size: 10px; font-weight: 700; padding: 5px; border-radius: 8px; border: 1px dashed var(--gold-dark); background: transparent; color: var(--gold); cursor: pointer; }
-  .power-use-btn:disabled { opacity: 0.3; cursor: not-allowed; border-style: solid; }
-
-  .draw-slot-btn { width: 100%; padding: 10px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 10px; border: 1px dashed var(--gold-dark); background: transparent; color: var(--gold); }
-  .draw-slot-btn:hover { background: rgba(139,92,246,0.08); }
+  .curse-note { font-size: 9px; color: #ff8a8a; text-align: center; }
 
   .slot-box { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
   .slot-box img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
@@ -114,6 +110,7 @@
   .double-choice .opt:hover { border-color: var(--gold); }
   .double-choice .opt img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; }
   .double-choice .opt .s-name { font-size: 9px; font-weight: 700; color: #fff; margin-top: 3px; }
+  .choose-label { font-size: 10px; color: var(--gold); text-align: center; }
 
   .x-field { margin-top: 4px; }
   .x-field input { width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 800; text-align: center; outline: none; }
@@ -121,9 +118,12 @@
 
   .decide-btn { width: 100%; padding: 12px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; border-radius: 12px; border: none; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: #fff; margin-top: 12px; }
   .decide-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  .redo-btn, .revive-btn { width: 100%; padding: 9px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); margin-top: 8px; }
+  .redo-btn { width: 100%; padding: 9px; font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); margin-top: 8px; }
   .redo-btn:hover { color: var(--text); }
-  .revive-btn { border-color: var(--gold-dark); color: var(--gold); }
+
+  .result-log { background: var(--card2); border-radius: 10px; padding: 10px; margin-top: 10px; }
+  .result-log .log-line { font-size: 11px; color: var(--muted); padding: 3px 0; }
+  .result-log .log-win { font-size: 12px; color: var(--green); font-weight: 800; padding-top: 6px; border-top: 1px solid var(--border); margin-top: 4px; }
 
   .next-round-btn { width: 100%; padding: 16px; font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; border-radius: 14px; border: none; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: #fff; margin-top: 6px; box-shadow: 0 4px 15px rgba(46,204,113,0.3); display: none; }
   .next-round-btn.show { display: block; }
@@ -133,7 +133,9 @@
   @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
   .trophy { font-size: 54px; margin-bottom: 10px; }
   .champion-label { font-size: 12px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
-  .champion-name { font-size: 30px; font-weight: 900; color: #fff; margin-bottom: 20px; }
+  .champion-name { font-size: 30px; font-weight: 900; color: #fff; margin-bottom: 10px; }
+  .champion-slot { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--card2); border-radius: 14px; padding: 10px; margin-bottom: 16px; }
+  .champion-slot img { width: 48px; height: 48px; object-fit: cover; border-radius: 10px; }
   .path-list { text-align: right; background: var(--card2); border-radius: 14px; padding: 14px; margin-bottom: 20px; }
   .path-item { display: flex; justify-content: space-between; font-size: 12px; padding: 7px 0; border-bottom: 1px solid var(--border); color: var(--muted); }
   .path-item:last-child { border-bottom: none; }
@@ -163,24 +165,21 @@
 <div class="header">
   <div class="logo">🎰 xTools</div>
   <h1>🏆 بطولة السلوتات</h1>
-  <p>كل واحد سلوته الخاص، وممنوع يتكرر بين أي حد بكل البطولة</p>
 </div>
 
 <div class="wrap">
 
   <div class="load-note" id="load-note">جاري تحميل قائمة الألعاب...</div>
 
-  <!-- SETUP SCREEN -->
   <div class="setup-card hidden" id="setup-screen">
     <div class="setup-label">📋 عدد المتسابقين</div>
     <div class="size-row">
       <button class="size-btn active" data-size="8" onclick="chooseSize(8)">8 أشخاص</button>
       <button class="size-btn" data-size="16" onclick="chooseSize(16)">16 شخص</button>
     </div>
-
     <div class="setup-label">✏️ أسماء المتسابقين</div>
     <div class="names-grid" id="names-grid"></div>
-    <div class="shuffle-note">بيتحدد الترتيب والمباريات وقدرة كل واحد عشوائياً عند البدء</div>
+    <div class="shuffle-note">بيتحدد الترتيب والسلوت الثابت وقدرة كل واحد عشوائياً عند البدء</div>
   </div>
 
   <div class="filter-panel hidden" id="filter-panel">
@@ -190,24 +189,28 @@
     </div>
     <div class="filter-body" id="filter-body">
       <div class="filter-actions">
+        <button class="filter-btn select-pinned" onclick="selectPinnedCompanies()">⭐ تحديد الشائعة</button>
         <button class="filter-btn" onclick="selectAllCompanies()">✅ تحديد الكل</button>
         <button class="filter-btn" onclick="deselectAllCompanies()">❌ إلغاء الكل</button>
       </div>
       <input class="filter-search" id="company-search" placeholder="ابحث عن شركة..." oninput="renderCompanyChips()">
       <div class="filter-count" id="filter-count"></div>
+      <div class="pinned-section" id="pinned-section">
+        <div class="pinned-label">⭐ شركات شائعة</div>
+        <div class="companies-grid" id="pinned-grid"></div>
+      </div>
+      <div class="all-label">الكل (من أ - ي)</div>
       <div class="companies-grid" id="companies-grid"></div>
     </div>
   </div>
 
   <button class="primary-btn hidden" id="start-btn" onclick="startTournament()">🚀 ابدأ البطولة</button>
 
-  <!-- ROSTER -->
   <div class="roster-card hidden" id="roster-card">
-    <div class="roster-title" onclick="toggleRoster()"><span>👥 المتسابقون وقدراتهم</span><span id="roster-toggle">▼</span></div>
+    <div class="roster-title" onclick="toggleRoster()"><span>👥 المتسابقون وقدراتهم وسلوتاتهم</span><span id="roster-toggle">▼</span></div>
     <div class="roster-list" id="roster-list"></div>
   </div>
 
-  <!-- ROUND SCREEN -->
   <div id="round-screen" class="hidden">
     <div class="round-bar">
       <div class="round-name" id="round-name"></div>
@@ -218,11 +221,11 @@
     <button class="ghost-btn" onclick="resetTournament()">🔄 إلغاء وبدء بطولة جديدة</button>
   </div>
 
-  <!-- CHAMPION SCREEN -->
   <div class="champion-card" id="champion-screen">
     <div class="trophy">🏆</div>
     <div class="champion-label">✦ بطل البطولة ✦</div>
     <div class="champion-name" id="champion-name">—</div>
+    <div class="champion-slot" id="champion-slot"></div>
     <div class="path-list" id="champion-path"></div>
     <button class="primary-btn" onclick="resetTournament()">🔄 بطولة جديدة</button>
   </div>
@@ -231,22 +234,24 @@
 
 <script>
 const POWERS = [
-  { key:'double',  label:'⚡ المضاعف',       desc:'يضاعف نتيجتك (x2) وقت حساب الفوز في مباراة واحدة.' },
-  { key:'curse',   label:'💀 اللعنة',        desc:'تجبر خصمك المباشر يعيد سحب سلوته من جديد.' },
-  { key:'steal',   label:'🕵️ السرقة',        desc:'تاخذ نتيجة خصمك المباشر وتصير هي نتيجتك.' },
-  { key:'weaken',  label:'🔻 التخفيض',       desc:'تنصّف نتيجة خصمك المباشر قبل حساب الفوز.' },
-  { key:'shield',  label:'🛡️ الدرع',         desc:'يصدّ أي قدرة هجومية (لعنة/سرقة/تخفيض) موجّهة ضدك.' },
-  { key:'redraw2', label:'🎯 السحب المزدوج', desc:'تسحب سلوتين مرة وحدة وتختار الأفضل منهم.' },
-  { key:'revive',  label:'🔁 الإنعاش',       desc:'لو خسرت مباراتك، تقدر تعيدها مرة بسلوتين جديدين.' },
+  { key:'double',  label:'⚡ المضاعف',       desc:'يضيف 10% على نتيجتك (x1.10) بالجولة الأولى تلقائياً.' },
+  { key:'curse',   label:'💀 اللعنة',        desc:'تُلغي سلوت خصمك المباشر تلقائياً ويطلعله سلوت جديد، بالجولة الأولى.' },
+  { key:'steal',   label:'🕵️ السرقة',        desc:'تبدّل نتيجتك مع نتيجة خصمك المباشر بالكامل تلقائياً — خطر لو رقمك أعلى منه!' },
+  { key:'weaken',  label:'🔻 التخفيض',       desc:'ينقص 10% من نتيجة خصمك المباشر (x0.90) بالجولة الأولى تلقائياً.' },
+  { key:'shield',  label:'🛡️ الدرع',         desc:'يصدّ تلقائياً أي قدرة هجومية (لعنة/سرقة/تخفيض) موجّهة ضدك بالجولة الأولى.' },
+  { key:'redraw2', label:'🎯 السحب المزدوج', desc:'تسحب سلوتين مرة وحدة بالبداية وتختار الأفضل منهم.' },
+  { key:'revive',  label:'🔁 الإنعاش',       desc:'لو خسرت مباراة الجولة الأولى، بتاخذ سلوت جديد وتنعاد المباراة تلقائياً مرة وحدة.' },
   { key:'none',    label:'🚫 بدون قدرة',     desc:'حظك السليم بس، بدون أي ميزة إضافية.' }
 ];
+
+const PINNED = ["شبابنا الطيبين", "BackSeat Gaming", "BGaming", "Black Coffee Studios", "Colorful Play", "Darkbyte", "GG Gaming", "Hacksaw Gaming", "Knucklehead Syndicate", "Massive Studios", "Ovryx Gaming", "Paperclip Gaming", "Phantom Interactive", "Pragmatic Play", "Rabbit Gaming", "Sidequest Studios", "Titan Gaming", "Twist Gaming", "Uppercut Gaming", "Valkyrie"];
 
 let ALL_SLOTS = [];
 let ALL_COMPANIES = [];
 let selectedCompanies = new Set();
 let usedSlotNames = new Set();
 let bracketSize = 8;
-let players = {}; // name -> { power, powerUsed, shielded }
+let players = {}; // name -> { power, slot, shielded, cursed, pendingChoice, revived }
 let rounds = [];
 let currentRoundIndex = 0;
 
@@ -294,34 +299,58 @@ function toggleFilter() {
 
 function renderCompanyChips() {
   const q = (document.getElementById('company-search').value || '').toLowerCase();
+  const pinnedGrid = document.getElementById('pinned-grid');
   const grid = document.getElementById('companies-grid');
+  pinnedGrid.innerHTML = '';
   grid.innerHTML = '';
-  ALL_COMPANIES.filter(c => c.toLowerCase().includes(q)).forEach(c => {
-    const chip = document.createElement('div');
-    chip.className = 'company-chip' + (selectedCompanies.has(c) ? ' selected' : '');
-    chip.textContent = c;
-    chip.onclick = () => {
-      if (selectedCompanies.has(c)) selectedCompanies.delete(c); else selectedCompanies.add(c);
-      renderCompanyChips();
-    };
-    grid.appendChild(chip);
-  });
+
+  const pinnedHere = PINNED.filter(c => ALL_COMPANIES.includes(c) && c.toLowerCase().includes(q));
+  document.getElementById('pinned-section').style.display = pinnedHere.length ? 'block' : 'none';
+  pinnedHere.forEach(c => grid_makeChip(c, pinnedGrid));
+
+  ALL_COMPANIES.filter(c => !PINNED.includes(c) && c.toLowerCase().includes(q)).forEach(c => grid_makeChip(c, grid));
+
   document.getElementById('filter-count').textContent = `محدّد ${selectedCompanies.size} من ${ALL_COMPANIES.length} شركة`;
+}
+function grid_makeChip(c, container) {
+  const chip = document.createElement('div');
+  chip.className = 'company-chip' + (selectedCompanies.has(c) ? ' selected' : '');
+  chip.textContent = c;
+  chip.onclick = () => { selectedCompanies.has(c) ? selectedCompanies.delete(c) : selectedCompanies.add(c); renderCompanyChips(); };
+  container.appendChild(chip);
 }
 function selectAllCompanies() { selectedCompanies = new Set(ALL_COMPANIES); renderCompanyChips(); }
 function deselectAllCompanies() { selectedCompanies = new Set(); renderCompanyChips(); }
+function selectPinnedCompanies() { selectedCompanies = new Set(PINNED.filter(c => ALL_COMPANIES.includes(c))); renderCompanyChips(); }
 
 function shuffle(arr) {
   const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
+function randomPower() { return { ...POWERS[Math.floor(Math.random() * POWERS.length)] }; }
 
-function randomPower() {
-  return { ...POWERS[Math.floor(Math.random() * POWERS.length)] };
+function pool() { return ALL_SLOTS.filter(g => selectedCompanies.has(g.company)); }
+function pickRandomSlot() {
+  const available = pool().filter(g => !usedSlotNames.has(g.name));
+  if (available.length === 0) return null;
+  return available[Math.floor(Math.random() * available.length)];
+}
+function pickTwoRandomSlots() {
+  const a = pickRandomSlot();
+  if (!a) return [null, null];
+  usedSlotNames.add(a.name);
+  const b = pickRandomSlot();
+  usedSlotNames.delete(a.name);
+  return [a, b];
+}
+function releaseSlot(slot) { if (slot) usedSlotNames.delete(slot.name); }
+function claimSlot(slot) { if (slot) usedSlotNames.add(slot.name); }
+
+function makeMatch(p1, p2) {
+  return { p1, p2, x1: null, x2: null, winner: null,
+           p1MultActive:false, p2MultActive:false, p1ReduceIncoming:false, p2ReduceIncoming:false,
+           p1Steals:false, p2Steals:false, log: [], resultLine: '' };
 }
 
 function startTournament() {
@@ -334,14 +363,57 @@ function startTournament() {
   const shuffled = shuffle(names);
   usedSlotNames = new Set();
   players = {};
-  shuffled.forEach(n => { players[n] = { power: randomPower(), powerUsed: false }; });
+  shuffled.forEach(n => { players[n] = { power: randomPower(), slot: null, shielded: false, cursed: false, pendingChoice: null, revived: false }; });
+
+  // shields resolve first
+  Object.values(players).forEach(p => { if (p.power.key === 'shield') p.shielded = true; });
 
   const firstRound = [];
   for (let i = 0; i < shuffled.length; i += 2) {
-    firstRound.push(makeMatch(shuffled[i], shuffled[i+1]));
+    const p1 = shuffled[i], p2 = shuffled[i+1];
+    const m = makeMatch(p1, p2);
+    const pw1 = players[p1].power.key, pw2 = players[p2].power.key;
+
+    if (pw1 === 'double') { m.p1MultActive = true; m.log.push(`⚡ ${p1} استخدم المضاعف (+10%)`); }
+    if (pw2 === 'double') { m.p2MultActive = true; m.log.push(`⚡ ${p2} استخدم المضاعف (+10%)`); }
+
+    if (pw1 === 'weaken') {
+      if (!players[p2].shielded) { m.p2ReduceIncoming = true; m.log.push(`🔻 ${p1} استخدم التخفيض على ${p2} (-10%)`); }
+      else { m.log.push(`🛡️ ${p2} صد التخفيض من ${p1} بالدرع`); players[p2].shielded = false; }
+    }
+    if (pw2 === 'weaken') {
+      if (!players[p1].shielded) { m.p1ReduceIncoming = true; m.log.push(`🔻 ${p2} استخدم التخفيض على ${p1} (-10%)`); }
+      else { m.log.push(`🛡️ ${p1} صد التخفيض من ${p2} بالدرع`); players[p1].shielded = false; }
+    }
+
+    if (pw1 === 'steal' && pw2 === 'steal') {
+      m.log.push(`🕵️ الاثنين طلعلهم سرقة، فانلغت القدرة عند الاثنين`);
+    } else {
+      if (pw1 === 'steal') {
+        if (!players[p2].shielded) { m.p1Steals = true; m.log.push(`🕵️ ${p1} استخدم السرقة — نتيجة ${p1} و${p2} بتتبدّل مع بعض بالكامل`); }
+        else { m.log.push(`🛡️ ${p2} صد السرقة من ${p1} بالدرع`); players[p2].shielded = false; }
+      }
+      if (pw2 === 'steal') {
+        if (!players[p1].shielded) { m.p2Steals = true; m.log.push(`🕵️ ${p2} استخدم السرقة — نتيجة ${p1} و${p2} بتتبدّل مع بعض بالكامل`); }
+        else { m.log.push(`🛡️ ${p1} صد السرقة من ${p2} بالدرع`); players[p1].shielded = false; }
+      }
+    }
+
+    if (pw1 === 'curse') {
+      if (!players[p2].shielded) { players[p2].cursed = true; m.log.push(`💀 ${p1} استخدم اللعنة على ${p2} (سحب سلوت جديد)`); }
+      else { m.log.push(`🛡️ ${p2} صد اللعنة من ${p1} بالدرع`); players[p2].shielded = false; }
+    }
+    if (pw2 === 'curse') {
+      if (!players[p1].shielded) { players[p1].cursed = true; m.log.push(`💀 ${p2} استخدم اللعنة على ${p1} (سحب سلوت جديد)`); }
+      else { m.log.push(`🛡️ ${p1} صد اللعنة من ${p2} بالدرع`); players[p1].shielded = false; }
+    }
+
+    firstRound.push(m);
   }
   rounds = [firstRound];
   currentRoundIndex = 0;
+
+  shuffled.forEach(n => assignInitialSlot(n));
 
   document.getElementById('setup-screen').classList.add('hidden');
   document.getElementById('filter-panel').classList.add('hidden');
@@ -352,6 +424,51 @@ function startTournament() {
   renderRound();
 }
 
+function assignInitialSlot(name) {
+  const p = players[name];
+  if (p.power.key === 'redraw2') {
+    const [a, b] = pickTwoRandomSlots();
+    if (!a) { alert('مافي ألعاب كافية بالشركات المختارة!'); return; }
+    p.pendingChoice = [a, b].filter(Boolean);
+    return;
+  }
+  const s = pickRandomSlot();
+  if (!s) { alert('خلصت الألعاب المتاحة بالشركات المختارة!'); return; }
+  claimSlot(s);
+  p.slot = s;
+  if (p.cursed) {
+    releaseSlot(s);
+    const s2 = pickRandomSlot();
+    if (s2) { claimSlot(s2); p.slot = s2; } else { claimSlot(s); p.slot = s; }
+    p.cursed = false;
+  }
+}
+
+function chooseInitialSlot(name, slot) {
+  const p = players[name];
+  claimSlot(slot);
+  p.slot = slot;
+  p.pendingChoice = null;
+  if (p.cursed) {
+    releaseSlot(slot);
+    const s2 = pickRandomSlot();
+    if (s2) { claimSlot(s2); p.slot = s2; } else { claimSlot(slot); p.slot = slot; }
+    p.cursed = false;
+  }
+  renderRound();
+}
+
+function rerollPersonalSlot(name) {
+  const p = players[name];
+  const old = p.slot;
+  releaseSlot(old);
+  const s = pickRandomSlot();
+  if (!s) { claimSlot(old); alert('ما في سلوتات بديلة متاحة بالشركات المختارة!'); return; }
+  claimSlot(s);
+  p.slot = s;
+  renderRound();
+}
+
 function renderRoster() {
   const list = document.getElementById('roster-list');
   list.innerHTML = '';
@@ -359,19 +476,14 @@ function renderRoster() {
     const p = players[name];
     const row = document.createElement('div');
     row.className = 'roster-item';
-    row.innerHTML = `<div class="roster-name">${name}</div><div class="roster-power"><div class="p-label">${p.power.label}</div><div class="p-desc">${p.power.desc}</div></div>`;
+    const slotTxt = p.slot ? p.slot.name : (p.pendingChoice ? 'بانتظار اختيارك' : '—');
+    row.innerHTML = `<div class="roster-name">${name}</div><div class="roster-power"><div class="p-label">${p.power.label}</div><div class="p-desc">${p.power.desc}</div><div class="p-slot">🎰 ${slotTxt}</div></div>`;
     list.appendChild(row);
   });
 }
 function toggleRoster() {
   document.getElementById('roster-list').classList.toggle('open');
   document.getElementById('roster-toggle').textContent = document.getElementById('roster-list').classList.contains('open') ? '▲' : '▼';
-}
-
-function makeMatch(p1, p2) {
-  return { p1, p2, slot1: null, slot2: null, x1: null, x2: null, winner: null,
-           p1MultActive: false, p2MultActive: false, p1ReduceIncoming: false, p2ReduceIncoming: false,
-           revivedFor: null };
 }
 
 function roundLabel(matchCount) {
@@ -388,31 +500,9 @@ function renderRound() {
   const list = document.getElementById('matches-list');
   list.innerHTML = '';
   round.forEach((match, idx) => list.appendChild(buildMatchCard(match, idx)));
+  renderRoster();
   updateNextRoundBtn();
 }
-
-function pool() {
-  return ALL_SLOTS.filter(g => selectedCompanies.has(g.company));
-}
-
-function pickRandomSlot() {
-  const available = pool().filter(g => !usedSlotNames.has(g.name));
-  const source = available.length > 0 ? available : pool();
-  if (source.length === 0) return null;
-  return source[Math.floor(Math.random() * source.length)];
-}
-
-function pickTwoRandomSlots() {
-  const a = pickRandomSlot();
-  if (!a) return [null, null];
-  usedSlotNames.add(a.name);
-  const b = pickRandomSlot();
-  usedSlotNames.delete(a.name);
-  return [a, b];
-}
-
-function releaseSlot(slot) { if (slot) usedSlotNames.delete(slot.name); }
-function claimSlot(slot) { if (slot) usedSlotNames.add(slot.name); }
 
 function buildMatchCard(match, idx) {
   const card = document.createElement('div');
@@ -427,7 +517,8 @@ function buildMatchCard(match, idx) {
   duel.appendChild(buildSide(match, idx, 'p2'));
   card.appendChild(duel);
 
-  if (match.slot1 && match.slot2 && !match.winner) {
+  const p1 = players[match.p1], p2 = players[match.p2];
+  if (p1.slot && p2.slot && !match.winner) {
     const decideBtn = document.createElement('button');
     decideBtn.className = 'decide-btn';
     decideBtn.textContent = '✅ تحديد الفائز';
@@ -436,27 +527,18 @@ function buildMatchCard(match, idx) {
   }
 
   if (match.winner) {
+    if (match.log.length || match.resultLine) {
+      const logBox = document.createElement('div');
+      logBox.className = 'result-log';
+      logBox.innerHTML = match.log.map(l => `<div class="log-line">${l}</div>`).join('') +
+                          `<div class="log-win">${match.resultLine}</div>`;
+      card.appendChild(logBox);
+    }
     const redo = document.createElement('button');
     redo.className = 'redo-btn';
     redo.textContent = '↩️ تعديل النتيجة';
-    redo.onclick = () => { match.winner = null; renderRound(); };
+    redo.onclick = () => { match.winner = null; match.resultLine = ''; renderRound(); };
     card.appendChild(redo);
-
-    const loser = match.winner === match.p1 ? match.p2 : match.p1;
-    const loserPower = players[loser].power;
-    if (loserPower.key === 'revive' && !players[loser].powerUsed && match.revivedFor !== loser) {
-      const revive = document.createElement('button');
-      revive.className = 'revive-btn';
-      revive.textContent = '🔁 ' + loser + ' يستخدم الإنعاش (إعادة المباراة)';
-      revive.onclick = () => {
-        releaseSlot(match.slot1); releaseSlot(match.slot2);
-        Object.assign(match, makeMatch(match.p1, match.p2));
-        match.revivedFor = loser;
-        players[loser].powerUsed = true;
-        renderRound();
-      };
-      card.appendChild(revive);
-    }
   }
 
   return card;
@@ -474,140 +556,59 @@ function buildSide(match, idx, which) {
   nameEl.textContent = name;
   side.appendChild(nameEl);
 
-  const powerTag = document.createElement('div');
-  powerTag.className = 'power-tag';
-  powerTag.innerHTML = `${p.power.label}<span class="p-desc">${p.power.desc}</span>`;
-  side.appendChild(powerTag);
+  if (currentRoundIndex === 0) {
+    const powerTag = document.createElement('div');
+    powerTag.className = 'power-tag';
+    powerTag.innerHTML = `${p.power.label}<span class="p-desc">${p.power.desc}</span>`;
+    side.appendChild(powerTag);
+  }
 
-  const slotKey = which === 'p1' ? 'slot1' : 'slot2';
-  const slot = match[slotKey];
+  if (p.pendingChoice) {
+    const label = document.createElement('div');
+    label.className = 'choose-label';
+    label.textContent = '🎯 اختر سلوتك الثابت لكامل البطولة:';
+    side.appendChild(label);
+    const wrap = document.createElement('div');
+    wrap.className = 'double-choice';
+    p.pendingChoice.forEach(s => {
+      const opt = document.createElement('div');
+      opt.className = 'opt';
+      opt.innerHTML = `<img src="${s.img}" alt=""><div class="s-name">${s.name}</div>`;
+      opt.onclick = () => chooseInitialSlot(name, s);
+      wrap.appendChild(opt);
+    });
+    side.appendChild(wrap);
+    return side;
+  }
 
-  if (!slot) {
-    const canDouble = p.power.key === 'redraw2' && !p.powerUsed;
-    const btn = document.createElement('button');
-    btn.className = 'draw-slot-btn';
-    btn.textContent = canDouble ? '🎯 اسحب سلوتين واختر' : '🎰 اسحب سلوت';
-    btn.onclick = () => {
-      if (canDouble) {
-        showDoubleChoice(side, match, slotKey, name);
-      } else {
-        const s = pickRandomSlot();
-        if (!s) { alert('مافي ألعاب متاحة بالشركات المختارة!'); return; }
-        claimSlot(s);
-        match[slotKey] = s;
-        renderRound();
-      }
-    };
-    side.appendChild(btn);
-  } else {
-    const box = document.createElement('div');
-    box.className = 'slot-box';
-    box.innerHTML = `<img src="${slot.img}" alt=""><div class="s-name">${slot.name}</div><div class="s-co">🏢 ${slot.company}</div>`;
-    side.appendChild(box);
+  if (!p.slot) {
+    const note = document.createElement('div');
+    note.className = 'choose-label';
+    note.textContent = 'جاري توزيع السلوت...';
+    side.appendChild(note);
+    return side;
+  }
 
-    if (!match.winner) {
-      const reroll = document.createElement('button');
-      reroll.className = 'reroll-btn';
-      reroll.textContent = '🔄 غيّر السلوت';
-      reroll.onclick = () => {
-        releaseSlot(slot);
-        const s = pickRandomSlot();
-        if (!s) { alert('مافي ألعاب بديلة متاحة!'); return; }
-        claimSlot(s);
-        match[slotKey] = s;
-        renderRound();
-      };
-      side.appendChild(reroll);
+  const box = document.createElement('div');
+  box.className = 'slot-box';
+  box.innerHTML = `<img src="${p.slot.img}" alt=""><div class="s-name">${p.slot.name}</div><div class="s-co">🏢 ${p.slot.company}</div>`;
+  side.appendChild(box);
 
-      const xField = document.createElement('div');
-      xField.className = 'x-field';
-      const xKey = which === 'p1' ? 'x1' : 'x2';
-      xField.innerHTML = `<input type="number" step="0.01" min="0" id="${xKey}-${idx}" placeholder="الإكس اللي طلعلك" value="${match[xKey] ?? ''}">`;
-      side.appendChild(xField);
+  const reroll = document.createElement('button');
+  reroll.className = 'reroll-btn';
+  reroll.textContent = '🔄 غيّر السلوت';
+  reroll.onclick = () => rerollPersonalSlot(name);
+  side.appendChild(reroll);
 
-      if (p.power.key !== 'none' && !p.powerUsed) {
-        const useBtn = document.createElement('button');
-        useBtn.className = 'power-use-btn';
-        useBtn.textContent = '🔮 استخدم القدرة';
-        useBtn.onclick = () => usePower(match, idx, which, name);
-        side.appendChild(useBtn);
-      } else if (p.powerUsed && p.power.key !== 'none') {
-        const used = document.createElement('div');
-        used.className = 'power-use-btn';
-        used.textContent = '✅ مستخدمة';
-        used.style.opacity = 0.5;
-        side.appendChild(used);
-      }
-    }
+  if (!match.winner) {
+    const xKey = which === 'p1' ? 'x1' : 'x2';
+    const xField = document.createElement('div');
+    xField.className = 'x-field';
+    xField.innerHTML = `<input type="number" step="0.01" min="0" id="${xKey}-${idx}" placeholder="الإكس اللي طلعلك" value="${match[xKey] ?? ''}">`;
+    side.appendChild(xField);
   }
 
   return side;
-}
-
-function showDoubleChoice(side, match, slotKey, name) {
-  const [a, b] = pickTwoRandomSlots();
-  if (!a) { alert('مافي ألعاب متاحة بالشركات المختارة!'); return; }
-  const wrap = document.createElement('div');
-  wrap.className = 'double-choice';
-  [a, b].filter(Boolean).forEach(s => {
-    const opt = document.createElement('div');
-    opt.className = 'opt';
-    opt.innerHTML = `<img src="${s.img}" alt=""><div class="s-name">${s.name}</div>`;
-    opt.onclick = () => {
-      claimSlot(s);
-      match[slotKey] = s;
-      players[name].powerUsed = true;
-      renderRound();
-    };
-    wrap.appendChild(opt);
-  });
-  side.appendChild(wrap);
-  side.querySelector('.draw-slot-btn')?.remove();
-}
-
-function usePower(match, idx, which, name) {
-  const p = players[name];
-  const oppWhich = which === 'p1' ? 'p2' : 'p1';
-  const oppName = match[oppWhich];
-  const opp = players[oppName];
-  const attacking = ['curse','steal','weaken'].includes(p.power.key);
-
-  if (attacking && opp.shielded) {
-    alert(oppName + ' كان محمي بالدرع 🛡️ — القدرة اتصدّت!');
-    opp.shielded = false;
-    renderRound();
-    return;
-  }
-
-  switch (p.power.key) {
-    case 'double':
-      match[which + 'MultActive'] = true;
-      break;
-    case 'shield':
-      p.shielded = true;
-      break;
-    case 'curse': {
-      const oppSlotKey = oppWhich === 'p1' ? 'slot1' : 'slot2';
-      releaseSlot(match[oppSlotKey]);
-      match[oppSlotKey] = null;
-      break;
-    }
-    case 'steal': {
-      const xKeyMine = which === 'p1' ? 'x1' : 'x2';
-      const xKeyOpp = oppWhich === 'p1' ? 'x1' : 'x2';
-      const oppInput = document.getElementById(xKeyOpp + '-' + idx);
-      const myInput = document.getElementById(xKeyMine + '-' + idx);
-      if (!oppInput || !oppInput.value) { alert('لازم ' + oppName + ' يدخل الإكس تبعه أول!'); return; }
-      if (myInput) myInput.value = oppInput.value;
-      match[xKeyMine] = parseFloat(oppInput.value);
-      break;
-    }
-    case 'weaken':
-      match[oppWhich + 'ReduceIncoming'] = true;
-      break;
-  }
-  p.powerUsed = true;
-  renderRound();
 }
 
 function decideMatch(match, idx) {
@@ -616,10 +617,30 @@ function decideMatch(match, idx) {
   if (isNaN(x1raw) || isNaN(x2raw)) { alert('لازم تدخل الإكس لكلا الشخصين!'); return; }
   match.x1 = x1raw; match.x2 = x2raw;
 
-  let eff1 = x1raw * (match.p1MultActive ? 2 : 1) * (match.p1ReduceIncoming ? 0.5 : 1);
-  let eff2 = x2raw * (match.p2MultActive ? 2 : 1) * (match.p2ReduceIncoming ? 0.5 : 1);
-
+  const swapped = match.p1Steals || match.p2Steals;
+  const baseX1 = swapped ? x2raw : x1raw;
+  const baseX2 = swapped ? x1raw : x2raw;
+  const eff1 = baseX1 * (match.p1MultActive ? 1.10 : 1) * (match.p1ReduceIncoming ? 0.90 : 1);
+  const eff2 = baseX2 * (match.p2MultActive ? 1.10 : 1) * (match.p2ReduceIncoming ? 0.90 : 1);
   match.winner = eff1 >= eff2 ? match.p1 : match.p2;
+  const winLabel = match.log.length ? 'فاز بعد تطبيق القدرات أعلاه' : 'فاز';
+  match.resultLine = `🏆 ${match.winner} ${winLabel} (${eff1.toFixed(2)} مقابل ${eff2.toFixed(2)})`;
+
+  if (currentRoundIndex === 0) {
+    const loserName = match.winner === match.p1 ? match.p2 : match.p1;
+    const loser = players[loserName];
+    if (loser.power.key === 'revive' && !loser.revived) {
+      loser.revived = true;
+      releaseSlot(loser.slot);
+      const ns = pickRandomSlot();
+      if (ns) { claimSlot(ns); loser.slot = ns; }
+      match.log.push(`🔁 ${loserName} خسر واستخدم الإنعاش تلقائياً — سلوت جديد وإعادة المباراة`);
+      match.x1 = null; match.x2 = null; match.winner = null; match.resultLine = '';
+      renderRound();
+      return;
+    }
+  }
+
   renderRound();
   spawnParticles(window.innerWidth/2, 200);
 }
@@ -648,6 +669,10 @@ function showChampion(name) {
   document.getElementById('champion-screen').classList.add('show');
   document.getElementById('champion-name').textContent = '👑 ' + name;
 
+  const slot = players[name].slot;
+  const slotBox = document.getElementById('champion-slot');
+  slotBox.innerHTML = slot ? `<img src="${slot.img}" alt=""><div>${slot.name}</div>` : '';
+
   const pathList = document.getElementById('champion-path');
   pathList.innerHTML = '';
   rounds.forEach(round => {
@@ -655,12 +680,10 @@ function showChampion(name) {
     if (!match) return;
     const iAmP1 = match.p1 === name;
     const opp = iAmP1 ? match.p2 : match.p1;
-    const mySlot = iAmP1 ? match.slot1 : match.slot2;
     const myX = iAmP1 ? match.x1 : match.x2;
-    if (!mySlot) return;
     const item = document.createElement('div');
     item.className = 'path-item';
-    item.innerHTML = `<span>ضد ${opp} على ${mySlot.name}</span><b>x${myX}</b>`;
+    item.innerHTML = `<span>ضد ${opp}</span><b>x${myX}</b>`;
     pathList.appendChild(item);
   });
 
