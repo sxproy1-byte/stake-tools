@@ -1,82 +1,246 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>حرب السلوتات | xTools</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حرب السلوتات - xTools</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234d8dff'/%3E%3Cstop offset='50%25' stop-color='%238b6cff'/%3E%3Cstop offset='100%25' stop-color='%236d4fd1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='url(%23g)' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Arial, Helvetica, sans-serif' font-weight='900' font-size='36' text-anchor='middle' fill='url(%23g)'%3EX%3C/text%3E%3C/svg%3E">
+<script>
+  (function(){
+    var l = localStorage.getItem('site-lang') || 'ar';
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  })();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0f1a;--card:#171a2b;--gold:#f5c542;--a:#3b82f6;--b:#ef4444;--t:#eef;--m:#8a90b0}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,Tahoma,sans-serif;padding:20px}
-main{max-width:760px;margin:auto}
-h1{text-align:center;color:var(--gold)}
-.muted{color:var(--m);text-align:center}
-.vs{display:flex;gap:10px;align-items:stretch;margin:20px 0}
-.vs>span{align-self:center;font-weight:900;color:var(--gold)}
-.card{flex:1;background:var(--card);border-radius:14px;padding:16px;text-align:center;border-top:4px solid var(--c)}
-.card.a{--c:var(--a)}.card.b{--c:var(--b)}
-.card h2{margin:0 0 8px;font-size:1.1rem}
-.card b{font-size:2rem}
-.bar{height:8px;background:#0006;border-radius:9px;overflow:hidden;margin-top:8px}
-.bar i{display:block;height:100%;width:0;background:var(--c);transition:width .4s}
-input{width:100%;padding:12px;border-radius:10px;border:1px solid #333a5c;background:#0d0f1a;color:var(--t);font-size:1rem;margin:6px 0}
-button{padding:12px;border:0;border-radius:10px;font-size:1rem;font-weight:700;color:#fff;cursor:pointer;flex:1}
-button:disabled{opacity:.4;cursor:not-allowed}
-.btns{display:flex;gap:10px;margin-top:8px}
-.ba{background:var(--a)}.bb{background:var(--b)}.bg{background:var(--gold);color:#000}
-#msg{text-align:center;min-height:1.4em}
-.lists{display:flex;gap:10px;margin-top:20px}
-.lists>div{flex:1;background:var(--card);border-radius:12px;padding:10px}
-.lists h3{margin:0 0 6px;font-size:.95rem}
-ul{margin:0;padding:0 18px;max-height:200px;overflow:auto;font-size:.9rem}
-#admin{background:var(--card);border-radius:14px;padding:16px;margin-top:24px}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #8b6cff; --gold-dark: #6d4fd1;
+    --bg: #0d0d0d; --card: #161616; --card2: #1e1e1e; --border: #2a2a2a;
+    --text: #f0f0f0; --muted: #777; --red: #ff5252;
+    --a: #4d8dff; --b: #c56cf0;
+  }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    padding: 0 16px 60px; overflow-x: hidden;
+  }
+
+  /* === NAVBAR === */
+  .navbar {
+    width: 100vw; background: #111; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 16px; margin-bottom: 28px; position: sticky; top: 0; z-index: 50;
+  }
+  .navbar-inner { width: 100%; max-width: 700px; display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 10px 0; }
+  .navbar-inner::-webkit-scrollbar { display: none; }
+  .nav-home, .nav-link {
+    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted);
+    text-decoration: none; padding: 7px 14px; border-radius: 10px; white-space: nowrap; flex-shrink: 0;
+    border: 1px solid var(--border); background: transparent;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .nav-link { border-color: transparent; }
+  .nav-home:hover { color: var(--gold); border-color: var(--gold-dark); }
+  .nav-sep { color: #333; font-size: 18px; flex-shrink: 0; padding: 0 2px; }
+  .nav-link:hover { color: var(--gold); border-color: var(--border); background: var(--card); }
+  .nav-link.active { color: var(--gold); background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+  .nav-lang {
+    margin-inline-start: auto; display: flex; align-items: center; gap: 6px;
+    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--text);
+    background: linear-gradient(135deg, rgba(77,109,255,0.12), rgba(168,108,255,0.12));
+    padding: 7px 14px; border-radius: 10px; border: 1px solid rgba(139,92,246,0.25);
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.25s, box-shadow 0.25s;
+  }
+  .nav-lang:hover { border-color: var(--gold); box-shadow: 0 4px 16px rgba(139,92,246,0.25); transform: translateY(-2px); }
+  .nav-lang:active { transform: scale(0.95); }
+  .nav-lang .globe { transition: transform 0.4s ease; }
+  .nav-lang:hover .globe { transform: rotate(180deg); }
+  body.lang-fade [data-i18n], body.lang-fade [data-i18n-ph] { opacity: 0; }
+  [data-i18n] { transition: opacity 0.18s ease; }
+
+  /* === HEADER === */
+  .header { text-align: center; margin-bottom: 20px; animation: fadeUp 0.5s cubic-bezier(.22,1,.36,1) both; }
+  .header .logo { font-size: 12px; font-weight: 600; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 4px; }
+  .header h1 { font-size: 26px; font-weight: 900; color: #fff; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .wrap { width: 100%; max-width: 520px; }
+  .state { text-align: center; color: var(--muted); font-size: 14px; font-weight: 600; margin-bottom: 18px; }
+  .state.open { color: var(--gold); }
+
+  /* === ARENA === */
+  .vs { display: flex; gap: 10px; align-items: stretch; margin-bottom: 18px; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) 0.08s both; }
+  .vs-mid { align-self: center; font-weight: 900; font-size: 15px; color: var(--muted); }
+  .slot {
+    flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--border);
+    border-top: 3px solid var(--c); border-radius: 18px; padding: 18px 12px; text-align: center;
+  }
+  .slot.a { --c: var(--a); } .slot.b { --c: var(--b); }
+  .slot h2 { font-size: 15px; font-weight: 700; margin-bottom: 8px; overflow-wrap: anywhere; }
+  .slot .pct { font-size: 32px; font-weight: 900; color: var(--c); line-height: 1.2; }
+  .slot .cnt { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .bar { height: 6px; background: var(--card2); border-radius: 9px; overflow: hidden; margin-top: 12px; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--c); transition: width 0.4s ease; }
+
+  /* === CARDS / FORM === */
+  .box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+    padding: 20px; margin-bottom: 20px; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) 0.16s both;
+  }
+  .box-title { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; font-weight: 600; }
+  input {
+    width: 100%; padding: 12px 14px; font-family: 'Cairo', sans-serif; font-size: 15px;
+    background: var(--card2); border: 1px solid var(--border); border-radius: 12px;
+    color: var(--text); outline: none; margin-bottom: 10px; transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--gold-dark); }
+  .btns { display: flex; gap: 10px; }
+  button.btn {
+    flex: 1; padding: 13px; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 900;
+    border: none; border-radius: 14px; cursor: pointer; color: #fff;
+    transition: transform 0.3s cubic-bezier(.22,1,.36,1), box-shadow 0.3s, opacity 0.2s;
+  }
+  button.btn:hover:not(:disabled) { transform: translateY(-2px); }
+  button.btn:active:not(:disabled) { transform: scale(0.97); }
+  .btn-a { background: linear-gradient(135deg, #3b6fe0, var(--a)); box-shadow: 0 4px 20px rgba(77,141,255,0.3); }
+  .btn-b { background: linear-gradient(135deg, #a24fd8, var(--b)); box-shadow: 0 4px 20px rgba(197,108,240,0.3); }
+  .btn-main { background: linear-gradient(135deg, #4d6dff 0%, #a86cff 55%, #c56cf0 100%); box-shadow: 0 4px 20px rgba(139,92,246,0.35); }
+  .btn-stop { background: rgba(255,82,82,0.1); color: var(--red) !important; border: 1px solid #ff525240 !important; }
+  .btn-stop:hover { background: rgba(255,82,82,0.2); }
+  .msg { text-align: center; min-height: 22px; font-size: 14px; font-weight: 600; margin-bottom: 18px; }
+
+  /* === VOTERS === */
+  .lists { display: flex; gap: 10px; }
+  .lists > div { flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+  .lists h3 { font-size: 13px; font-weight: 700; color: var(--c); margin-bottom: 8px; overflow-wrap: anywhere; }
+  .lists .a { --c: var(--a); } .lists .b { --c: var(--b); }
+  ul { list-style: none; max-height: 220px; overflow-y: auto; font-size: 13px; }
+  li { padding: 5px 0; border-bottom: 1px solid var(--card2); overflow-wrap: anywhere; }
+  li:last-child { border-bottom: 0; }
+
+  @media (max-width: 420px) { .slot .pct { font-size: 26px; } }
 </style>
 </head>
 <body>
-<main>
-<h1>⚔️ حرب السلوتات</h1>
-<div id="state" class="muted">جاري التحميل...</div>
 
-<section id="arena" hidden>
-  <div class="vs">
-    <div class="card a"><h2 id="na"></h2><b id="pa">0%</b><div><small id="ta">0</small> صوت</div><div class="bar"><i id="ba"></i></div></div>
-    <span>VS</span>
-    <div class="card b"><h2 id="nb"></h2><b id="pb">0%</b><div><small id="tb">0</small> صوت</div><div class="bar"><i id="bb"></i></div></div>
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="nav-home" href="index.html" data-i18n="navHome">🏠 الرئيسية</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-link" href="slots.html" data-i18n="navSlots">🎰 سلوت عشوائي</a>
+    <a class="nav-link" href="multiplier.html" data-i18n="navMult">🚀 الاكس العشوائي</a>
+    <a class="nav-link" href="wheel.html" data-i18n="navWheel">🎡 دولاب الحظ</a>
+    <a class="nav-link" href="tournament.html" data-i18n="navTour">🏆 البطولة</a>
+    <a class="nav-link active" href="battle.html" data-i18n="navBattle">⚔️ حرب السلوتات</a>
+    <button class="nav-lang" id="lang-toggle" type="button"><span class="globe">🌐</span><span id="lang-toggle-label">English</span></button>
   </div>
-  <div id="voteBox">
-    <input id="name" maxlength="20" placeholder="اكتب اسمك قبل التصويت">
-    <div class="btns"><button id="va" class="ba"></button><button id="vb" class="bb"></button></div>
-  </div>
-  <p id="msg"></p>
-  <div class="lists">
-    <div><h3 id="lha"></h3><ul id="la"></ul></div>
-    <div><h3 id="lhb"></h3><ul id="lb"></ul></div>
-  </div>
-</section>
+</nav>
 
-<section id="admin" hidden>
-  <h3>لوحة التحكم</h3>
-  <div id="login">
-    <input id="em" type="email" placeholder="إيميل الأدمن">
-    <input id="pw" type="password" placeholder="كلمة السر">
-    <button class="bg" id="loginBtn" style="width:100%">دخول</button>
-  </div>
-  <div id="panel" hidden>
-    <input id="sa" placeholder="اسم السلوت الأول">
-    <input id="sb" placeholder="اسم السلوت الثاني">
-    <div class="btns">
-      <button class="bg" id="start">ابدأ حرب جديدة</button>
-      <button class="bb" id="close">أغلق التصويت</button>
+<div class="header">
+  <div class="logo">⚔️ xTools</div>
+  <h1 data-i18n="pageTitle">حرب السلوتات</h1>
+</div>
+
+<div class="wrap">
+  <div class="state" id="state" data-i18n="loading">جاري التحميل...</div>
+
+  <section id="arena" hidden>
+    <div class="vs">
+      <div class="slot a"><h2 id="na"></h2><div class="pct" id="pa">0%</div><div class="cnt"><span id="ta">0</span> <span data-i18n="votes">صوت</span></div><div class="bar"><i id="ba"></i></div></div>
+      <div class="vs-mid">VS</div>
+      <div class="slot b"><h2 id="nb"></h2><div class="pct" id="pb">0%</div><div class="cnt"><span id="tb">0</span> <span data-i18n="votes">صوت</span></div><div class="bar"><i id="bb"></i></div></div>
     </div>
-  </div>
-</section>
-</main>
+
+    <div class="box" id="voteBox">
+      <div class="box-title" data-i18n="voteTitle">🗳 صوّت لمين راح يفوز</div>
+      <input id="name" maxlength="20" data-i18n-ph="namePh" placeholder="اكتب اسمك قبل التصويت">
+      <div class="btns"><button class="btn btn-a" id="va"></button><button class="btn btn-b" id="vb"></button></div>
+    </div>
+    <div class="msg" id="msg"></div>
+
+    <div class="lists">
+      <div class="a"><h3 id="lha"></h3><ul id="la"></ul></div>
+      <div class="b"><h3 id="lhb"></h3><ul id="lb"></ul></div>
+    </div>
+  </section>
+
+  <section class="box" id="admin" hidden style="margin-top:24px">
+    <div class="box-title" data-i18n="adminTitle">⚙️ لوحة التحكم</div>
+    <div id="login">
+      <input id="em" type="email" data-i18n-ph="emailPh" placeholder="إيميل الأدمن">
+      <input id="pw" type="password" data-i18n-ph="pwPh" placeholder="كلمة السر">
+      <button class="btn btn-main" id="loginBtn" style="width:100%" data-i18n="loginBtn">دخول</button>
+    </div>
+    <div id="panel" hidden>
+      <input id="sa" data-i18n-ph="slotAPh" placeholder="اسم السلوت الأول">
+      <input id="sb" data-i18n-ph="slotBPh" placeholder="اسم السلوت الثاني">
+      <button class="btn btn-main" id="start" style="width:100%;margin-bottom:10px" data-i18n="startBtn">⚔️ ابدأ حرب جديدة</button>
+      <div class="btns">
+        <button class="btn btn-a" id="reopen" data-i18n="openBtn">🔓 افتح التصويت</button>
+        <button class="btn btn-stop" id="close" data-i18n="closeBtn">🔒 أغلق التصويت</button>
+      </div>
+      <button class="btn btn-stop" id="del" style="width:100%;margin-top:10px" data-i18n="delBtn">🗑 احذف الحرب</button>
+    </div>
+  </section>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
-// === الصق إعدادات Firebase هنا ===
+// ---- i18n ----
+const I18N = {
+  ar: {
+    navHome: '🏠 الرئيسية', navSlots: '🎰 سلوت عشوائي', navMult: '🚀 الاكس العشوائي', navWheel: '🎡 دولاب الحظ', navTour: '🏆 البطولة', navBattle: '⚔️ حرب السلوتات',
+    pageTitle: 'حرب السلوتات', loading: 'جاري التحميل...', votes: 'صوت',
+    noBattle: 'ما في حرب شغالة حالياً. ترقّب البث!', open: '🔥 التصويت مفتوح الآن!', closed: '🔒 انتهى التصويت',
+    voteTitle: '🗳 صوّت لمين راح يفوز', namePh: 'اكتب اسمك قبل التصويت', voteFor: n => `صوّت لـ ${n}`, votersOf: n => `مصوّتين ${n}`,
+    voted: '✅ صوّتّ باسم ', shortName: 'اكتب اسمك أول (حرفين على الأقل)',
+    rejected: 'ما انقبل التصويت: الاسم مستخدم، أو صوّتّ من قبل، أو التصويت مسكّر.',
+    adminTitle: '⚙️ لوحة التحكم', emailPh: 'إيميل الأدمن', pwPh: 'كلمة السر', loginBtn: 'دخول',
+    slotAPh: 'اسم السلوت الأول', slotBPh: 'اسم السلوت الثاني', startBtn: '⚔️ ابدأ حرب جديدة', closeBtn: '🔒 أغلق التصويت', openBtn: '🔓 افتح التصويت', delBtn: '🗑 احذف الحرب',
+    confirmDel: 'تحذف الحرب وكل الأصوات؟ ما في رجعة.',
+    badLogin: 'بيانات الدخول غلط', needSlots: 'اكتب اسم السلوتين',
+    toggleLabel: 'English', footer: 'طُوِّر بـ ❤️ من قِبَل'
+  },
+  en: {
+    navHome: '🏠 Home', navSlots: '🎰 Random Slot', navMult: '🚀 Random Multiplier', navWheel: '🎡 Wheel of Fortune', navTour: '🏆 Tournament', navBattle: '⚔️ Slot Battle',
+    pageTitle: 'Slot Battle', loading: 'Loading...', votes: 'votes',
+    noBattle: 'No battle is running right now. Stay tuned for the stream!', open: '🔥 Voting is open!', closed: '🔒 Voting has ended',
+    voteTitle: '🗳 Vote for who will win', namePh: 'Enter your name before voting', voteFor: n => `Vote for ${n}`, votersOf: n => `${n} voters`,
+    voted: '✅ You voted as ', shortName: 'Enter your name first (2 characters minimum)',
+    rejected: 'Vote rejected: the name is taken, you already voted, or voting is closed.',
+    adminTitle: '⚙️ Control Panel', emailPh: 'Admin email', pwPh: 'Password', loginBtn: 'Log in',
+    slotAPh: 'First slot name', slotBPh: 'Second slot name', startBtn: '⚔️ Start New Battle', closeBtn: '🔒 Close Voting', openBtn: '🔓 Open Voting', delBtn: '🗑 Delete Battle',
+    confirmDel: 'Delete the battle and all its votes? This cannot be undone.',
+    badLogin: 'Wrong email or password', needSlots: 'Enter both slot names',
+    toggleLabel: 'عربي', footer: 'Built with ❤️ by'
+  }
+};
+let lang = localStorage.getItem('site-lang') || 'ar';
+const t = k => I18N[lang][k];
+const $ = id => document.getElementById(id);
+
+function applyLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.add('lang-fade');
+  setTimeout(() => {
+    document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (I18N[l][k]) el.textContent = I18N[l][k]; });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => { const k = el.getAttribute('data-i18n-ph'); if (I18N[l][k]) el.placeholder = I18N[l][k]; });
+    $('lang-toggle-label').textContent = I18N[l].toggleLabel;
+    $('footer-text').textContent = I18N[l].footer;
+    render(); showMsg();
+    document.body.classList.remove('lang-fade');
+  }, 160);
+  localStorage.setItem('site-lang', l);
+}
+
+// ---- Firebase ----
 const CONFIG = {
   apiKey: "AIzaSyAN4c-nDH_bh_3IhJJpaEPsoqIhSI6ufas",
   authDomain: "xtools-battle.firebaseapp.com",
@@ -84,21 +248,21 @@ const CONFIG = {
   projectId: "xtools-battle",
   appId: "1:285430677949:web:7c3f79919528ee178952d4"
 };
-// =================================
-
 firebase.initializeApp(CONFIG);
 const auth = firebase.auth(), db = firebase.database();
-const $ = id => document.getElementById(id);
 const IS_ADMIN = new URLSearchParams(location.search).has('admin');
 let me = null, battle = null, votes = {}, stopVotes = null, started = false;
+let msgKey = null, msgExtra = '';
 
 if (IS_ADMIN) $('admin').hidden = false;
+
+function setMsg(k, extra) { msgKey = k; msgExtra = extra || ''; showMsg(); }
+function showMsg() { $('msg').textContent = msgKey ? t(msgKey) + msgExtra : ''; }
 
 auth.onAuthStateChanged(u => {
   if (!u) { auth.signInAnonymously(); return; }
   me = u;
-  const isEmail = !!u.email;
-  $('login').hidden = isEmail; $('panel').hidden = !isEmail;
+  $('login').hidden = !!u.email; $('panel').hidden = !u.email;
   if (!started) {
     started = true;
     db.ref('battle').on('value', s => { battle = s.val(); watchVotes(); render(); });
@@ -114,28 +278,33 @@ function watchVotes() {
   stopVotes = () => r.off();
 }
 
-function msg(t) { $('msg').textContent = t; }
+function adminState() {
+  const has = !!battle, open = has && battle.status === 'open';
+  $('reopen').disabled = !has || open; $('close').disabled = !open; $('del').disabled = !has;
+}
 
 function render() {
-  if (!battle) { $('state').textContent = 'ما في حرب شغالة حالياً. ترقّب البث!'; $('arena').hidden = true; return; }
-  $('state').textContent = battle.status === 'open' ? '🔥 التصويت مفتوح الآن!' : '🔒 انتهى التصويت';
+  const st = $('state');
+  adminState();
+  if (!battle) { st.textContent = t('noBattle'); st.className = 'state'; $('arena').hidden = true; return; }
+  const open = battle.status === 'open';
+  st.textContent = open ? t('open') : t('closed'); st.className = 'state' + (open ? ' open' : '');
   $('arena').hidden = false;
   $('na').textContent = battle.a; $('nb').textContent = battle.b;
-  $('va').textContent = 'صوّت لـ ' + battle.a; $('vb').textContent = 'صوّت لـ ' + battle.b;
-  $('lha').textContent = 'مصوّتين ' + battle.a; $('lhb').textContent = 'مصوّتين ' + battle.b;
+  $('va').textContent = t('voteFor')(battle.a); $('vb').textContent = t('voteFor')(battle.b);
+  $('lha').textContent = t('votersOf')(battle.a); $('lhb').textContent = t('votersOf')(battle.b);
   const list = Object.values(votes);
   const A = list.filter(v => v.choice === 'a'), B = list.filter(v => v.choice === 'b');
-  const tot = list.length || 1;
+  const pa = list.length ? Math.round(A.length / list.length * 100) : 0;
+  const pb = list.length ? 100 - pa : 0;
   $('ta').textContent = A.length; $('tb').textContent = B.length;
-  const pa = Math.round(A.length / tot * 100);
-  $('pa').textContent = (list.length ? pa : 0) + '%'; $('pb').textContent = (list.length ? 100 - pa : 0) + '%';
-  $('ba').style.width = (list.length ? pa : 0) + '%'; $('bb').style.width = (list.length ? 100 - pa : 0) + '%';
+  $('pa').textContent = pa + '%'; $('pb').textContent = pb + '%';
+  $('ba').style.width = pa + '%'; $('bb').style.width = pb + '%';
   fill('la', A); fill('lb', B);
   const voted = me && votes[me.uid];
-  const open = battle.status === 'open';
   $('voteBox').hidden = !open || !!voted;
-  if (voted) msg('✅ صوّتّ باسم ' + voted.name);
-  else if (!open) msg('');
+  if (voted) setMsg('voted', voted.name);
+  else if (msgKey === 'voted' || !open) setMsg(null);
 }
 
 function fill(id, arr) {
@@ -145,7 +314,7 @@ function fill(id, arr) {
 
 async function vote(choice) {
   const name = $('name').value.trim();
-  if (name.length < 2) return msg('اكتب اسمك أول (حرفين على الأقل)');
+  if (name.length < 2) return setMsg('shortName');
   const key = name.toLowerCase().replace(/[.#$\[\]\/\s]+/g, '_');
   const b = battle.id;
   try {
@@ -153,22 +322,35 @@ async function vote(choice) {
       ['votes/' + b + '/' + me.uid]: { name, choice },
       ['names/' + b + '/' + key]: me.uid
     });
-  } catch (e) {
-    msg('ما انقبل التصويت: الاسم مستخدم، أو صوّتّ من قبل، أو التصويت مسكّر.');
-  }
+  } catch (e) { setMsg('rejected'); }
 }
 $('va').onclick = () => vote('a');
 $('vb').onclick = () => vote('b');
 
-// ---- الأدمن ----
+// ---- Admin ----
 $('loginBtn').onclick = () =>
-  auth.signInWithEmailAndPassword($('em').value, $('pw').value).catch(() => alert('بيانات الدخول غلط'));
+  auth.signInWithEmailAndPassword($('em').value, $('pw').value).catch(() => alert(t('badLogin')));
 $('start').onclick = () => {
   const a = $('sa').value.trim(), b = $('sb').value.trim();
-  if (!a || !b) return alert('اكتب اسم السلوتين');
-  db.ref('battle').set({ id: Date.now().toString(36), a, b, status: 'open' });
+  if (!a || !b) return alert(t('needSlots'));
+  const up = { battle: { id: Date.now().toString(36), a, b, status: 'open' } };
+  if (battle) { up['votes/' + battle.id] = null; up['names/' + battle.id] = null; }
+  db.ref().update(up);
 };
+$('reopen').onclick = () => db.ref('battle/status').set('open');
 $('close').onclick = () => db.ref('battle/status').set('closed');
+$('del').onclick = () => {
+  if (!battle || !confirm(t('confirmDel'))) return;
+  db.ref().update({ battle: null, ['votes/' + battle.id]: null, ['names/' + battle.id]: null });
+};
+
+applyLang(lang);
+$('lang-toggle').addEventListener('click', () => applyLang(lang === 'ar' ? 'en' : 'ar'));
 </script>
+
+<div style="text-align:center; padding: 32px 16px 20px; color: #444; font-size: 13px; font-family: 'Cairo', sans-serif;">
+  <span id="footer-text">طُوِّر بـ ❤️ من قِبَل</span>
+  <a href="https://guns.lol/roy_5x" target="_blank" style="color: #8b6cff; font-weight: 700; text-decoration: none; margin: 0 4px;">Roy</a>
+</div>
 </body>
 </html>
