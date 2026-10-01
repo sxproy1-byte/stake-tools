@@ -197,6 +197,11 @@
   .service-card:nth-child(1) { animation: fadeUp 0.55s ease 0.55s forwards; }
   .service-card:nth-child(2) { animation: fadeUp 0.55s ease 0.65s forwards; }
   .service-card:nth-child(3) { animation: fadeUp 0.55s ease 0.75s forwards; }
+  .service-card:nth-child(4) { animation: fadeUp 0.55s ease 0.85s forwards; }
+
+  .service-card.featured { border-color: var(--gold-dark); background: linear-gradient(135deg, #171226 0%, var(--card) 70%); box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 8px 30px rgba(139,92,246,0.12); }
+  .service-card.featured .card-icon { filter: drop-shadow(0 0 14px rgba(255,200,60,0.55)); }
+  .card-badge { display: inline-block; font-size: 10px; font-weight: 900; letter-spacing: 1px; color: #fff; background: linear-gradient(135deg,#8b6cff,#c04dff); padding: 2px 9px; border-radius: 999px; margin-inline-start: 8px; vertical-align: middle; }
 
   /* glow on hover via pseudo */
   .service-card::before {
@@ -350,7 +355,7 @@
   <h1 data-i18n-html="title">مرحباً بك في<br><span>xTools</span></h1>
 
   <p class="hero-desc" data-i18n="desc">
-    منصة متكاملة تضم ثلاث أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
+    منصة متكاملة تضم أربع أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
     اختر الأداة التي تناسبك وابدأ الآن.
   </p>
 
@@ -388,6 +393,16 @@
       <div class="card-arrow" id="arrow3">←</div>
     </a>
 
+    <!-- Tournament -->
+    <a class="service-card featured" href="tournament.html">
+      <div class="card-icon">🏆</div>
+      <div class="card-body">
+        <div class="card-title"><span data-i18n="tourTitle">البطولة</span><span class="card-badge" data-i18n="tourBadge">جديد</span></div>
+        <div class="card-desc" data-i18n="tourDesc">بطولة سلوتات مع قدرات استثنائية — نافس بسلوتاتك واستخدم قدرات خاصة تقلب موازين المنافسة</div>
+      </div>
+      <div class="card-arrow" id="arrow4">←</div>
+    </a>
+
   </div>
 
 
@@ -410,7 +425,7 @@
     ar: {
       badge: '🎰 xTools',
       title: 'مرحباً بك في<br><span>xTools</span>',
-      desc: 'منصة متكاملة تضم ثلاث أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
+      desc: 'منصة متكاملة تضم أربع أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
       chooseService: 'اختر الخدمة',
       slotsTitle: 'سلوت عشوائي',
       slotsDesc: 'يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake',
@@ -418,6 +433,9 @@
       multDesc: 'يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert',
       wheelTitle: 'دولاب الحظ',
       wheelDesc: 'أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي',
+      tourTitle: 'البطولة',
+      tourBadge: 'جديد',
+      tourDesc: 'بطولة سلوتات مع قدرات استثنائية — نافس بسلوتاتك واستخدم قدرات خاصة تقلب موازين المنافسة',
       footer: 'طُوِّر بـ ❤️ من قِبَل',
       toggleLabel: 'English',
       arrow: '←'
@@ -425,7 +443,7 @@
     en: {
       badge: '🎰 xTools',
       title: 'Welcome to<br><span>xTools</span>',
-      desc: 'An all-in-one platform with three professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
+      desc: 'An all-in-one platform with four professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
       chooseService: 'Choose a Service',
       slotsTitle: 'Random Slot',
       slotsDesc: 'Picks a random slot for you from hundreds of games available on Stake',
@@ -433,6 +451,9 @@
       multDesc: 'Generates a random multiplier (X) within a range you choose — from Easy to Expert',
       wheelTitle: 'Wheel of Fortune',
       wheelDesc: 'Add the options you want and spin the wheel — perfect for making random decisions',
+      tourTitle: 'Tournament',
+      tourBadge: 'NEW',
+      tourDesc: 'A slots tournament with exceptional abilities — compete with your slots and use special powers that turn the tide',
       footer: 'Built with ❤️ by',
       toggleLabel: 'عربي',
       arrow: '→'
@@ -454,7 +475,7 @@
       });
       document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
       document.getElementById('footer-text').textContent = I18N[lang].footer;
-      ['arrow1','arrow2','arrow3'].forEach(id => {
+      ['arrow1','arrow2','arrow3','arrow4'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = I18N[lang].arrow;
       });

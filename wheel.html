@@ -355,6 +355,28 @@
   }
   .hist-del:hover { background: rgba(255,82,82,0.25); }
 
+  .send-tour-btn {
+    width: 100%; margin-top: 14px; padding: 13px;
+    font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 800;
+    border-radius: 12px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #4d6dff 0%, #a86cff 55%, #c56cf0 100%);
+    color: #fff; box-shadow: 0 4px 20px rgba(139,92,246,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .send-tour-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(139,92,246,0.5); }
+  .send-tour-btn:active { transform: scale(0.98); }
+
+  .toast {
+    position: fixed; top: 76px; left: 50%; z-index: 200;
+    transform: translate(-50%, -20px); opacity: 0; pointer-events: none;
+    background: #2a1414; color: #ffb4b4; border: 1px solid rgba(255,82,82,0.5);
+    border-radius: 14px; padding: 14px 20px; max-width: 90vw;
+    font-size: 14px; font-weight: 700; text-align: center; line-height: 1.7;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
   /* Particles */
   .particle {
     position: fixed; pointer-events: none; z-index: 999;
@@ -376,6 +398,7 @@
     <a class="nav-link" href="slots.html" data-i18n="navSlots">🎰 سلوت عشوائي</a>
     <a class="nav-link" href="multiplier.html" data-i18n="navMult">🚀 الاكس العشوائي</a>
     <a class="nav-link active" href="wheel.html" data-i18n="navWheel">🎡 دولاب الحظ</a>
+    <a class="nav-link" href="tournament.html" data-i18n="navTour">🏆 البطولة</a>
     <button class="nav-lang" id="lang-toggle" type="button"><span class="globe">🌐</span><span id="lang-toggle-label">English</span></button>
   </div>
 </nav>
@@ -421,7 +444,10 @@
     <button class="clear-hist-btn" id="clear-hist-btn" data-i18n="clearHist">مسح السجل</button>
   </div>
   <div class="history-list" id="history-list"></div>
+  <button class="send-tour-btn" id="send-tour-btn" type="button">🏆 إرسال للبطولة</button>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <!-- Result popup -->
 <div class="result-popup" id="result-popup">
@@ -441,24 +467,28 @@
 // ---- i18n ----
 const I18N = {
   ar: {
-    navHome: '🏠 الرئيسية', navSlots: '🎰 سلوت عشوائي', navMult: '🚀 الاكس العشوائي', navWheel: '🎡 دولاب الحظ',
+    navHome: '🏠 الرئيسية', navSlots: '🎰 سلوت عشوائي', navMult: '🚀 الاكس العشوائي', navWheel: '🎡 دولاب الحظ', navTour: '🏆 البطولة',
     pageTitle: 'دولاب الحظ', wheelEmpty: 'أضف خيارات للدولاب', spinBtn: '🎲 دوّر',
     addTitle: '➕ أضف خيارات للدولاب', addHint: 'كل سطر = خيار جديد، تقدر تحط أكثر من خيار سوا',
     addPh: 'خيار 1\nخيار 2\nخيار 3\n...', addBtn: '➕ إضافة للدولاب',
     entriesCount: n => `الخيارات (${n})`, clearAll: 'مسح الكل',
     historyTitle: '⏱ سجل النتائج', clearHist: 'مسح السجل',
     resultLabel: '✦ النتيجة ✦', btnKeep: '✅ خليه بالدولاب', btnRemove: '🗑 احذف من الدولاب', btnClose: 'إغلاق',
-    toggleLabel: 'English', footer: 'طُوِّر بـ ❤️ من قِبَل', histDelete: 'حذف'
+    toggleLabel: 'English', footer: 'طُوِّر بـ ❤️ من قِبَل', histDelete: 'حذف',
+    sendTour: n => `🏆 إرسال للبطولة (${n})`,
+    badCount: n => `⚠️ العدد غير مطابق! عندك ${n} أسماء، والبطولة لازم 8 أو 16 بالضبط.`
   },
   en: {
-    navHome: '🏠 Home', navSlots: '🎰 Random Slot', navMult: '🚀 Random Multiplier', navWheel: '🎡 Wheel of Fortune',
+    navHome: '🏠 Home', navSlots: '🎰 Random Slot', navMult: '🚀 Random Multiplier', navWheel: '🎡 Wheel of Fortune', navTour: '🏆 Tournament',
     pageTitle: 'Wheel of Fortune', wheelEmpty: 'Add options to the wheel', spinBtn: '🎲 Spin',
     addTitle: '➕ Add Options to the Wheel', addHint: 'Each line = a new option, you can add several at once',
     addPh: 'Option 1\nOption 2\nOption 3\n...', addBtn: '➕ Add to Wheel',
     entriesCount: n => `Options (${n})`, clearAll: 'Clear All',
     historyTitle: '⏱ Results History', clearHist: 'Clear History',
     resultLabel: '✦ Result ✦', btnKeep: '✅ Keep in Wheel', btnRemove: '🗑 Remove from Wheel', btnClose: 'Close',
-    toggleLabel: 'عربي', footer: 'Built with ❤️ by', histDelete: 'Delete'
+    toggleLabel: 'عربي', footer: 'Built with ❤️ by', histDelete: 'Delete',
+    sendTour: n => `🏆 Send to Tournament (${n})`,
+    badCount: n => `⚠️ Count mismatch! You have ${n} names, the tournament needs exactly 8 or 16.`
   }
 };
 let currentLang = localStorage.getItem('site-lang') || 'ar';
@@ -772,9 +802,42 @@ function addHistory(entry, action) {
   renderHistory();
 }
 
+function drawnNames() {
+  // أسماء المسحوبة بترتيب السحب (الأقدم أولاً)، بدون تكرار
+  const seen = new Set();
+  const out = [];
+  [...spinHistory].reverse().forEach(h => {
+    if (!seen.has(h.name)) { seen.add(h.name); out.push(h.name); }
+  });
+  return out;
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function sendToTournament() {
+  const names = drawnNames();
+  if (names.length !== 8 && names.length !== 16) {
+    showToast(I18N[currentLang].badCount(names.length));
+    return;
+  }
+  try {
+    localStorage.setItem('wheel-to-tournament', JSON.stringify(names));
+  } catch (e) {}
+  window.location.href = 'tournament.html';
+}
+
 function renderHistory() {
   const section = document.getElementById('history-section');
   const list = document.getElementById('history-list');
+  const sendBtn = document.getElementById('send-tour-btn');
+  if (sendBtn) sendBtn.textContent = I18N[currentLang].sendTour(drawnNames().length);
   if (spinHistory.length === 0) {
     section.classList.remove('show');
     return;
@@ -819,6 +882,7 @@ document.getElementById('add-input').addEventListener('keydown', (e) => {
   }
 });
 
+document.getElementById('send-tour-btn').addEventListener('click', sendToTournament);
 document.getElementById('spin-btn').addEventListener('click', spin);
 document.getElementById('wheel-canvas').addEventListener('click', spin);
 
