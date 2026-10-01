@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>حرب السلوتات | xTools</title>
+<style>
+:root{--bg:#0d0f1a;--card:#171a2b;--gold:#f5c542;--a:#3b82f6;--b:#ef4444;--t:#eef;--m:#8a90b0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,Tahoma,sans-serif;padding:20px}
+main{max-width:760px;margin:auto}
+h1{text-align:center;color:var(--gold)}
+.muted{color:var(--m);text-align:center}
+.vs{display:flex;gap:10px;align-items:stretch;margin:20px 0}
+.vs>span{align-self:center;font-weight:900;color:var(--gold)}
+.card{flex:1;background:var(--card);border-radius:14px;padding:16px;text-align:center;border-top:4px solid var(--c)}
+.card.a{--c:var(--a)}.card.b{--c:var(--b)}
+.card h2{margin:0 0 8px;font-size:1.1rem}
+.card b{font-size:2rem}
+.bar{height:8px;background:#0006;border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:var(--c);transition:width .4s}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #333a5c;background:#0d0f1a;color:var(--t);font-size:1rem;margin:6px 0}
+button{padding:12px;border:0;border-radius:10px;font-size:1rem;font-weight:700;color:#fff;cursor:pointer;flex:1}
+button:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:10px;margin-top:8px}
+.ba{background:var(--a)}.bb{background:var(--b)}.bg{background:var(--gold);color:#000}
+#msg{text-align:center;min-height:1.4em}
+.lists{display:flex;gap:10px;margin-top:20px}
+.lists>div{flex:1;background:var(--card);border-radius:12px;padding:10px}
+.lists h3{margin:0 0 6px;font-size:.95rem}
+ul{margin:0;padding:0 18px;max-height:200px;overflow:auto;font-size:.9rem}
+#admin{background:var(--card);border-radius:14px;padding:16px;margin-top:24px}
+</style>
+</head>
+<body>
+<main>
+<h1>⚔️ حرب السلوتات</h1>
+<div id="state" class="muted">جاري التحميل...</div>
+
+<section id="arena" hidden>
+  <div class="vs">
+    <div class="card a"><h2 id="na"></h2><b id="pa">0%</b><div><small id="ta">0</small> صوت</div><div class="bar"><i id="ba"></i></div></div>
+    <span>VS</span>
+    <div class="card b"><h2 id="nb"></h2><b id="pb">0%</b><div><small id="tb">0</small> صوت</div><div class="bar"><i id="bb"></i></div></div>
+  </div>
+  <div id="voteBox">
+    <input id="name" maxlength="20" placeholder="اكتب اسمك قبل التصويت">
+    <div class="btns"><button id="va" class="ba"></button><button id="vb" class="bb"></button></div>
+  </div>
+  <p id="msg"></p>
+  <div class="lists">
+    <div><h3 id="lha"></h3><ul id="la"></ul></div>
+    <div><h3 id="lhb"></h3><ul id="lb"></ul></div>
+  </div>
+</section>
+
+<section id="admin" hidden>
+  <h3>لوحة التحكم</h3>
+  <div id="login">
+    <input id="em" type="email" placeholder="إيميل الأدمن">
+    <input id="pw" type="password" placeholder="كلمة السر">
+    <button class="bg" id="loginBtn" style="width:100%">دخول</button>
+  </div>
+  <div id="panel" hidden>
+    <input id="sa" placeholder="اسم السلوت الأول">
+    <input id="sb" placeholder="اسم السلوت الثاني">
+    <div class="btns">
+      <button class="bg" id="start">ابدأ حرب جديدة</button>
+      <button class="bb" id="close">أغلق التصويت</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+// === الصق إعدادات Firebase هنا ===
+const CONFIG = {
+  apiKey: "AIzaSyAN4c-nDH_bh_3IhJJpaEPsoqIhSI6ufas",
+  authDomain: "xtools-battle.firebaseapp.com",
+  databaseURL: "https://xtools-battle-default-rtdb.firebaseio.com",
+  projectId: "xtools-battle",
+  appId: "1:285430677949:web:7c3f79919528ee178952d4"
+};
+// =================================
+
+firebase.initializeApp(CONFIG);
+const auth = firebase.auth(), db = firebase.database();
+const $ = id => document.getElementById(id);
+const IS_ADMIN = new URLSearchParams(location.search).has('admin');
+let me = null, battle = null, votes = {}, stopVotes = null, started = false;
+
+if (IS_ADMIN) $('admin').hidden = false;
+
+auth.onAuthStateChanged(u => {
+  if (!u) { auth.signInAnonymously(); return; }
+  me = u;
+  const isEmail = !!u.email;
+  $('login').hidden = isEmail; $('panel').hidden = !isEmail;
+  if (!started) {
+    started = true;
+    db.ref('battle').on('value', s => { battle = s.val(); watchVotes(); render(); });
+  } else render();
+});
+
+function watchVotes() {
+  if (stopVotes) stopVotes();
+  votes = {};
+  if (!battle) return;
+  const r = db.ref('votes/' + battle.id);
+  r.on('value', s => { votes = s.val() || {}; render(); });
+  stopVotes = () => r.off();
+}
+
+function msg(t) { $('msg').textContent = t; }
+
+function render() {
+  if (!battle) { $('state').textContent = 'ما في حرب شغالة حالياً. ترقّب البث!'; $('arena').hidden = true; return; }
+  $('state').textContent = battle.status === 'open' ? '🔥 التصويت مفتوح الآن!' : '🔒 انتهى التصويت';
+  $('arena').hidden = false;
+  $('na').textContent = battle.a; $('nb').textContent = battle.b;
+  $('va').textContent = 'صوّت لـ ' + battle.a; $('vb').textContent = 'صوّت لـ ' + battle.b;
+  $('lha').textContent = 'مصوّتين ' + battle.a; $('lhb').textContent = 'مصوّتين ' + battle.b;
+  const list = Object.values(votes);
+  const A = list.filter(v => v.choice === 'a'), B = list.filter(v => v.choice === 'b');
+  const tot = list.length || 1;
+  $('ta').textContent = A.length; $('tb').textContent = B.length;
+  const pa = Math.round(A.length / tot * 100);
+  $('pa').textContent = (list.length ? pa : 0) + '%'; $('pb').textContent = (list.length ? 100 - pa : 0) + '%';
+  $('ba').style.width = (list.length ? pa : 0) + '%'; $('bb').style.width = (list.length ? 100 - pa : 0) + '%';
+  fill('la', A); fill('lb', B);
+  const voted = me && votes[me.uid];
+  const open = battle.status === 'open';
+  $('voteBox').hidden = !open || !!voted;
+  if (voted) msg('✅ صوّتّ باسم ' + voted.name);
+  else if (!open) msg('');
+}
+
+function fill(id, arr) {
+  const ul = $(id); ul.innerHTML = '';
+  arr.forEach(v => { const li = document.createElement('li'); li.textContent = v.name; ul.appendChild(li); });
+}
+
+async function vote(choice) {
+  const name = $('name').value.trim();
+  if (name.length < 2) return msg('اكتب اسمك أول (حرفين على الأقل)');
+  const key = name.toLowerCase().replace(/[.#$\[\]\/\s]+/g, '_');
+  const b = battle.id;
+  try {
+    await db.ref().update({
+      ['votes/' + b + '/' + me.uid]: { name, choice },
+      ['names/' + b + '/' + key]: me.uid
+    });
+  } catch (e) {
+    msg('ما انقبل التصويت: الاسم مستخدم، أو صوّتّ من قبل، أو التصويت مسكّر.');
+  }
+}
+$('va').onclick = () => vote('a');
+$('vb').onclick = () => vote('b');
+
+// ---- الأدمن ----
+$('loginBtn').onclick = () =>
+  auth.signInWithEmailAndPassword($('em').value, $('pw').value).catch(() => alert('بيانات الدخول غلط'));
+$('start').onclick = () => {
+  const a = $('sa').value.trim(), b = $('sb').value.trim();
+  if (!a || !b) return alert('اكتب اسم السلوتين');
+  db.ref('battle').set({ id: Date.now().toString(36), a, b, status: 'open' });
+};
+$('close').onclick = () => db.ref('battle/status').set('closed');
+</script>
+</body>
+</html>
