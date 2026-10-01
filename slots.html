@@ -179,6 +179,7 @@
     <a class="nav-link" href="multiplier.html" data-i18n="navMult">🚀 الاكس العشوائي</a>
     <a class="nav-link" href="wheel.html" data-i18n="navWheel">🎡 دولاب الحظ</a>
     <a class="nav-link" href="tournament.html" data-i18n="navTour">🏆 البطولة</a>
+    <a class="nav-link" href="battle.html" data-i18n="navBattle">⚔️ حرب السلوتات</a>
     <button class="nav-lang" id="lang-toggle" type="button"><span class="globe">🌐</span><span id="lang-toggle-label">English</span></button>
   </div>
 </nav>
@@ -285,7 +286,7 @@
 // ---- i18n ----
 const I18N = {
   ar: {
-    navHome: '🏠 الرئيسية', navSlots: '🎰 سلوت عشوائي', navMult: '🚀 الاكس العشوائي', navWheel: '🎡 دولاب الحظ', navTour: '🏆 البطولة',
+    navHome: '🏠 الرئيسية', navSlots: '🎰 سلوت عشوائي', navMult: '🚀 الاكس العشوائي', navWheel: '🎡 دولاب الحظ', navTour: '🏆 البطولة', navBattle: '⚔️ حرب السلوتات',
     pageTitle: 'سلوت عشوائي', loading: 'جاري التحميل...',
     filterTitle: '🏢 اختر الشركات للسحب منها', selectAll: '✅ تحديد الكل', deselectAll: '❌ إلغاء الكل', selectPinned: '⭐ تحديد الشائعة',
     pinnedLabel: '⭐ شركات شائعة', allLabel: 'الكل (من أ - ي)', searchPh: '🔍 ابحث عن شركة...',
@@ -302,7 +303,7 @@ const I18N = {
     toggleLabel: 'English', companySelectedCount: n => `${n} شركة`, footer: 'طُوِّر بـ ❤️ من قِبَل', replaceBadge: '🔄 استبدال'
   },
   en: {
-    navHome: '🏠 Home', navSlots: '🎰 Random Slot', navMult: '🚀 Random Multiplier', navWheel: '🎡 Wheel of Fortune', navTour: '🏆 Tournament',
+    navHome: '🏠 Home', navSlots: '🎰 Random Slot', navMult: '🚀 Random Multiplier', navWheel: '🎡 Wheel of Fortune', navTour: '🏆 Tournament', navBattle: '⚔️ Slot Battle',
     pageTitle: 'Random Slot', loading: 'Loading...',
     filterTitle: '🏢 Choose Providers to Draw From', selectAll: '✅ Select All', deselectAll: '❌ Deselect All', selectPinned: '⭐ Select Popular',
     pinnedLabel: '⭐ Popular Providers', allLabel: 'All (A - Z)', searchPh: '🔍 Search a provider...',
@@ -856,4 +857,3 @@ document.getElementById('refresh-note').textContent = I18N[currentLang].refreshN
 </div>
 </body>
 </html>
-      
