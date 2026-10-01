@@ -44,6 +44,12 @@
   .name-input:focus { border-color: var(--gold-dark); }
   .shuffle-note { font-size: 11px; color: var(--muted); margin: 10px 0 4px; text-align: center; }
 
+  .powers-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .powers-btn { flex: 1; padding: 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--card2); color: var(--text); font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .powers-btn .sub { display: block; font-size: 10px; font-weight: 600; color: var(--muted); margin-top: 3px; }
+  .powers-btn.active { border-color: var(--gold); background: rgba(139,92,246,0.12); color: var(--gold); }
+  .powers-btn.active .sub { color: var(--gold); opacity: 0.75; }
+
   .filter-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px; }
   .filter-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .filter-title { font-size: 13px; font-weight: 700; color: var(--gold); }
@@ -89,10 +95,21 @@
   .match-card.decided { border-color: rgba(46,204,113,0.35); }
   .duel { display: flex; gap: 10px; align-items: stretch; }
   .side { flex: 1; background: var(--card2); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 8px; border: 1px solid transparent; }
-  .side.winner { border-color: var(--green); background: rgba(46,204,113,0.08); }
-  .side.loser { opacity: 0.45; }
+  .side.winner { border-color: var(--green); background: rgba(46,204,113,0.1); position: relative; animation: winnerGlow 1.4s ease-in-out; }
+  .side.loser { opacity: 0.5; filter: grayscale(0.75); position: relative; animation: loserShake 0.4s ease; }
   .side-name { font-size: 13px; font-weight: 800; color: var(--text); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .vs-mid { flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 900; }
+
+  .crown-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 20px; animation: crownPop 0.5s cubic-bezier(.34,1.56,.64,1) 0.1s both; }
+  @keyframes crownPop { 0% { transform: translateX(-50%) scale(0) rotate(-20deg); opacity: 0; } 100% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; } }
+  @keyframes winnerGlow { 0% { box-shadow: 0 0 0 rgba(46,204,113,0); } 30% { box-shadow: 0 0 20px rgba(46,204,113,0.5); } 100% { box-shadow: 0 0 0 rgba(46,204,113,0); } }
+
+  .elim-stamp { position: absolute; top: 38%; left: 50%; transform: translate(-50%,-50%) rotate(-10deg); font-size: 13px; font-weight: 900; color: var(--red); border: 2px solid var(--red); border-radius: 8px; padding: 3px 10px; background: rgba(13,13,13,0.75); pointer-events: none; animation: stampIn 0.35s ease-out 0.15s both; letter-spacing: 1px; }
+  @keyframes stampIn { 0% { transform: translate(-50%,-50%) rotate(-10deg) scale(1.8); opacity: 0; } 100% { transform: translate(-50%,-50%) rotate(-10deg) scale(1); opacity: 1; } }
+  @keyframes loserShake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+
+  .round-banner { position: fixed; top: 90px; left: 50%; transform: translateX(-50%) translateY(-20px); background: linear-gradient(135deg, #4d6dff 0%, #a86cff 55%, #c56cf0 100%); color: #fff; font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 16px; padding: 14px 28px; border-radius: 16px; box-shadow: 0 8px 30px rgba(139,92,246,0.4); z-index: 200; opacity: 0; transition: all 0.4s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; }
+  .round-banner.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   .power-tag { font-size: 10px; text-align: center; color: var(--gold); background: rgba(139,92,246,0.08); border-radius: 8px; padding: 4px 6px; line-height: 1.4; }
   .power-tag .p-desc { color: var(--muted); display: block; font-size: 9px; margin-top: 2px; }
@@ -129,8 +146,11 @@
   .next-round-btn.show { display: block; }
 
   .champion-card { display: none; text-align: center; background: var(--card); border: 1px solid var(--gold-dark); border-radius: 22px; padding: 36px 24px; box-shadow: 0 0 50px rgba(139,92,246,0.2); }
-  .champion-card.show { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  .champion-card.show { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), championGlow 2.2s ease-in-out 0.5s infinite alternate; }
   @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes championGlow { 0% { box-shadow: 0 0 50px rgba(139,92,246,0.2); } 100% { box-shadow: 0 0 80px rgba(139,92,246,0.45); } }
+  .trophy { animation: trophyBounce 1.6s ease-in-out infinite; }
+  @keyframes trophyBounce { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(-5deg); } }
   .trophy { font-size: 54px; margin-bottom: 10px; }
   .champion-label { font-size: 12px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
   .champion-name { font-size: 30px; font-weight: 900; color: #fff; margin-bottom: 10px; }
@@ -177,9 +197,15 @@
       <button class="size-btn active" data-size="8" onclick="chooseSize(8)">8 أشخاص</button>
       <button class="size-btn" data-size="16" onclick="chooseSize(16)">16 شخص</button>
     </div>
+    <div class="setup-label">🔮 القدرات</div>
+    <div class="powers-row">
+      <button class="powers-btn active" data-powers="on" onclick="choosePowers(true)">مع قدرات<span class="sub">قدرة عشوائية لكل واحد بالجولة الأولى</span></button>
+      <button class="powers-btn" data-powers="off" onclick="choosePowers(false)">بدون قدرات<span class="sub">بطولة عادية، حظ السلوت بس</span></button>
+    </div>
+
     <div class="setup-label">✏️ أسماء المتسابقين</div>
     <div class="names-grid" id="names-grid"></div>
-    <div class="shuffle-note">بيتحدد الترتيب والسلوت الثابت وقدرة كل واحد عشوائياً عند البدء</div>
+    <div class="shuffle-note">بيتحدد الترتيب والسلوت الثابت عشوائياً عند البدء</div>
   </div>
 
   <div class="filter-panel hidden" id="filter-panel">
@@ -210,6 +236,8 @@
     <div class="roster-title" onclick="toggleRoster()"><span>👥 المتسابقون وقدراتهم وسلوتاتهم</span><span id="roster-toggle">▼</span></div>
     <div class="roster-list" id="roster-list"></div>
   </div>
+
+  <div class="round-banner" id="round-banner"></div>
 
   <div id="round-screen" class="hidden">
     <div class="round-bar">
@@ -251,6 +279,7 @@ let ALL_COMPANIES = [];
 let selectedCompanies = new Set();
 let usedSlotNames = new Set();
 let bracketSize = 8;
+let powersEnabled = true;
 let players = {}; // name -> { power, slot, shielded, cursed, pendingChoice, revived }
 let rounds = [];
 let currentRoundIndex = 0;
@@ -268,6 +297,7 @@ fetch('slots.html')
     document.getElementById('start-btn').classList.remove('hidden');
     buildNameInputs();
     renderCompanyChips();
+    applyWheelNames();
   })
   .catch(() => {
     document.getElementById('load-note').textContent = 'تعذّر تحميل قائمة الألعاب. تأكد إن الصفحة على نفس الموقع مع slots.html.';
@@ -284,6 +314,21 @@ function buildNameInputs() {
     inp.maxLength = 24;
     grid.appendChild(inp);
   }
+}
+
+// تعبئة الأسماء القادمة من دولاب الحظ تلقائياً
+function applyWheelNames() {
+  let names = null;
+  try {
+    names = JSON.parse(localStorage.getItem('wheel-to-tournament') || 'null');
+    localStorage.removeItem('wheel-to-tournament');
+  } catch (e) { return; }
+  if (!Array.isArray(names) || (names.length !== 8 && names.length !== 16)) return;
+  chooseSize(names.length);
+  names.forEach((n, i) => {
+    const inp = document.getElementById('name-' + (i + 1));
+    if (inp) inp.value = String(n).slice(0, 24);
+  });
 }
 
 function chooseSize(size) {
@@ -328,7 +373,15 @@ function shuffle(arr) {
   for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
-function randomPower() { return { ...POWERS[Math.floor(Math.random() * POWERS.length)] }; }
+function choosePowers(enabled) {
+  powersEnabled = enabled;
+  document.querySelectorAll('.powers-btn').forEach(b => b.classList.toggle('active', (b.dataset.powers === 'on') === enabled));
+}
+
+function randomPower() {
+  if (!powersEnabled) return { ...POWERS.find(p => p.key === 'none') };
+  return { ...POWERS[Math.floor(Math.random() * POWERS.length)] };
+}
 
 function pool() { return ALL_SLOTS.filter(g => selectedCompanies.has(g.company)); }
 function pickRandomSlot() {
@@ -422,6 +475,7 @@ function startTournament() {
   document.getElementById('round-screen').classList.remove('hidden');
   renderRoster();
   renderRound();
+  showRoundBanner('🚀 بدأت البطولة — ' + roundLabel(firstRound.length));
 }
 
 function assignInitialSlot(name) {
@@ -477,7 +531,8 @@ function renderRoster() {
     const row = document.createElement('div');
     row.className = 'roster-item';
     const slotTxt = p.slot ? p.slot.name : (p.pendingChoice ? 'بانتظار اختيارك' : '—');
-    row.innerHTML = `<div class="roster-name">${name}</div><div class="roster-power"><div class="p-label">${p.power.label}</div><div class="p-desc">${p.power.desc}</div><div class="p-slot">🎰 ${slotTxt}</div></div>`;
+    const powerHtml = powersEnabled ? `<div class="p-label">${p.power.label}</div><div class="p-desc">${p.power.desc}</div>` : '';
+    row.innerHTML = `<div class="roster-name">${name}</div><div class="roster-power">${powerHtml}<div class="p-slot">🎰 ${slotTxt}</div></div>`;
     list.appendChild(row);
   });
 }
@@ -551,12 +606,25 @@ function buildSide(match, idx, which) {
   const side = document.createElement('div');
   side.className = 'side' + (winner ? (winner === name ? ' winner' : ' loser') : '');
 
+  if (winner === name) {
+    const crown = document.createElement('div');
+    crown.className = 'crown-badge';
+    crown.textContent = '👑';
+    side.appendChild(crown);
+  }
+  if (winner && winner !== name) {
+    const stamp = document.createElement('div');
+    stamp.className = 'elim-stamp';
+    stamp.textContent = 'خرج ❌';
+    side.appendChild(stamp);
+  }
+
   const nameEl = document.createElement('div');
   nameEl.className = 'side-name';
   nameEl.textContent = name;
   side.appendChild(nameEl);
 
-  if (currentRoundIndex === 0) {
+  if (currentRoundIndex === 0 && powersEnabled) {
     const powerTag = document.createElement('div');
     powerTag.className = 'power-tag';
     powerTag.innerHTML = `${p.power.label}<span class="p-desc">${p.power.desc}</span>`;
@@ -661,6 +729,14 @@ function goNextRound() {
   rounds.push(nextRound);
   currentRoundIndex++;
   renderRound();
+  showRoundBanner('🥊 ' + roundLabel(nextRound.length));
+}
+
+function showRoundBanner(text) {
+  const banner = document.getElementById('round-banner');
+  banner.textContent = text;
+  banner.classList.add('show');
+  setTimeout(() => banner.classList.remove('show'), 1800);
 }
 
 function showChampion(name) {
