@@ -261,6 +261,7 @@
 
 </div>
 
+<script src="slots-data.js" charset="utf-8" onerror="document.getElementById('load-note').textContent='تعذّر تحميل ملف slots-data.js — تأكد إنه موجود بنفس مجلد هذه الصفحة.'"></script>
 <script>
 const POWERS = [
   { key:'double',  label:'⚡ المضاعف',       desc:'يضيف 10% على نتيجتك (x1.10) بالجولة الأولى تلقائياً.' },
@@ -273,9 +274,8 @@ const POWERS = [
   { key:'none',    label:'🚫 بدون قدرة',     desc:'حظك السليم بس، بدون أي ميزة إضافية.' }
 ];
 
-const PINNED = ["شبابنا الطيبين", "BackSeat Gaming", "BGaming", "Black Coffee Studios", "Colorful Play", "Darkbyte", "GG Gaming", "Hacksaw Gaming", "Knucklehead Syndicate", "Massive Studios", "Ovryx Gaming", "Paperclip Gaming", "Phantom Interactive", "Pragmatic Play", "Rabbit Gaming", "Sidequest Studios", "Titan Gaming", "Twist Gaming", "Uppercut Gaming", "Valkyrie"];
+// ALL_SLOTS و PINNED بيجيو جاهزين من ملف slots-data.js (محمّل بـ <script> فوق بالصفحة)
 
-let ALL_SLOTS = [];
 let ALL_COMPANIES = [];
 let selectedCompanies = new Set();
 let usedSlotNames = new Set();
@@ -285,24 +285,20 @@ let players = {}; // name -> { power, slot, shielded, cursed, pendingChoice, rev
 let rounds = [];
 let currentRoundIndex = 0;
 
-fetch('slots.html')
-  .then(r => r.text())
-  .then(html => {
-    const m = html.match(/const ALL_SLOTS = (\[.*?\]);/s);
-    if (m) { try { ALL_SLOTS = JSON.parse(m[1]).filter(g => g.img); } catch(e) { ALL_SLOTS = []; } }
-    ALL_COMPANIES = [...new Set(ALL_SLOTS.map(g => g.company))].sort((a,b)=>a.localeCompare(b));
-    selectedCompanies = new Set(ALL_COMPANIES);
-    document.getElementById('load-note').classList.add('hidden');
-    document.getElementById('setup-screen').classList.remove('hidden');
-    document.getElementById('filter-panel').classList.remove('hidden');
-    document.getElementById('start-btn').classList.remove('hidden');
-    buildNameInputs();
-    renderCompanyChips();
-    applyWheelNames();
-  })
-  .catch(() => {
-    document.getElementById('load-note').textContent = 'تعذّر تحميل قائمة الألعاب. تأكد إن الصفحة على نفس الموقع مع slots.html.';
-  });
+try {
+  if (typeof ALL_SLOTS === 'undefined' || !Array.isArray(ALL_SLOTS)) throw new Error('no data');
+  ALL_COMPANIES = [...new Set(ALL_SLOTS.filter(g => g.img).map(g => g.company))].sort((a,b)=>a.localeCompare(b));
+  selectedCompanies = new Set(ALL_COMPANIES);
+  document.getElementById('load-note').classList.add('hidden');
+  document.getElementById('setup-screen').classList.remove('hidden');
+  document.getElementById('filter-panel').classList.remove('hidden');
+  document.getElementById('start-btn').classList.remove('hidden');
+  buildNameInputs();
+  renderCompanyChips();
+  applyWheelNames();
+} catch (e) {
+  document.getElementById('load-note').textContent = 'تعذّر تحميل قائمة الألعاب. تأكد إن ملف slots-data.js موجود بنفس المجلد.';
+}
 
 function buildNameInputs() {
   const grid = document.getElementById('names-grid');
@@ -384,7 +380,7 @@ function randomPower() {
   return { ...POWERS[Math.floor(Math.random() * POWERS.length)] };
 }
 
-function pool() { return ALL_SLOTS.filter(g => selectedCompanies.has(g.company)); }
+function pool() { return ALL_SLOTS.filter(g => g.img && selectedCompanies.has(g.company)); }
 function pickRandomSlot() {
   const available = pool().filter(g => !usedSlotNames.has(g.name));
   if (available.length === 0) return null;
