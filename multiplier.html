@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختيار الاكس العشوائي - xTools</title>
+<title>xTools - الرئيسية</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234d8dff'/%3E%3Cstop offset='50%25' stop-color='%238b6cff'/%3E%3Cstop offset='100%25' stop-color='%236d4fd1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='url(%23g)' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Arial, Helvetica, sans-serif' font-weight='900' font-size='36' text-anchor='middle' fill='url(%23g)'%3EX%3C/text%3E%3C/svg%3E">
 <script>
   (function(){
@@ -19,14 +19,17 @@
   :root {
     --gold: #8b6cff;
     --gold-dark: #6d4fd1;
-    --bg: #0d0d0d;
-    --card: #161616;
-    --border: #2a2a2a;
+    --gold-glow: rgba(139,92,246,0.35);
+    --bg: #0a0a0a;
+    --card: #131313;
+    --card2: #1c1c1c;
+    --border: #252525;
     --text: #f0f0f0;
-    --muted: #777;
-    --green: #00e676;
-    --red: #ff5252;
-    --blue: #40c4ff;
+    --muted: #666;
+  }
+
+  html, body {
+    height: 100%;
   }
 
   body {
@@ -37,726 +40,474 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 16px 60px;
+    justify-content: center;
+    padding: 24px 16px 48px;
     overflow-x: hidden;
     position: relative;
   }
 
-  /* Animated background grid */
+  /* === BACKGROUND EFFECTS === */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(139,92,246,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(139,92,246,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(rgba(139,92,246,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
     pointer-events: none;
     z-index: 0;
   }
 
-
-  /* === NAVBAR === */
-  .navbar {
-    width: 100vw; background: #111; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    padding: 0 16px; margin-bottom: 28px; position: sticky; top: 0; z-index: 50;
-  }
-  .navbar-inner {
-    width: 100%; max-width: 700px;
-    display: flex; align-items: center; gap: 6px;
-    overflow-x: auto; padding: 10px 0;
-  }
-  .navbar-inner::-webkit-scrollbar { display: none; }
-  .nav-home {
-    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
-    color: var(--muted); text-decoration: none;
-    padding: 7px 14px; border-radius: 10px;
-    border: 1px solid var(--border); background: transparent;
-    white-space: nowrap; transition: color 0.2s, border-color 0.2s;
-    flex-shrink: 0;
-  }
-  .nav-home:hover { color: var(--gold); border-color: var(--gold-dark); }
-  .nav-sep { color: #333; font-size: 18px; flex-shrink: 0; padding: 0 2px; }
-  .nav-link {
-    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
-    color: var(--muted); text-decoration: none;
-    padding: 7px 14px; border-radius: 10px;
-    border: 1px solid transparent; white-space: nowrap;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
-    flex-shrink: 0;
-  }
-  .nav-link:hover { color: var(--gold); border-color: var(--border); background: var(--card); }
-  .nav-link.active { color: var(--gold); background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
-  .nav-lang {
-    margin-inline-start: auto;
-    display: flex; align-items: center; gap: 6px;
-    font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700;
-    color: var(--text); background: linear-gradient(135deg, rgba(77,109,255,0.12), rgba(168,108,255,0.12));
-    padding: 7px 14px; border-radius: 10px; border: 1px solid rgba(139,92,246,0.25);
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.25s, box-shadow 0.25s;
-  }
-  .nav-lang:hover { border-color: var(--gold); box-shadow: 0 4px 16px rgba(139,92,246,0.25); transform: translateY(-2px); }
-  .nav-lang:active { transform: scale(0.95); }
-  .nav-lang .globe { transition: transform 0.4s ease; }
-  .nav-lang:hover .globe { transform: rotate(180deg); }
-
-  body.lang-fade [data-i18n], body.lang-fade [data-i18n-html], body.lang-fade [data-i18n-ph] { opacity: 0; transition: opacity 0.18s ease; }
-  [data-i18n], [data-i18n-html] { transition: opacity 0.18s ease; }
-
-  .page-wrap {
-    position: relative; z-index: 1;
-    width: 100%; max-width: 500px;
-    display: flex; flex-direction: column; align-items: center;
-    animation: pageFadeUp 0.5s cubic-bezier(.22,1,.36,1) both;
-  }
-  @keyframes pageFadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Nav back */
-  .nav-back {
-    align-self: flex-start;
-    margin-bottom: 20px;
-    display: flex; align-items: center; gap: 8px;
-    color: var(--muted); font-size: 13px; font-weight: 600;
-    text-decoration: none; cursor: pointer;
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; padding: 8px 14px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .nav-back:hover { color: var(--gold); border-color: var(--gold-dark); }
-
-  .header { text-align: center; margin-bottom: 32px; }
-  .header .logo { font-size: 12px; font-weight: 600; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
-  .header h1 { font-size: 28px; font-weight: 900; color: #fff; }
-  .header .sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
-
-  /* Big display */
-  .display-wrap {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 36px 24px;
-    text-align: center;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
-  }
-  .display-wrap::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(139,92,246,0.05) 0%, transparent 70%);
+  /* floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
     pointer-events: none;
+    z-index: 0;
+    animation: orbDrift 12s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 400px; height: 400px; background: rgba(139,92,246,0.06); top: -120px; left: -120px; animation-delay: 0s; }
+  .orb2 { width: 300px; height: 300px; background: rgba(59,130,246,0.04); bottom: -80px; right: -80px; animation-delay: -5s; }
+  @keyframes orbDrift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(40px, 30px) scale(1.1); }
   }
 
-  /* Crash-style rising graph */
-  .crash-graph {
+  /* === WRAPPER === */
+  .wrap {
     position: relative;
+    z-index: 1;
     width: 100%;
-    height: 240px;
-    margin-bottom: 14px;
-    border-radius: 16px;
-    overflow: hidden;
-    background: linear-gradient(180deg, rgba(139,92,246,0.04), transparent 60%);
-    border: 1px solid rgba(139,92,246,0.08);
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  .crash-graph canvas {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    display: block;
-  }
-  .crash-rocket {
-    position: absolute;
-    font-size: 30px;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    filter: drop-shadow(0 0 10px rgba(139,92,246,0.7));
+
+  /* === LOGO / HEADER === */
+  .logo-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
     opacity: 0;
-    z-index: 5;
-    transition: opacity 0.15s;
-  }
-  .crash-rocket.show { opacity: 1; }
-  .crash-graph.flash { animation: crashFlash 0.45s ease; }
-  @keyframes crashFlash {
-    0%   { background: rgba(255,82,82,0.4); }
-    100% { background: linear-gradient(180deg, rgba(139,92,246,0.04), transparent 60%); }
+    animation: fadeUp 0.6s ease 0.1s forwards;
   }
 
-  .mult-label {
-    font-size: 11px; color: var(--muted); letter-spacing: 3px;
-    text-transform: uppercase; margin-bottom: 12px;
+  .hero-icon {
+    font-size: 64px;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards, pulse 3s ease-in-out 1s infinite;
+    filter: drop-shadow(0 0 24px rgba(139,92,246,0.5));
+  }
+  @keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(139,92,246,0.4)); transform: scale(1); }
+    50%       { filter: drop-shadow(0 0 40px rgba(139,92,246,0.7)); transform: scale(1.05); }
+  }
+  @keyframes shine {
+    to { background-position: 200% center; }
   }
 
-  .mult-display {
-    font-size: 80px; font-weight: 900;
-    line-height: 1;
-    background: linear-gradient(135deg, #8b6cff, #fff 50%, #8b6cff);
+  h1 {
+    font-size: 36px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.3s forwards;
+  }
+  h1 span {
+    background: linear-gradient(135deg, #4d8dff 0%, #fff 35%, #a86cff 65%, #4d8dff 100%);
+    background-size: 200% auto;
+    animation: shine 5s linear infinite;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 20px rgba(139,92,246,0.4));
-    transition: all 0.1s;
-    min-height: 100px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .mult-display.rolling {
-    filter: drop-shadow(0 0 30px rgba(139,92,246,0.8));
-  }
-  .mult-display.low { background: linear-gradient(135deg, #ff5252, #ff8a80); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 20px rgba(255,82,82,0.5)); }
-  .mult-display.mid { background: linear-gradient(135deg, #8b6cff, #d8c8ff); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 20px rgba(139,92,246,0.6)); }
-  .mult-display.high { background: linear-gradient(135deg, #00e676, #69f0ae); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 30px rgba(0,230,118,0.7)); }
-  .mult-display.epic { background: linear-gradient(135deg, #40c4ff, #e040fb, #8b6cff); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 0 40px rgba(224,64,251,0.8)); animation: epicGlow 0.5s infinite alternate; }
-  @keyframes epicGlow {
-    from { filter: drop-shadow(0 0 20px rgba(224,64,251,0.5)); }
-    to { filter: drop-shadow(0 0 50px rgba(64,196,255,1)); }
   }
 
-  .x-suffix { font-size: 36px; font-weight: 900; color: var(--gold); margin-right: 4px; vertical-align: super; }
-
-  .result-tier {
-    margin-top: 16px; font-size: 15px; font-weight: 700;
-    min-height: 24px; letter-spacing: 1px;
-    opacity: 0; transition: opacity 0.4s;
-  }
-  .result-tier.show { opacity: 1; }
-  .tier-low { color: var(--red); }
-  .tier-mid { color: var(--gold); }
-  .tier-high { color: var(--green); }
-  .tier-epic { color: #e040fb; }
-
-  /* Gauge bar */
-  .gauge-wrap {
-    width: 100%; margin-top: 20px;
-    background: #1a1a1a; border-radius: 999px;
-    height: 8px; overflow: hidden;
-  }
-  .gauge-fill {
-    height: 100%; border-radius: 999px;
-    width: 0%;
-    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    background: linear-gradient(90deg, var(--red), var(--gold), var(--green), #e040fb);
-  }
-
-  /* Spin button */
-  .spin-btn {
-    width: 100%; padding: 18px;
-    font-family: 'Cairo', sans-serif; font-size: 20px; font-weight: 900;
-    cursor: pointer; border-radius: 16px; border: none;
-    background: linear-gradient(135deg, #4d6dff 0%, #a86cff 55%, #c56cf0 100%);
-    color: #fff; margin-bottom: 20px;
-    transition: transform 0.3s cubic-bezier(.22,1,.36,1), box-shadow 0.3s cubic-bezier(.22,1,.36,1);
-    box-shadow: 0 4px 24px rgba(139,92,246,0.35);
-    letter-spacing: 1px;
-  }
-  .spin-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(139,92,246,0.5); }
-  .spin-btn:active:not(:disabled) { transform: scale(0.97); }
-  .spin-btn:disabled { opacity: 0.4; cursor: not-allowed; background: #333; box-shadow: none; }
-
-  /* Range selector */
-  .range-wrap {
-    width: 100%; background: var(--card);
-    border: 1px solid var(--border); border-radius: 16px;
-    padding: 20px; margin-bottom: 20px;
-  }
-  .range-title { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
-  .range-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .range-field label {
-    display: block; font-size: 11px; color: var(--muted);
-    margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase;
-  }
-  .range-field input {
-    width: 100%; padding: 10px 14px;
-    font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700;
-    background: #1a1a1a; border: 1px solid var(--border);
-    border-radius: 10px; color: var(--text);
-    outline: none; transition: border-color 0.2s;
+  .hero-desc {
+    font-size: 15px;
+    color: var(--muted);
     text-align: center;
+    line-height: 1.8;
+    max-width: 400px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
   }
-  .range-field input:focus { border-color: var(--gold); }
-  .range-field input::-webkit-inner-spin-button,
-  .range-field input::-webkit-outer-spin-button { -webkit-appearance: none; }
-  .range-error { font-size: 12px; color: var(--red); margin-top: 10px; min-height: 18px; text-align: center; }
 
-  /* History */
-  .history-wrap {
-    width: 100%; background: var(--card);
-    border: 1px solid var(--border); border-radius: 16px;
-    padding: 20px; display: none;
+  /* === DIVIDER === */
+  .divider {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.5s forwards;
   }
-  .history-wrap.show { display: block; }
-  .history-title { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; font-weight: 600; }
-  .history-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .history-chip {
-    padding: 5px 12px; border-radius: 999px;
-    font-size: 13px; font-weight: 700;
-    border: 1px solid;
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
   }
-  .chip-low { background: rgba(255,82,82,0.1); color: var(--red); border-color: rgba(255,82,82,0.3); }
-  .chip-mid { background: rgba(139,92,246,0.1); color: var(--gold); border-color: rgba(139,92,246,0.3); }
-  .chip-high { background: rgba(0,230,118,0.1); color: var(--green); border-color: rgba(0,230,118,0.3); }
-  .chip-epic { background: rgba(224,64,251,0.1); color: #e040fb; border-color: rgba(224,64,251,0.3); }
+  .divider span {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
 
-  /* Particles */
-  .particle {
-    position: fixed; pointer-events: none; z-index: 999;
+  /* === SERVICE CARDS === */
+  .services {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  .service-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 22px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(.22,1,.36,1), border-color 0.3s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1);
+    opacity: 0;
+  }
+
+  .service-card:nth-child(1) { animation: fadeUp 0.55s ease 0.55s forwards; }
+  .service-card:nth-child(2) { animation: fadeUp 0.55s ease 0.65s forwards; }
+  .service-card:nth-child(3) { animation: fadeUp 0.55s ease 0.75s forwards; }
+  .service-card:nth-child(4) { animation: fadeUp 0.55s ease 0.85s forwards; }
+  .service-card:nth-child(5) { animation: fadeUp 0.55s ease 0.95s forwards; }
+
+  .service-card.featured { border-color: var(--gold-dark); background: linear-gradient(135deg, #171226 0%, var(--card) 70%); box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 8px 30px rgba(139,92,246,0.12); }
+  .service-card.featured .card-icon { filter: drop-shadow(0 0 14px rgba(255,200,60,0.55)); }
+  .card-badge { display: inline-block; font-size: 10px; font-weight: 900; letter-spacing: 1px; color: #fff; background: linear-gradient(135deg,#8b6cff,#c04dff); padding: 2px 9px; border-radius: 999px; margin-inline-start: 8px; vertical-align: middle; }
+
+  /* glow on hover via pseudo */
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(139,92,246,0.07) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .service-card:hover::before { opacity: 1; }
+
+  .service-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold-dark);
+    box-shadow: 0 8px 32px rgba(139,92,246,0.12), 0 0 0 1px rgba(139,92,246,0.08);
+  }
+  .service-card:active { transform: scale(0.98); }
+
+  /* accent stripe on right */
+  .service-card::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    border-radius: 2px 0 0 2px;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.3s, top 0.3s, bottom 0.3s;
+  }
+  .service-card:hover::after { opacity: 1; top: 10%; bottom: 10%; }
+
+  .card-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 10px rgba(139,92,246,0.3));
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .service-card:hover .card-icon { transform: scale(1.15) rotate(-5deg); }
+
+  .card-body { flex: 1; text-align: start; }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .card-arrow {
+    font-size: 20px;
+    color: var(--gold);
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+    flex-shrink: 0;
+  }
+  .service-card:hover .card-arrow { opacity: 1; transform: translateX(-4px); }
+
+  /* === FOOTER NOTE === */
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 1s forwards;
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === STAR PARTICLES === */
+  .star {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--gold);
     border-radius: 50%;
-    animation: fly 1.2s ease-out forwards;
+    pointer-events: none;
+    z-index: 0;
+    animation: starTwinkle var(--dur) ease-in-out infinite alternate;
+    opacity: 0;
   }
-  @keyframes fly {
-    0% { transform: translate(0,0) scale(1); opacity: 1; }
-    100% { transform: translate(var(--dx),var(--dy)) scale(0); opacity: 0; }
+  @keyframes starTwinkle {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 0.7; transform: scale(1.5); }
   }
 
-  /* Rocket animation */
-  .rocket {
-    position: fixed; font-size: 32px; pointer-events: none; z-index: 998;
-    animation: rocketLaunch 1.2s ease-out forwards;
+  /* === LANGUAGE TOGGLE === */
+  .lang-toggle {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
   }
-  @keyframes rocketLaunch {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-300px) scale(0.3); opacity: 0; }
+  .lang-toggle:hover {
+    border-color: var(--gold-dark);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 26px rgba(139,92,246,0.3);
+    background: var(--card2);
   }
+  .lang-toggle:active { transform: scale(0.96); }
+  .lang-toggle .globe { font-size: 15px; transition: transform 0.4s ease; }
+  .lang-toggle:hover .globe { transform: rotate(180deg); }
+
+  /* smoother global transitions on language / theme swap */
+  * { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  body, .wrap, [data-i18n] { transition: opacity 0.25s ease; }
+  body.lang-fade [data-i18n], body.lang-fade [data-i18n-html] { opacity: 0; }
 </style>
 </head>
 <body>
-<nav class="navbar">
-  <div class="navbar-inner">
-    <a class="nav-home" href="index.html" data-i18n="navHome">🏠 الرئيسية</a>
-    <span class="nav-sep">|</span>
-    <a class="nav-link" href="slots.html" data-i18n="navSlots">🎰 سلوت عشوائي</a>
-    <a class="nav-link active" href="multiplier.html" data-i18n="navMult">🚀 الاكس العشوائي</a>
-    <a class="nav-link" href="wheel.html" data-i18n="navWheel">🎡 دولاب الحظ</a>
-    <button class="nav-lang" id="lang-toggle" type="button"><span class="globe">🌐</span><span id="lang-toggle-label">English</span></button>
-  </div>
-</nav>
-<div class="page-wrap">
 
-  <div class="header">
-    <div class="logo">🚀 xTools</div>
-    <h1 data-i18n="pageTitle">اختيار الاكس العشوائي</h1>
+<!-- bg effects -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
 
-  </div>
+<button class="lang-toggle" id="lang-toggle" type="button">
+  <span class="globe">🌐</span>
+  <span id="lang-toggle-label">English</span>
+</button>
 
-  <div class="display-wrap">
-    <div class="crash-graph" id="crash-graph">
-      <canvas id="crash-canvas"></canvas>
-      <div class="crash-rocket" id="crash-rocket">🚀</div>
-    </div>
-    <div class="mult-label" data-i18n="multLabel">المضاعف العشوائي</div>
-    <div class="mult-display" id="mult-display">?</div>
-    <div class="result-tier" id="result-tier"></div>
-    <div class="gauge-wrap"><div class="gauge-fill" id="gauge-fill"></div></div>
-  </div>
+<div class="wrap">
 
-  <button class="spin-btn" id="spin-btn" data-i18n="spinBtn">🎲 اسحب الاكس</button>
+  <div class="logo-badge" data-i18n="badge">🎰 xTools</div>
+  <div class="hero-icon">💎</div>
 
-  <div class="range-wrap">
-    <div class="range-title" data-i18n="rangeTitle">🎯 نطاق الاكس</div>
-    <div class="range-inputs">
-      <div class="range-field">
-        <label data-i18n="minLabel">الحد الأدنى</label>
-        <input type="number" id="input-min" value="10" min="1" placeholder="مثال: 10" data-i18n-ph="minPh">
+  <h1 data-i18n-html="title">مرحباً بك في<br><span>xTools</span></h1>
+
+  <p class="hero-desc" data-i18n="desc">
+    منصة متكاملة تضم خمس أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
+    اختر الأداة التي تناسبك وابدأ الآن.
+  </p>
+
+  <div class="divider"><span data-i18n="chooseService">اختر الخدمة</span></div>
+
+  <div class="services">
+
+    <!-- Slot Picker -->
+    <a class="service-card" href="slots.html">
+      <div class="card-icon">🎰</div>
+      <div class="card-body">
+        <div class="card-title" data-i18n="slotsTitle">سلوت عشوائي</div>
+        <div class="card-desc" data-i18n="slotsDesc">يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake</div>
       </div>
-      <div class="range-field">
-        <label data-i18n="maxLabel">الحد الأقصى</label>
-        <input type="number" id="input-max" value="1000" min="2" placeholder="مثال: 1000" data-i18n-ph="maxPh">
+      <div class="card-arrow" id="arrow1">←</div>
+    </a>
+
+    <!-- Multiplier -->
+    <a class="service-card" href="multiplier.html">
+      <div class="card-icon">🚀</div>
+      <div class="card-body">
+        <div class="card-title" data-i18n="multTitle">اختيار الاكس العشوائي</div>
+        <div class="card-desc" data-i18n="multDesc">يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert</div>
       </div>
-    </div>
-    <div class="range-error" id="range-error"></div>
+      <div class="card-arrow" id="arrow2">←</div>
+    </a>
+
+    <!-- Wheel -->
+    <a class="service-card" href="wheel.html">
+      <div class="card-icon">🎡</div>
+      <div class="card-body">
+        <div class="card-title" data-i18n="wheelTitle">دولاب الحظ</div>
+        <div class="card-desc" data-i18n="wheelDesc">أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي</div>
+      </div>
+      <div class="card-arrow" id="arrow3">←</div>
+    </a>
+
+    <!-- Tournament -->
+    <a class="service-card featured" href="tournament.html">
+      <div class="card-icon">🏆</div>
+      <div class="card-body">
+        <div class="card-title"><span data-i18n="tourTitle">البطولة</span><span class="card-badge" data-i18n="tourBadge">جديد</span></div>
+        <div class="card-desc" data-i18n="tourDesc">بطولة سلوتات مع قدرات استثنائية — نافس بسلوتاتك واستخدم قدرات خاصة تقلب موازين المنافسة</div>
+      </div>
+      <div class="card-arrow" id="arrow4">←</div>
+    </a>
+
+    <!-- Slot Battle -->
+    <a class="service-card" href="battle.html">
+      <div class="card-icon">⚔️</div>
+      <div class="card-body">
+        <div class="card-title"><span data-i18n="battleTitle">حرب السلوتات</span><span class="card-badge" data-i18n="battleBadge">جديد</span></div>
+        <div class="card-desc" data-i18n="battleDesc">صوّت مع الجمهور على السلوت اللي راح يفوز في الحرب المباشرة</div>
+      </div>
+      <div class="card-arrow" id="arrow5">←</div>
+    </a>
+
   </div>
 
-  <div class="history-wrap" id="history-wrap">
-    <div class="history-title" data-i18n="historyTitle">⏱ آخر النتائج</div>
-    <div class="history-row" id="history-row"></div>
-  </div>
 
 </div>
 
 <script>
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-let minVal = 10, maxVal = 1000;
-let historyList = [];
-let spinning = false;
-
-// ---- i18n ----
-const I18N = {
-  ar: {
-    navHome: '🏠 الرئيسية', navSlots: '🎰 سلوت عشوائي', navMult: '🚀 الاكس العشوائي', navWheel: '🎡 دولاب الحظ',
-    pageTitle: 'اختيار الاكس العشوائي', multLabel: 'المضاعف العشوائي',
-    spinBtn: '🎲 اسحب الاكس', spinAgainBtn: '🎲 اسحب مرة ثانية',
-    rangeTitle: '🎯 نطاق الاكس', minLabel: 'الحد الأدنى', maxLabel: 'الحد الأقصى',
-    minPh: 'مثال: 10', maxPh: 'مثال: 1000', historyTitle: '⏱ آخر النتائج',
-    errNaN: '⚠️ أدخل أرقاماً صحيحة', errMin: '⚠️ الحد الأدنى لازم يكون 1 على الأقل', errMax: '⚠️ الحد الأقصى لازم يكون أكبر من الأدنى',
-    tierExpert: '👑 EXPERT — نادر جداً!', tierHard: '🔥 HARD', tierMedium: '💪 MEDIUM', tierEasy: '⭐ EASY',
-    toggleLabel: 'English', footer: 'طُوِّر بـ ❤️ من قِبَل'
-  },
-  en: {
-    navHome: '🏠 Home', navSlots: '🎰 Random Slot', navMult: '🚀 Random Multiplier', navWheel: '🎡 Wheel of Fortune',
-    pageTitle: 'Random Multiplier Picker', multLabel: 'RANDOM MULTIPLIER',
-    spinBtn: '🎲 Roll the X', spinAgainBtn: '🎲 Roll Again',
-    rangeTitle: '🎯 Multiplier Range', minLabel: 'Minimum', maxLabel: 'Maximum',
-    minPh: 'e.g. 10', maxPh: 'e.g. 1000', historyTitle: '⏱ Recent Results',
-    errNaN: '⚠️ Enter valid numbers', errMin: '⚠️ Minimum must be at least 1', errMax: '⚠️ Maximum must be greater than minimum',
-    tierExpert: '👑 EXPERT — Super Rare!', tierHard: '🔥 HARD', tierMedium: '💪 MEDIUM', tierEasy: '⭐ EASY',
-    toggleLabel: 'عربي', footer: 'Built with ❤️ by'
+  // spawn subtle stars in background
+  for (let i = 0; i < 30; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.top  = Math.random() * 100 + 'vh';
+    s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+    s.style.animationDelay = (Math.random() * 5) + 's';
+    document.body.appendChild(s);
   }
-};
-let currentLang = localStorage.getItem('site-lang') || 'ar';
 
-function applyLang(lang) {
-  currentLang = lang;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  document.body.classList.add('lang-fade');
-  setTimeout(() => {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (I18N[lang][key]) el.textContent = I18N[lang][key];
-    });
-    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-      const key = el.getAttribute('data-i18n-ph');
-      if (I18N[lang][key]) el.placeholder = I18N[lang][key];
-    });
-    document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
-    const footerEl = document.getElementById('footer-text');
-    if (footerEl) footerEl.textContent = I18N[lang].footer;
-    const errEl = document.getElementById('range-error');
-    if (errEl.textContent) errEl.textContent = '';
-    document.body.classList.remove('lang-fade');
-  }, 160);
-  localStorage.setItem('site-lang', lang);
-}
-applyLang(currentLang);
-document.getElementById('lang-toggle').addEventListener('click', () => {
-  applyLang(currentLang === 'ar' ? 'en' : 'ar');
-});
+  // ---- i18n ----
+  const I18N = {
+    ar: {
+      badge: '🎰 xTools',
+      title: 'مرحباً بك في<br><span>xTools</span>',
+      desc: 'منصة متكاملة تضم خمس أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
+      chooseService: 'اختر الخدمة',
+      slotsTitle: 'سلوت عشوائي',
+      slotsDesc: 'يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake',
+      multTitle: 'اختيار الاكس العشوائي',
+      multDesc: 'يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert',
+      wheelTitle: 'دولاب الحظ',
+      wheelDesc: 'أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي',
+      tourTitle: 'البطولة',
+      tourBadge: 'جديد',
+      tourDesc: 'بطولة سلوتات مع قدرات استثنائية — نافس بسلوتاتك واستخدم قدرات خاصة تقلب موازين المنافسة',
+      battleTitle: 'حرب السلوتات',
+      battleBadge: 'جديد',
+      battleDesc: 'صوّت مع الجمهور على السلوت اللي راح يفوز في الحرب المباشرة',
+      footer: 'طُوِّر بـ ❤️ من قِبَل',
+      toggleLabel: 'English',
+      arrow: '←'
+    },
+    en: {
+      badge: '🎰 xTools',
+      title: 'Welcome to<br><span>xTools</span>',
+      desc: 'An all-in-one platform with five professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
+      chooseService: 'Choose a Service',
+      slotsTitle: 'Random Slot',
+      slotsDesc: 'Picks a random slot for you from hundreds of games available on Stake',
+      multTitle: 'Random Multiplier',
+      multDesc: 'Generates a random multiplier (X) within a range you choose — from Easy to Expert',
+      wheelTitle: 'Wheel of Fortune',
+      wheelDesc: 'Add the options you want and spin the wheel — perfect for making random decisions',
+      tourTitle: 'Tournament',
+      tourBadge: 'NEW',
+      tourDesc: 'A slots tournament with exceptional abilities — compete with your slots and use special powers that turn the tide',
+      battleTitle: 'Slot Battle',
+      battleBadge: 'NEW',
+      battleDesc: 'Vote with the crowd on which slot will win the live battle',
+      footer: 'Built with ❤️ by',
+      toggleLabel: 'عربي',
+      arrow: '→'
+    }
+  };
 
-// ---- Sound ----
-function playTick(freq) {
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.connect(g); g.connect(ctx.destination);
-  o.type = 'sine';
-  o.frequency.value = freq;
-  g.gain.setValueAtTime(0.12, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
-  o.start(); o.stop(ctx.currentTime + 0.06);
-}
+  function applyLang(lang) {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.body.classList.add('lang-fade');
+    setTimeout(() => {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[lang][key]) el.textContent = I18N[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (I18N[lang][key]) el.innerHTML = I18N[lang][key];
+      });
+      document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
+      document.getElementById('footer-text').textContent = I18N[lang].footer;
+      ['arrow1','arrow2','arrow3','arrow4','arrow5'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = I18N[lang].arrow;
+      });
+      document.body.classList.remove('lang-fade');
+    }, 180);
+    localStorage.setItem('site-lang', lang);
+  }
 
-function playWin(mult) {
-  const isEpic = mult >= 501;
-  const isHigh = mult >= 201;
-  const notes = isEpic
-    ? [523, 659, 784, 1047, 1319, 1568]
-    : isHigh
-    ? [523, 659, 784, 1047]
-    : [392, 494, 587];
+  const savedLang = localStorage.getItem('site-lang') || 'ar';
+  applyLang(savedLang);
 
-  notes.forEach((freq, i) => {
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.type = isEpic ? 'sawtooth' : 'sine';
-    const t = ctx.currentTime + i * 0.1;
-    o.frequency.setValueAtTime(freq, t);
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(isEpic ? 0.35 : 0.25, t + 0.04);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-    o.start(t); o.stop(t + 0.4);
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    const current = document.documentElement.lang === 'ar' ? 'ar' : 'en';
+    applyLang(current === 'ar' ? 'en' : 'ar');
   });
-
-  // Extra bass for epic
-  if (isEpic) {
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.type = 'sine'; o.frequency.value = 80;
-    g.gain.setValueAtTime(0.5, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-    o.start(); o.stop(ctx.currentTime + 0.6);
-  }
-}
-
-function playRollSound(freq) {
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.connect(g); g.connect(ctx.destination);
-  o.type = 'triangle';
-  o.frequency.setValueAtTime(freq * 0.5, ctx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(freq, ctx.currentTime + 0.05);
-  g.gain.setValueAtTime(0.08, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
-  o.start(); o.stop(ctx.currentTime + 0.07);
-}
-
-function playCrash() {
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.connect(g); g.connect(ctx.destination);
-  o.type = 'sawtooth';
-  o.frequency.setValueAtTime(180, ctx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 0.32);
-  g.gain.setValueAtTime(0.32, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.38);
-  o.start(); o.stop(ctx.currentTime + 0.38);
-
-  const o2 = ctx.createOscillator();
-  const g2 = ctx.createGain();
-  o2.connect(g2); g2.connect(ctx.destination);
-  o2.type = 'square';
-  o2.frequency.setValueAtTime(900, ctx.currentTime);
-  o2.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.12);
-  g2.gain.setValueAtTime(0.15, ctx.currentTime);
-  g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-  o2.start(); o2.stop(ctx.currentTime + 0.15);
-}
-
-// ---- Particles ----
-function spawnParticles(x, y, count, isEpic) {
-  const colors = isEpic
-    ? ['#e040fb','#40c4ff','#8b6cff','#fff','#00e676','#ff5252']
-    : ['#8b6cff','#fff','#00e676'];
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const angle = Math.random() * Math.PI * 2;
-    const dist = 60 + Math.random() * (isEpic ? 200 : 120);
-    const size = isEpic ? 6 + Math.random() * 8 : 4 + Math.random() * 6;
-    p.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;`;
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 1200);
-  }
-}
-
-function spawnRocket(x, y) {
-  const r = document.createElement('div');
-  r.className = 'rocket';
-  r.textContent = '🚀';
-  r.style.left = x + 'px';
-  r.style.top = y + 'px';
-  document.body.appendChild(r);
-  setTimeout(() => r.remove(), 1200);
-}
-
-// ---- Tier ----
-function getTier(val) {
-  const t = I18N[currentLang];
-  if (val >= 501) return { label: t.tierExpert, cls: 'tier-epic', dispCls: 'epic' };
-  if (val >= 201) return { label: t.tierHard, cls: 'tier-high', dispCls: 'high' };
-  if (val >= 51)  return { label: t.tierMedium, cls: 'tier-mid', dispCls: 'mid' };
-  return { label: t.tierEasy, cls: 'tier-low', dispCls: 'low' };
-}
-
-function getChipClass(val) {
-  if (val >= 501) return 'chip-epic';
-  if (val >= 201) return 'chip-high';
-  if (val >= 51)  return 'chip-mid';
-  return 'chip-low';
-}
-
-// ---- History ----
-function updateHistory() {
-  const wrap = document.getElementById('history-wrap');
-  if (historyList.length === 0) { wrap.classList.remove('show'); return; }
-  wrap.classList.add('show');
-  document.getElementById('history-row').innerHTML = historyList.slice(-10).reverse()
-    .map(v => `<span class="history-chip ${getChipClass(v)}">${v}x</span>`).join('');
-}
-
-// ---- Spin (Crash-style) ----
-function spin() {
-  if (spinning) return;
-  if (!validateRange()) return;
-  if (ctx.state === 'suspended') ctx.resume();
-  spinning = true;
-
-  const btn = document.getElementById('spin-btn');
-  const disp = document.getElementById('mult-display');
-  const tier = document.getElementById('result-tier');
-  const gauge = document.getElementById('gauge-fill');
-  const graph = document.getElementById('crash-graph');
-  const rocket = document.getElementById('crash-rocket');
-  const canvas = document.getElementById('crash-canvas');
-  const cctx = canvas.getContext('2d');
-
-  btn.disabled = true;
-  tier.className = 'result-tier';
-  disp.className = 'mult-display rolling';
-  gauge.style.width = '0%';
-  rocket.textContent = '🚀';
-  rocket.classList.add('show');
-
-  // size canvas crisply for current box
-  const rect = graph.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const W = rect.width, H = rect.height;
-  cctx.clearRect(0, 0, W, H);
-
-  const final = Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-  const duration = Math.min(1300 + Math.log2(final + 1) * 380, 4200);
-  const startTime = performance.now();
-  const points = [];
-  let lastTick = 0;
-
-  // Where along the width the curve crashes — small multipliers pop early (left),
-  // big multipliers travel further across the graph (toward the right edge)
-  const padX = W * 0.05;
-  const usableW = W - padX * 2;
-  const logMin = Math.log(minVal + 1);
-  const logMax = Math.log(maxVal + 1);
-  const logFinalForX = Math.log(final + 1);
-  let xFrac = logMax > logMin ? (logFinalForX - logMin) / (logMax - logMin) : 1;
-  xFrac = Math.max(0.08, Math.min(1, xFrac));
-  const xTarget = padX + xFrac * usableW;
-
-  function frame(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    // accelerating growth curve, like a crash multiplier climbing
-    const value = 1 + (final - 1) * Math.pow(progress, 1.8);
-
-    disp.textContent = value.toFixed(value < 10 ? 2 : (value < 100 ? 1 : 0)) + 'x';
-
-    if (elapsed - lastTick > 65) {
-      lastTick = elapsed;
-      playRollSound(180 + progress * 520);
-    }
-
-    // log scale on Y so the curve stays visible even for huge multipliers
-    const x = padX + progress * (xTarget - padX);
-    const logFinal = Math.log(final + 1);
-    const logVal = Math.log(value + 1);
-    const y = H - (logVal / logFinal) * (H - 22) - 12;
-    points.push({ x, y });
-
-    cctx.clearRect(0, 0, W, H);
-    if (points.length > 1) {
-      // fill under the curve
-      cctx.beginPath();
-      cctx.moveTo(points[0].x, points[0].y);
-      for (let i = 1; i < points.length; i++) cctx.lineTo(points[i].x, points[i].y);
-      cctx.lineTo(points[points.length - 1].x, H);
-      cctx.lineTo(points[0].x, H);
-      cctx.closePath();
-      const grad = cctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, 'rgba(139,92,246,0.32)');
-      grad.addColorStop(1, 'rgba(139,92,246,0)');
-      cctx.fillStyle = grad;
-      cctx.fill();
-
-      // the line itself
-      cctx.beginPath();
-      cctx.moveTo(points[0].x, points[0].y);
-      for (let i = 1; i < points.length; i++) cctx.lineTo(points[i].x, points[i].y);
-      cctx.strokeStyle = '#8b6cff';
-      cctx.lineWidth = 3;
-      cctx.lineJoin = 'round';
-      cctx.lineCap = 'round';
-      cctx.shadowColor = 'rgba(139,92,246,0.75)';
-      cctx.shadowBlur = 10;
-      cctx.stroke();
-      cctx.shadowBlur = 0;
-    }
-
-    // rocket follows the tip of the curve
-    const last = points[points.length - 1];
-    rocket.style.left = last.x + 'px';
-    rocket.style.top = last.y + 'px';
-    if (points.length > 3) {
-      const prev = points[points.length - 4];
-      const angle = Math.atan2(last.y - prev.y, last.x - prev.x) * 180 / Math.PI;
-      rocket.style.transform = `translate(-50%,-50%) rotate(${angle + 45}deg)`;
-    }
-
-    if (progress < 1) {
-      requestAnimationFrame(frame);
-    } else {
-      // ===== CRASH =====
-      disp.textContent = final + 'x';
-      const t = getTier(final);
-      disp.className = 'mult-display ' + t.dispCls;
-
-      graph.classList.add('flash');
-      setTimeout(() => graph.classList.remove('flash'), 450);
-      playCrash();
-      rocket.textContent = '💥';
-      setTimeout(() => {
-        rocket.classList.remove('show');
-        rocket.textContent = '🚀';
-      }, 500);
-
-      const pct = ((final - minVal) / (maxVal - minVal)) * 100;
-      gauge.style.width = pct + '%';
-
-      setTimeout(() => {
-        tier.textContent = t.label;
-        tier.className = 'result-tier show ' + t.cls;
-      }, 200);
-
-      setTimeout(() => {
-        playWin(final);
-        const drect = disp.getBoundingClientRect();
-        const cx = drect.left + drect.width / 2;
-        const cy = drect.top + drect.height / 2;
-        const isEpic = final >= 501;
-        spawnParticles(cx, cy, isEpic ? 40 : 20, isEpic);
-        if (isEpic) spawnRocket(cx, cy);
-      }, 250);
-
-      historyList.push(final);
-      updateHistory();
-
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.setAttribute('data-i18n', 'spinAgainBtn');
-        btn.textContent = I18N[currentLang].spinAgainBtn;
-        spinning = false;
-      }, 800);
-    }
-  }
-
-  requestAnimationFrame(frame);
-}
-
-// ---- Range inputs ----
-function validateRange() {
-  const minInput = document.getElementById('input-min');
-  const maxInput = document.getElementById('input-max');
-  const errEl = document.getElementById('range-error');
-  const newMin = parseInt(minInput.value);
-  const newMax = parseInt(maxInput.value);
-
-  if (isNaN(newMin) || isNaN(newMax)) {
-    errEl.textContent = I18N[currentLang].errNaN;
-    return false;
-  }
-  if (newMin < 1) {
-    errEl.textContent = I18N[currentLang].errMin;
-    return false;
-  }
-  if (newMax <= newMin) {
-    errEl.textContent = I18N[currentLang].errMax;
-    return false;
-  }
-  errEl.textContent = '';
-  minVal = newMin;
-  maxVal = newMax;
-  return true;
-}
-
-document.getElementById('input-min').addEventListener('input', validateRange);
-document.getElementById('input-max').addEventListener('input', validateRange);
-
-document.getElementById('spin-btn').addEventListener('click', spin);
 </script>
 
 <div style="text-align:center; padding: 32px 16px 20px; color: #444; font-size: 13px; font-family: 'Cairo', sans-serif;">

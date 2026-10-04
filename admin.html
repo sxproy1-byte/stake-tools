@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة تحكم السلوتات - xTools</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#8b6cff;--bg:#0d0d0d;--c:#161616;--c2:#1e1e1e;--b:#2a2a2a;--t:#f0f0f0;--m:#888;--g:#2ecc71;--r:#e74c3c}
+body{background:var(--bg);color:var(--t);font-family:'Cairo',sans-serif;padding:16px;max-width:1100px;margin:auto}
+h1{font-size:22px;font-weight:900}h1 span{color:var(--p)}
+.top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.top h1{margin-inline-end:auto}
+button,.btn{font-family:inherit;font-size:13px;font-weight:700;padding:8px 14px;border-radius:10px;border:1px solid var(--b);background:var(--c2);color:var(--t);cursor:pointer}
+button:hover{border-color:var(--p);color:var(--p)}
+.pri{background:linear-gradient(135deg,#4d6dff,#a86cff);border:none;color:#fff}.pri:hover{color:#fff;opacity:.9}
+.d:hover{border-color:var(--r);color:var(--r)}
+#st{font-size:12px;color:var(--m)}#st.dirty{color:#f5a623}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+input,select{font-family:inherit;font-size:14px;padding:9px 12px;border-radius:10px;border:1px solid var(--b);background:var(--c);color:var(--t);outline:none}
+input:focus,select:focus{border-color:var(--p)}
+.bar input{flex:1;min-width:160px}.bar select{max-width:220px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button.on{background:rgba(139,108,255,.15);color:var(--p);border-color:var(--p)}
+#cnt{font-size:12px;color:var(--m);margin-bottom:10px}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:4px}
+.card img,.noimg{width:100%;aspect-ratio:3/4;object-fit:contain;background:var(--c2);border-radius:8px}
+.noimg{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--m)}
+.card b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card small{font-size:11px;color:var(--p);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.act{display:flex;gap:4px;margin-top:4px}.act button{flex:1;padding:6px 4px;font-size:12px}
+.row{display:flex;align-items:center;gap:8px;background:var(--c);border:1px solid var(--b);border-radius:10px;padding:8px 12px;margin-bottom:6px}
+.row .n{flex:1;font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis}.row .k{font-size:12px;color:var(--m)}
+.row .star{font-size:16px;padding:4px 8px;filter:grayscale(1);opacity:.5}.row .star.on{filter:none;opacity:1}
+.pg{display:flex;justify-content:center;align-items:center;gap:12px;margin:16px 0;font-size:13px;color:var(--m)}
+#modal,#bmodal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+#modal.show,#bmodal.show{display:flex}
+textarea{font-family:inherit;font-size:12px;width:100%;height:130px;padding:9px 12px;border-radius:10px;border:1px solid var(--b);background:var(--c);color:var(--t);outline:none;direction:ltr;resize:vertical}
+#b-sum{font-size:13px;line-height:1.9;background:var(--c2);border-radius:10px;padding:10px 12px;min-height:44px}
+.box select{width:100%}
+.box input[type=checkbox]{width:auto;margin-inline-end:6px}
+.chk{font-size:12px;color:var(--t);display:block;line-height:1.8}
+.hint{font-size:11px;color:var(--m);line-height:1.8}
+.box{background:var(--c);border:1px solid var(--p);border-radius:16px;padding:20px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:10px;max-height:95vh;overflow:auto}
+.box h2{font-size:17px}.box label{font-size:12px;color:var(--m)}.box input{width:100%}
+#prev{width:140px;aspect-ratio:3/4;object-fit:contain;background:var(--c2);border-radius:10px;margin:auto;display:none}
+.btns{display:flex;gap:8px}.btns button{flex:1}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#222;border:1px solid var(--p);padding:10px 18px;border-radius:10px;font-size:13px;display:none;z-index:99}
+.empty{text-align:center;color:var(--m);padding:50px 10px;line-height:2}
+.note{font-size:12px;color:var(--m);background:var(--c);border:1px dashed var(--b);border-radius:10px;padding:10px 12px;margin-bottom:14px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>⚙️ لوحة تحكم <span>السلوتات</span></h1>
+  <span id="st"></span>
+  <button class="pri" onclick="openEdit(null)">➕ سلوت جديد</button>
+  <button class="pri" onclick="openBulk()">📥 إضافة دفعة</button>
+  <button onclick="$('imp').click()">📂 استيراد</button>
+  <button class="pri" onclick="exportJs()">⬇️ تصدير slots-data.js</button>
+  <button onclick="exportJson()">💾 نسخة JSON</button>
+  <input type="file" id="imp" accept=".js,.html,.json" hidden>
+</div>
+<div class="note">التعديلات تنحفظ تلقائياً داخل المتصفح. لما تخلص اضغط <b>تصدير slots-data.js</b> وارفع الملف على موقعك مكان القديم عشان تظهر التغييرات للزوار.</div>
+<div class="tabs"><button id="t-slots" class="on" onclick="setTab('slots')">🎰 السلوتات</button><button id="t-cos" onclick="setTab('cos')">🏢 الشركات</button></div>
+<div class="bar">
+  <input id="q" placeholder="🔍 بحث..." oninput="page=0;render()">
+  <select id="cf" onchange="page=0;render()"></select>
+</div>
+<div id="cnt"></div>
+<div id="grid"></div>
+<div class="pg" id="pg"></div>
+
+<div id="modal"><div class="box">
+  <h2 id="m-title"></h2>
+  <div><label>اسم السلوت</label><input id="f-name"></div>
+  <div><label>الشركة (اختر موجودة أو اكتب اسم شركة جديدة)</label><input id="f-co" list="colist"></div>
+  <img id="prev" alt="">
+  <div><label>رفع صورة (بتتصغّر تلقائياً)</label><input type="file" id="f-file" accept="image/*"></div>
+  <div><label>أو رابط صورة</label><input id="f-url" placeholder="https://..."></div>
+  <div class="btns"><button class="pri" onclick="saveEdit()">حفظ</button><button onclick="closeM()">إلغاء</button></div>
+</div></div>
+<div id="bmodal"><div class="box">
+  <h2>📥 إضافة دفعة سلوتات</h2>
+  <div class="hint">كل سطر = سلوت: <b>الاسم , الشركة , رابط الصورة</b> (الصورة اختيارية). بتقدر ترفع ملف CSV / TXT / JSON أو تلصق النص مباشرة. الرابط ممكن يكون رابط كامل أو مسار صورة من الريبو مثل <code dir="ltr">stake_images_new4/slot.png</code>.</div>
+  <button class="pri" onclick="$('b-multi').click()">📚 ارفع الملفات دفعة وحدة (أسماء + شركات + روابط)</button>
+  <input type="file" id="b-multi" accept=".json,.txt" multiple hidden>
+  <div class="hint">اختر الملفات الثلاثة مع بعض (Ctrl أو Shift). بيتعرف على كل ملف لحاله، ولازم عدد الأسطر متطابق والترتيب نفسه (السطر 1 بالأسماء = السطر 1 بالشركات = السطر 1 بالروابط).</div>
+  <div class="btns"><button onclick="$('b-file').click()">📂 اختر ملف</button><button onclick="tpl()">⬇️ قالب جاهز</button></div>
+  <input type="file" id="b-file" accept=".csv,.txt,.tsv,.json" hidden>
+  <textarea id="b-txt" placeholder="Sweet Bonanza,Pragmatic Play,https://.../img.png&#10;Gates of Olympus,Pragmatic Play,stake_images_new4/gates.png" oninput="bulkPrev()"></textarea>
+  <div><label>إذا اسم السلوت موجود مسبقاً</label><select id="b-mode" onchange="bulkPrev()"><option value="skip">تخطيه (ما أغير شي)</option><option value="upd">تحديث شركته وصورته</option></select></div>
+  <label class="chk"><input type="checkbox" id="b-clean" checked onchange="bulkPrev()">تنظيف أسماء الشركات (game_kurator_group.big_ducking_wings ← Big Ducking Wings)</label>
+  <div><label>لاحقة تنضاف لكل رابط صورة (اختياري، مثلاً لتصغير الصور)</label><input id="b-suf" dir="ltr" placeholder="?w=300&auto=format" oninput="bulkPrev()"></div>
+  <label class="chk"><input type="checkbox" id="b-auto" checked>نزّل slots-data.js تلقائياً بعد الإضافة</label>
+  <div id="b-sum"></div>
+  <div class="btns"><button class="pri" onclick="bulkAdd()">إضافة الكل</button><button onclick="$('bmodal').classList.remove('show')">إغلاق</button></div>
+</div></div>
+<datalist id="colist"></datalist>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const PS=48;
+let slots=[],pinned=[],dirty=false,page=0,tab='slots',view=[],cur=null,pending=null,timer;
+
+/* ---------- storage (IndexedDB) ---------- */
+const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('xtools-admin',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function dbSet(v){const d=await idb();return new Promise(r=>{const t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,'data');t.oncomplete=r})}
+async function dbGet(){const d=await idb();return new Promise(r=>{const q=d.transaction('kv').objectStore('kv').get('data');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)})}
+function save(d=true){dirty=d;setSt();clearTimeout(timer);timer=setTimeout(()=>dbSet({slots,pinned,dirty}),300)}
+function setSt(){const s=$('st');s.textContent=dirty?'● تغييرات غير مصدّرة':'✓ مطابق لآخر تصدير';s.className=dirty?'dirty':''}
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',2500)}
+
+/* ---------- parse / import / export ---------- */
+function parse(txt){
+  const a=txt.match(/const ALL_SLOTS = (\[[\s\S]*?\]);\s*\n/),p=txt.match(/const PINNED = (\[[\s\S]*?\]);/);
+  if(a)return{slots:JSON.parse(a[1]),pinned:p?JSON.parse(p[1]):[]};
+  const j=JSON.parse(txt);return Array.isArray(j)?{slots:j,pinned:[]}:{slots:j.slots,pinned:j.pinned||[]};
+}
+function load(d,isDirty){slots=d.slots;pinned=d.pinned||[];page=0;lists();render();save(isDirty)}
+$('imp').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(slots.length&&!confirm('الاستيراد رح يستبدل البيانات الحالية في اللوحة. متابعة؟'))return;
+  try{load(parse(await f.text()),false);toast('تم الاستيراد: '+slots.length+' سلوت')}catch(x){alert('الملف غير مفهوم. استخدم slots-data.js أو slots.html أو JSON.')}
+  e.target.value='';
+};
+function dl(name,txt,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click()}
+function exportJs(){
+  dl('slots-data.js','const ALL_SLOTS = '+JSON.stringify(slots)+';\nconst PINNED = '+JSON.stringify(pinned)+';\n','text/javascript');
+  save(false);toast('تم التصدير، ارفع الملف على الموقع');
+}
+function exportJson(){dl('slots-backup.json',JSON.stringify({slots,pinned}),'application/json')}
+
+/* ---------- helpers ---------- */
+const imgOf=s=>(s.imgs&&s.imgs[0])||s.img||'';
+const companies=()=>{const m={};slots.forEach(s=>m[s.company]=(m[s.company]||0)+1);return m};
+function lists(){
+  const m=companies(),names=Object.keys(m).sort((a,b)=>a.localeCompare(b));
+  $('colist').innerHTML=names.map(n=>`<option value="${esc(n)}">`).join('');
+  const v=$('cf').value;
+  $('cf').innerHTML='<option value="">كل الشركات</option>'+names.map(n=>`<option value="${esc(n)}">${esc(n)} (${m[n]})</option>`).join('');
+  $('cf').value=m[v]?v:'';
+}
+function setTab(t){tab=t;page=0;$('t-slots').classList.toggle('on',t==='slots');$('t-cos').classList.toggle('on',t==='cos');$('cf').style.display=t==='slots'?'':'none';render()}
+
+/* ---------- render ---------- */
+function render(){
+  const q=$('q').value.trim().toLowerCase(),c=$('cf').value;
+  if(!slots.length){$('grid').innerHTML='<div class="empty">ما في بيانات بعد.<br>اضغط <b>📂 استيراد</b> واختر ملف <b>slots-data.js</b> (أو slots.html القديم).</div>';$('cnt').textContent='';$('pg').innerHTML='';return}
+  let list;
+  if(tab==='slots'){
+    list=slots.filter(s=>(!c||s.company===c)&&(!q||s.name.toLowerCase().includes(q)||s.company.toLowerCase().includes(q)));
+    $('cnt').textContent=`${list.length} سلوت من ${slots.length}`;
+  }else{
+    const m=companies();
+    list=Object.keys(m).filter(n=>!q||n.toLowerCase().includes(q)).sort((a,b)=>(pinned.includes(b)-pinned.includes(a))||a.localeCompare(b));
+    $('cnt').textContent=`${list.length} شركة · ⭐ = شركات شائعة`;
+  }
+  view=list;
+  const pages=Math.max(1,Math.ceil(list.length/PS));if(page>=pages)page=pages-1;
+  const off=page*PS,part=list.slice(off,off+PS);
+  $('grid').style.display=tab==='slots'?'grid':'block';
+  $('grid').innerHTML=tab==='slots'?part.map((s,i)=>{const im=imgOf(s);return`<div class="card">${im?`<img loading="lazy" src="${esc(im)}" alt="">`:'<div class="noimg">بدون صورة</div>'}<b title="${esc(s.name)}">${esc(s.name)}</b><small>${esc(s.company)}</small><div class="act"><button onclick="openEdit(${off+i})">✏️ تعديل</button><button class="d" onclick="delSlot(${off+i})">🗑</button></div></div>`}).join('')
+  :part.map((n,i)=>{const k=companies()[n];return`<div class="row"><button class="star ${pinned.includes(n)?'on':''}" onclick="pin(${off+i})">⭐</button><span class="n">${esc(n)}</span><span class="k">${k} سلوت</span><button onclick="renameCo(${off+i})">✏️ إعادة تسمية</button><button class="d" onclick="delCo(${off+i})">🗑</button></div>`}).join('');
+  $('pg').innerHTML=pages>1?`<button ${page?'':'disabled'} onclick="page--;render();scrollTo(0,0)">→ السابق</button><span>${page+1} / ${pages}</span><button ${page<pages-1?'':'disabled'} onclick="page++;render();scrollTo(0,0)">التالي ←</button>`:'';
+}
+
+/* ---------- slot edit / add / delete ---------- */
+function openEdit(i){
+  cur=i===null?null:view[i];pending=null;
+  $('m-title').textContent=cur?'تعديل سلوت':'إضافة سلوت جديد';
+  $('f-name').value=cur?cur.name:'';$('f-co').value=cur?cur.company:($('cf').value||'');
+  $('f-url').value='';$('f-file').value='';
+  const im=cur?imgOf(cur):'',p=$('prev');p.src=im;p.style.display=im?'block':'none';
+  $('modal').classList.add('show');
+}
+function closeM(){$('modal').classList.remove('show')}
+function setPrev(src){pending=src;const p=$('prev');p.src=src;p.style.display='block'}
+$('f-file').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const im=new Image(),u=URL.createObjectURL(f);
+  im.onload=()=>{const k=Math.min(1,400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);$('f-url').value='';setPrev(c.toDataURL('image/webp',.85))};
+  im.onerror=()=>toast('تعذر قراءة الصورة');im.src=u;
+};
+$('f-url').oninput=e=>{const v=e.target.value.trim();if(v)setPrev(v)};
+function saveEdit(){
+  const name=$('f-name').value.trim(),co=$('f-co').value.trim();
+  if(!name||!co)return alert('اكتب اسم السلوت والشركة');
+  if(slots.some(s=>s!==cur&&s.name.toLowerCase()===name.toLowerCase())&&!confirm('يوجد سلوت بنفس الاسم. الموقع يعتمد على الاسم لمنع التكرار، فقد يسبب مشكلة. متابعة؟'))return;
+  if(cur){
+    cur.name=name;cur.company=co;
+    if(pending){cur.img=pending;delete cur.imgs}
+  }else{
+    const s={name,company:co};if(pending)s.img=pending;slots.unshift(s);
+  }
+  closeM();lists();render();save();toast('تم الحفظ');
+}
+function delSlot(i){const s=view[i];if(!confirm(`حذف "${s.name}"؟`))return;slots.splice(slots.indexOf(s),1);lists();render();save()}
+
+/* ---------- bulk import ---------- */
+let bulkRows=[],fileRows=null;
+const dec=s=>{const t=document.createElement('textarea');t.innerHTML=s;return t.value};
+function parseTable(txt){
+  txt=txt.replace(/^\uFEFF/,'');
+  const first=txt.split(/\r?\n/).find(l=>l.trim())||'';
+  const dl=['\t','|',';',','].find(d=>first.includes(d))||',';
+  const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<txt.length;i++){const ch=txt[i];
+    if(q){if(ch=='"'){if(txt[i+1]=='"'){cur+='"';i++}else q=false}else cur+=ch}
+    else if(ch=='"'&&!cur)q=true;
+    else if(ch==dl){row.push(cur);cur=''}
+    else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&txt[i+1]=='\n')i++;row.push(cur);cur='';if(row.some(c=>c.trim()))rows.push(row);row=[]}
+    else cur+=ch}
+  row.push(cur);if(row.some(c=>c.trim()))rows.push(row);
+  return rows.map(r=>r.map(c=>c.trim()));
+}
+function parseBulk(txt){
+  const t=txt.trim();if(!t)return[];
+  if(t[0]=='['||t[0]=='{'){try{let j=JSON.parse(t);if(!Array.isArray(j))j=j.slots||[];
+    return j.map(s=>({name:String(s.name||'').trim(),company:String(s.company||'').trim(),img:String(s.img||s.image||s.url||(s.imgs&&s.imgs[0])||'').trim()}))}catch(e){}}
+  let rows=parseTable(t);
+  const H={company:/(company|provider|studio|شركة|مزود)/i,img:/(img|image|url|link|photo|pic|صور|رابط)/i,name:/(name|slot|game|title|اسم|سلوت|لعبة)/i};
+  const h=rows[0].map(c=>Object.keys(H).find(k=>H[k].test(c))||'');
+  let map={name:0,company:1,img:2};
+  if(h.includes('name')&&h.includes('company')){map={};h.forEach((k,i)=>{if(k&&!(k in map))map[k]=i});rows=rows.slice(1)}
+  return rows.map(r=>({name:r[map.name]||'',company:r[map.company]||'',img:map.img!=null?(r[map.img]||''):''}));
+}
+function openBulk(){fileRows=null;$('b-txt').value='';$('b-sum').textContent='';bulkRows=[];$('bmodal').classList.add('show')}
+$('b-file').onchange=async e=>{const f=e.target.files[0];if(!f)return;fileRows=null;$('b-txt').value=await f.text();bulkPrev();e.target.value=''};
+function tpl(){dl('slots-template.csv','\uFEFFname,company,image\nSweet Bonanza,Pragmatic Play,https://example.com/sweet.png\nGates of Olympus,Pragmatic Play,stake_images_new4/gates.png\n','text/csv')}
+$('b-multi').onchange=async e=>{
+  const fs=[...e.target.files];e.target.value='';
+  let names=null,cos=null,urls=null;const rest=[];
+  for(const f of fs){
+    const t=await f.text(),n=f.name.toLowerCase();let arr=null;
+    try{const j=JSON.parse(t);if(Array.isArray(j))arr=j.map(x=>String(x))}catch(_){}
+    if(!arr){arr=t.split(/\r?\n/).map(l=>l.trim());while(arr.length&&!arr[arr.length-1])arr.pop()}
+    const isUrl=arr.length&&arr.slice(0,5).every(x=>/^(https?:)?\/\//i.test(x)||/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(x));
+    if(isUrl||/url|link|img|image|رابط|صور/.test(n))urls=arr;
+    else if(/compan|provider|شرك|مزود/.test(n))cos=arr;
+    else if(/name|slot|game|اسم|سلوت|لعب/.test(n))names=arr;
+    else rest.push(arr);
+  }
+  rest.sort((a,b)=>new Set(a).size/a.length-new Set(b).size/b.length);
+  if(!cos&&rest.length)cos=rest.shift();
+  if(!names&&rest.length)names=rest.shift();
+  if(!names||!cos)return alert('لازم على الأقل ملف أسماء وملف شركات (الروابط اختيارية).');
+  const n=names.length;
+  if(cos.length!==n||(urls&&urls.length!==n))return alert(`عدد الأسطر غير متطابق: أسماء ${n}، شركات ${cos.length}${urls?`، روابط ${urls.length}`:''}.\nلازم كل الملفات يكون فيها نفس العدد وبنفس الترتيب.`);
+  fileRows=names.map((x,i)=>({name:x,company:cos[i],img:urls?urls[i]:''}));
+  $('b-txt').value='';bulkPrev();toast(`قُرئ ${n} سلوت من ${fs.length} ملفات`);
+};
+function prep(rows){
+  const clean=$('b-clean').checked,suf=$('b-suf').value.trim(),canon=new Map();
+  slots.forEach(s=>{const k=s.company.toLowerCase();if(!canon.has(k))canon.set(k,s.company)});
+  return rows.map(r=>{
+    let c=dec(r.company).trim(),img=(r.img||'').trim();
+    if(clean){
+      if(/^\w+\.\S+$/.test(c)||/^\w+_\w+$/.test(c))c=c.replace(/^\w+\./,'').replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase());
+      const k=c.toLowerCase();if(canon.has(k))c=canon.get(k);else canon.set(k,c);
+    }
+    if(img&&suf&&!img.includes('?'))img+=suf;
+    return{name:dec(r.name).trim(),company:c,img};
+  });
+}
+function bulkPrev(){
+  const txt=$('b-txt').value.trim();
+  bulkRows=prep(txt?parseBulk(txt):(fileRows||[]));
+  if(!bulkRows.length){$('b-sum').textContent='';return}
+  const names=new Set(slots.map(s=>s.name.toLowerCase())),cos=companies(),seen=new Set(),nc=new Set();
+  let ok=0,dup=0,bad=0,noimg=0;
+  bulkRows.forEach(r=>{const k=r.name.toLowerCase();
+    if(!r.name||!r.company)bad++;
+    else if(names.has(k)||seen.has(k))dup++;
+    else{ok++;seen.add(k);if(!r.img)noimg++;if(!cos[r.company])nc.add(r.company)}});
+  $('b-sum').innerHTML=`📄 ${bulkRows.length} سطر · ✅ جديد: <b>${ok}</b> · 🔁 مكرر: ${dup} · ⚠️ ناقص (بدون اسم/شركة): ${bad}<br>🏢 شركات جديدة: ${nc.size} · 🖼 بدون صورة: ${noimg}<br><span class="hint" dir="ltr">▶ ${esc(bulkRows[0].name)} | ${esc(bulkRows[0].company)} | ${esc((bulkRows[0].img||'').slice(0,50))}</span>`;
+}
+function bulkAdd(){
+  bulkPrev();if(!bulkRows.length)return alert('ما في بيانات للإضافة');
+  const upd=$('b-mode').value==='upd',map=new Map(slots.map(s=>[s.name.toLowerCase(),s])),add=[];
+  let u=0,sk=0,bad=0;
+  bulkRows.forEach(r=>{
+    if(!r.name||!r.company){bad++;return}
+    const k=r.name.toLowerCase(),ex=map.get(k);
+    if(ex){if(upd){ex.company=r.company;if(r.img){ex.img=r.img;delete ex.imgs}u++}else sk++;return}
+    const s={name:r.name,company:r.company};if(r.img)s.img=r.img;add.push(s);map.set(k,s);
+  });
+  slots=[...add,...slots];
+  $('bmodal').classList.remove('show');lists();render();save();
+  const msg=`أضيف ${add.length} · حُدّث ${u} · تُخطّي ${sk+bad}`;
+  if($('b-auto').checked){exportJs();toast(msg+' · نُزّل slots-data.js')}else toast(msg);
+}
+
+/* ---------- companies ---------- */
+function pin(i){const n=view[i];pinned=pinned.includes(n)?pinned.filter(x=>x!==n):[...pinned,n];render();save()}
+function renameCo(i){
+  const o=view[i],n=(prompt('الاسم الجديد للشركة:',o)||'').trim();if(!n||n===o)return;
+  if(companies()[n]&&!confirm(`الشركة "${n}" موجودة، رح يندمجوا. متابعة؟`))return;
+  slots.forEach(s=>{if(s.company===o)s.company=n});
+  pinned=[...new Set(pinned.map(x=>x===o?n:x))];lists();render();save();
+}
+function delCo(i){
+  const n=view[i],k=companies()[n];
+  if(!confirm(`حذف شركة "${n}" مع كل سلوتاتها (${k})؟`))return;
+  slots=slots.filter(s=>s.company!==n);pinned=pinned.filter(x=>x!==n);lists();render();save();
+}
+
+/* ---------- init ---------- */
+(async()=>{
+  const d=await dbGet().catch(()=>null);
+  if(d&&d.slots&&d.slots.length){slots=d.slots;pinned=d.pinned||[];dirty=!!d.dirty}
+  else{try{const r=await fetch('slots-data.js');if(r.ok){const p=parse(await r.text());slots=p.slots;pinned=p.pinned;dirty=false}}catch(e){}}
+  lists();render();setSt();
+})();
+</script>
+</body>
+</html>
