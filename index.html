@@ -15,87 +15,357 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   :root {
-    --gold: #8b6cff; --gold-dark: #6d4fd1; --gold-glow: rgba(139,92,246,0.35);
-    --bg: #0a0a0a; --card: #131313; --card2: #1c1c1c; --border: #252525; --text: #f0f0f0; --muted: #666;
+    --gold: #8b6cff;
+    --gold-dark: #6d4fd1;
+    --gold-glow: rgba(139,92,246,0.35);
+    --bg: #0a0a0a;
+    --card: #131313;
+    --card2: #1c1c1c;
+    --border: #252525;
+    --text: #f0f0f0;
+    --muted: #666;
   }
-  html, body { min-height: 100%; }
+
+  html, body {
+    min-height: 100%;
+  }
+
   body {
-    background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif;
-    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 24px 16px 48px; overflow-x: hidden; position: relative;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px 48px;
+    overflow-x: hidden;
+    position: relative;
   }
+
+  /* === BACKGROUND EFFECTS === */
   body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: linear-gradient(rgba(139,92,246,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.025) 1px, transparent 1px);
-    background-size: 48px 48px; pointer-events: none; z-index: 0;
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(139,92,246,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
   }
-  .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; animation: orbDrift 12s ease-in-out infinite alternate; }
-  .orb1 { width: 400px; height: 400px; background: rgba(139,92,246,0.06); top: -120px; left: -120px; }
+
+  /* floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orbDrift 12s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 400px; height: 400px; background: rgba(139,92,246,0.06); top: -120px; left: -120px; animation-delay: 0s; }
   .orb2 { width: 300px; height: 300px; background: rgba(59,130,246,0.04); bottom: -80px; right: -80px; animation-delay: -5s; }
-  @keyframes orbDrift { from { transform: translate(0, 0) scale(1); } to { transform: translate(40px, 30px) scale(1.1); } }
-  .wrap { position: relative; z-index: 1; width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: center; }
-  .logo-badge { font-size: 11px; font-weight: 700; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards; }
-  .hero-icon { font-size: 64px; margin-bottom: 14px; opacity: 0; animation: fadeUp 0.6s ease 0.2s forwards, pulse 3s ease-in-out 1s infinite; filter: drop-shadow(0 0 24px rgba(139,92,246,0.5)); }
-  @keyframes pulse { 0%, 100% { filter: drop-shadow(0 0 20px rgba(139,92,246,0.4)); transform: scale(1); } 50% { filter: drop-shadow(0 0 40px rgba(139,92,246,0.7)); transform: scale(1.05); } }
-  @keyframes shine { to { background-position: 200% center; } }
-  h1 { font-size: 36px; font-weight: 900; color: #fff; text-align: center; line-height: 1.15; margin-bottom: 12px; opacity: 0; animation: fadeUp 0.6s ease 0.3s forwards; }
+  @keyframes orbDrift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(40px, 30px) scale(1.1); }
+  }
+
+  /* === WRAPPER === */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* === LOGO / HEADER === */
+  .logo-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-icon {
+    font-size: 64px;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards, pulse 3s ease-in-out 1s infinite;
+    filter: drop-shadow(0 0 24px rgba(139,92,246,0.5));
+  }
+  @keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(139,92,246,0.4)); transform: scale(1); }
+    50%       { filter: drop-shadow(0 0 40px rgba(139,92,246,0.7)); transform: scale(1.05); }
+  }
+  @keyframes shine {
+    to { background-position: 200% center; }
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.3s forwards;
+  }
   h1 span {
     background: linear-gradient(135deg, #4d8dff 0%, #fff 35%, #a86cff 65%, #4d8dff 100%);
-    background-size: 200% auto; animation: shine 5s linear infinite;
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    background-size: 200% auto;
+    animation: shine 5s linear infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .hero-desc { font-size: 15px; color: var(--muted); text-align: center; line-height: 1.8; max-width: 400px; margin-bottom: 40px; opacity: 0; animation: fadeUp 0.6s ease 0.4s forwards; }
-  .divider { width: 100%; display: flex; align-items: center; gap: 14px; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.6s ease 0.5s forwards; }
-  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
-  .divider span { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; white-space: nowrap; }
-  .services { width: 100%; display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
+
+  .hero-desc {
+    font-size: 15px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.8;
+    max-width: 400px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.4s forwards;
+  }
+
+  /* === DIVIDER === */
+  .divider {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.5s forwards;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+  .divider span {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* === SERVICE CARDS === */
+  .services {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
   .service-card {
-    display: flex; align-items: center; gap: 18px; width: 100%; padding: 22px 24px;
-    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
-    text-decoration: none; color: var(--text); cursor: pointer; position: relative; overflow: hidden;
-    transition: transform 0.35s cubic-bezier(.22,1,.36,1), border-color 0.3s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1); opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 22px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(.22,1,.36,1), border-color 0.3s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1);
+    opacity: 0;
   }
+
   .service-card:nth-child(1) { animation: fadeUp 0.55s ease 0.55s forwards; }
   .service-card:nth-child(2) { animation: fadeUp 0.55s ease 0.65s forwards; }
   .service-card:nth-child(3) { animation: fadeUp 0.55s ease 0.75s forwards; }
   .service-card:nth-child(4) { animation: fadeUp 0.55s ease 0.85s forwards; }
   .service-card:nth-child(5) { animation: fadeUp 0.55s ease 0.95s forwards; }
   .service-card:nth-child(6) { animation: fadeUp 0.55s ease 1.05s forwards; }
+
   .service-card.featured { border-color: var(--gold-dark); background: linear-gradient(135deg, #171226 0%, var(--card) 70%); box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 8px 30px rgba(139,92,246,0.12); }
+  .service-card.featured .card-icon { filter: drop-shadow(0 0 14px rgba(255,200,60,0.55)); }
   .card-badge { display: inline-block; font-size: 10px; font-weight: 900; letter-spacing: 1px; color: #fff; background: linear-gradient(135deg,#8b6cff,#c04dff); padding: 2px 9px; border-radius: 999px; margin-inline-start: 8px; vertical-align: middle; }
-  .service-card:hover { transform: translateY(-3px); border-color: var(--gold-dark); box-shadow: 0 8px 32px rgba(139,92,246,0.12); }
-  .card-icon { font-size: 36px; flex-shrink: 0; transition: transform 0.4s cubic-bezier(.34,1.56,.64,1); }
-  .service-card:hover .card-icon { transform: scale(1.15) rotate(-5deg); }
-  .card-body { flex: 1; text-align: start; }
-  .card-title { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 4px; }
-  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
-  .card-arrow { font-size: 20px; color: var(--gold); opacity: 0.5; transition: opacity 0.3s, transform 0.3s; flex-shrink: 0; }
-  .service-card:hover .card-arrow { opacity: 1; transform: translateX(-4px); }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-  .star { position: fixed; width: 2px; height: 2px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 0; animation: starTwinkle var(--dur) ease-in-out infinite alternate; opacity: 0; }
-  @keyframes starTwinkle { from { opacity: 0; transform: scale(0.5); } to { opacity: 0.7; transform: scale(1.5); } }
-  .lang-toggle {
-    position: fixed; top: 16px; left: 16px; z-index: 200; display: flex; align-items: center; gap: 7px;
-    background: var(--card); border: 1px solid var(--border); color: var(--text); font-family: 'Cairo', sans-serif;
-    font-weight: 700; font-size: 13px; padding: 9px 16px; border-radius: 999px; cursor: pointer;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.35); backdrop-filter: blur(6px);
+
+  /* glow on hover via pseudo */
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(139,92,246,0.07) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
   }
-  .lang-toggle:hover { border-color: var(--gold-dark); transform: translateY(-2px); }
+  .service-card:hover::before { opacity: 1; }
+
+  .service-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold-dark);
+    box-shadow: 0 8px 32px rgba(139,92,246,0.12), 0 0 0 1px rgba(139,92,246,0.08);
+  }
+  .service-card:active { transform: scale(0.98); }
+
+  /* accent stripe on right */
+  .service-card::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    border-radius: 2px 0 0 2px;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.3s, top 0.3s, bottom 0.3s;
+  }
+  .service-card:hover::after { opacity: 1; top: 10%; bottom: 10%; }
+
+  .card-icon {
+    font-size: 36px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 10px rgba(139,92,246,0.3));
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .service-card:hover .card-icon { transform: scale(1.15) rotate(-5deg); }
+
+  .card-body { flex: 1; text-align: start; }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .card-arrow {
+    font-size: 20px;
+    color: var(--gold);
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+    flex-shrink: 0;
+  }
+  .service-card:hover .card-arrow { opacity: 1; transform: translateX(-4px); }
+
+  /* === FOOTER NOTE === */
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 1s forwards;
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === STAR PARTICLES === */
+  .star {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: starTwinkle var(--dur) ease-in-out infinite alternate;
+    opacity: 0;
+  }
+  @keyframes starTwinkle {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 0.7; transform: scale(1.5); }
+  }
+
+  /* === LANGUAGE TOGGLE === */
+  .lang-toggle {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
+  }
+  .lang-toggle:hover {
+    border-color: var(--gold-dark);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 26px rgba(139,92,246,0.3);
+    background: var(--card2);
+  }
+  .lang-toggle:active { transform: scale(0.96); }
+  .lang-toggle .globe { font-size: 15px; transition: transform 0.4s ease; }
+  .lang-toggle:hover .globe { transform: rotate(180deg); }
+
+  /* smoother global transitions on language / theme swap */
+  * { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  body, .wrap, [data-i18n] { transition: opacity 0.25s ease; }
   body.lang-fade [data-i18n], body.lang-fade [data-i18n-html] { opacity: 0; }
 </style>
 </head>
 <body>
+
+<!-- bg effects -->
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
-<button class="lang-toggle" id="lang-toggle" type="button"><span class="globe">🌐</span><span id="lang-toggle-label">English</span></button>
+
+<button class="lang-toggle" id="lang-toggle" type="button">
+  <span class="globe">🌐</span>
+  <span id="lang-toggle-label">English</span>
+</button>
+
 <div class="wrap">
+
   <div class="logo-badge" data-i18n="badge">🎰 xTools</div>
   <div class="hero-icon">💎</div>
+
   <h1 data-i18n-html="title">مرحباً بك في<br><span>xTools</span></h1>
-  <p class="hero-desc" data-i18n="desc">منصة متكاملة تضم ست أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.</p>
+
+  <p class="hero-desc" data-i18n="desc">
+    منصة متكاملة تضم ست أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
+    اختر الأداة التي تناسبك وابدأ الآن.
+  </p>
+
   <div class="divider"><span data-i18n="chooseService">اختر الخدمة</span></div>
+
   <div class="services">
+
+    <!-- Slot Picker -->
     <a class="service-card" href="slots.html">
       <div class="card-icon">🎰</div>
       <div class="card-body">
@@ -104,6 +374,8 @@
       </div>
       <div class="card-arrow" id="arrow1">←</div>
     </a>
+
+    <!-- Multiplier -->
     <a class="service-card" href="multiplier.html">
       <div class="card-icon">🚀</div>
       <div class="card-body">
@@ -112,6 +384,8 @@
       </div>
       <div class="card-arrow" id="arrow2">←</div>
     </a>
+
+    <!-- Wheel -->
     <a class="service-card" href="wheel.html">
       <div class="card-icon">🎡</div>
       <div class="card-body">
@@ -120,6 +394,8 @@
       </div>
       <div class="card-arrow" id="arrow3">←</div>
     </a>
+
+    <!-- Tournament -->
     <a class="service-card featured" href="tournament.html">
       <div class="card-icon">🏆</div>
       <div class="card-body">
@@ -128,6 +404,8 @@
       </div>
       <div class="card-arrow" id="arrow4">←</div>
     </a>
+
+    <!-- Slot Battle -->
     <a class="service-card" href="battle.html">
       <div class="card-icon">⚔️</div>
       <div class="card-body">
@@ -136,8 +414,9 @@
       </div>
       <div class="card-arrow" id="arrow5">←</div>
     </a>
-    <!-- رابط السحب الموجه إلى Render الجديد -->
-    <a class="service-card" href="https://xtools-giveaway.onrender.com/giveaway.html">
+
+    <!-- Giveaway -->
+    <a class="service-card" href="https://giveaway.xtools.live/giveaway.html">
       <div class="card-icon">🎁</div>
       <div class="card-body">
         <div class="card-title"><span data-i18n="giveTitle">سحب البث</span><span class="card-badge" data-i18n="giveBadge">جديد</span></div>
@@ -145,61 +424,111 @@
       </div>
       <div class="card-arrow" id="arrow6">←</div>
     </a>
+
   </div>
+
+
 </div>
+
 <script>
+  // spawn subtle stars in background
   for (let i = 0; i < 30; i++) {
-    const s = document.createElement('div'); s.className = 'star';
-    s.style.left = Math.random() * 100 + 'vw'; s.style.top = Math.random() * 100 + 'vh';
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.top  = Math.random() * 100 + 'vh';
     s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
     s.style.animationDelay = (Math.random() * 5) + 's';
     document.body.appendChild(s);
   }
+
+  // ---- i18n ----
   const I18N = {
     ar: {
-      badge: '🎰 xTools', title: 'مرحباً بك في<br><span>xTools</span>',
+      badge: '🎰 xTools',
+      title: 'مرحباً بك في<br><span>xTools</span>',
       desc: 'منصة متكاملة تضم ست أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
-      chooseService: 'اختر الخدمة', slotsTitle: 'سلوت عشوائي', slotsDesc: 'يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake',
-      multTitle: 'اختيار الاكس العشوائي', multDesc: 'يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert',
-      wheelTitle: 'دولاب الحظ', wheelDesc: 'أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي',
-      tourTitle: 'البطولة', tourBadge: 'جديد', tourDesc: 'بطولة سلوتات مع قدرات استثنائية — نافس بسلوتاتك واستخدم قدرات خاصة تقلب موازين المنافسة',
-      battleTitle: 'حرب السلوتات', battleBadge: 'جديد', battleDesc: 'صوّت مع الجمهور على السلوت اللي راح يفوز في الحرب المباشرة',
-      giveTitle: 'سحب البث', giveBadge: 'جديد', giveDesc: 'سجّل دخول بحساب Kick وسوّي سحب على شات قناتك مباشرة — بدون إعدادات',
-      footer: 'طُوِّر بـ ❤️ من قِبَل', toggleLabel: 'English', arrow: '←'
+      chooseService: 'اختر الخدمة',
+      slotsTitle: 'سلوت عشوائي',
+      slotsDesc: 'يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake',
+      multTitle: 'اختيار الاكس العشوائي',
+      multDesc: 'يولّد لك مضاعف (X) عشوائي ضمن نطاق تختاره — من Easy وصل لـ Expert',
+      wheelTitle: 'دولاب الحظ',
+      wheelDesc: 'أضف الخيارات اللي تبيها ودوّر الدولاب — مثالي لاتخاذ القرارات بشكل عشوائي',
+      tourTitle: 'البطولة',
+      tourBadge: 'جديد',
+      tourDesc: 'بطولة سلوتات مع قدرات استثنائية — نافس بسلوتاتك واستخدم قدرات خاصة تقلب موازين المنافسة',
+      battleTitle: 'حرب السلوتات',
+      battleBadge: 'جديد',
+      battleDesc: 'صوّت مع الجمهور على السلوت اللي راح يفوز في الحرب المباشرة', giveTitle: 'سحب البث', giveBadge: 'جديد', giveDesc: 'سجّل دخول بحساب Kick وسوّي سحب على شات قناتك مباشرة — بدون إعدادات',
+      footer: 'طُوِّر بـ ❤️ من قِبَل',
+      toggleLabel: 'English',
+      arrow: '←'
     },
     en: {
-      badge: '🎰 xTools', title: 'Welcome to<br><span>xTools</span>',
+      badge: '🎰 xTools',
+      title: 'Welcome to<br><span>xTools</span>',
       desc: 'An all-in-one platform with six professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
-      chooseService: 'Choose a Service', slotsTitle: 'Random Slot', slotsDesc: 'Picks a random slot for you from hundreds of games available on Stake',
-      multTitle: 'Random Multiplier', multDesc: 'Generates a random multiplier (X) within a range you choose — from Easy to Expert',
-      wheelTitle: 'Wheel of Fortune', wheelDesc: 'Add the options you want and spin the wheel — perfect for making random decisions',
-      tourTitle: 'Tournament', tourBadge: 'NEW', tourDesc: 'A slots tournament with exceptional abilities — compete with your slots and use special powers that turn the tide',
-      battleTitle: 'Slot Battle', battleBadge: 'NEW', battleDesc: 'Vote with the crowd on which slot will win the live battle',
-      giveTitle: 'Stream Giveaway', giveBadge: 'NEW', giveDesc: 'Log in with Kick and run a giveaway on your chat instantly — zero setup',
-      footer: 'Built with ❤️ by', toggleLabel: 'عربي', arrow: '→'
+      chooseService: 'Choose a Service',
+      slotsTitle: 'Random Slot',
+      slotsDesc: 'Picks a random slot for you from hundreds of games available on Stake',
+      multTitle: 'Random Multiplier',
+      multDesc: 'Generates a random multiplier (X) within a range you choose — from Easy to Expert',
+      wheelTitle: 'Wheel of Fortune',
+      wheelDesc: 'Add the options you want and spin the wheel — perfect for making random decisions',
+      tourTitle: 'Tournament',
+      tourBadge: 'NEW',
+      tourDesc: 'A slots tournament with exceptional abilities — compete with your slots and use special powers that turn the tide',
+      battleTitle: 'Slot Battle',
+      battleBadge: 'NEW',
+      battleDesc: 'Vote with the crowd on which slot will win the live battle', giveTitle: 'Stream Giveaway', giveBadge: 'NEW', giveDesc: 'Log in with Kick and run a giveaway on your chat instantly — zero setup',
+      footer: 'Built with ❤️ by',
+      toggleLabel: 'عربي',
+      arrow: '→'
     }
   };
+
   function applyLang(lang) {
-    document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.body.classList.add('lang-fade');
     setTimeout(() => {
-      document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (I18N[lang][k]) el.textContent = I18N[lang][k]; });
-      document.querySelectorAll('[data-i18n-html]').forEach(el => { const k = el.getAttribute('data-i18n-html'); if (I18N[lang][k]) el.innerHTML = I18N[lang][k]; });
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[lang][key]) el.textContent = I18N[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (I18N[lang][key]) el.innerHTML = I18N[lang][key];
+      });
       document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
       document.getElementById('footer-text').textContent = I18N[lang].footer;
-      ['arrow1','arrow2','arrow3','arrow4','arrow5','arrow6'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = I18N[lang].arrow; });
+      ['arrow1','arrow2','arrow3','arrow4','arrow5','arrow6'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = I18N[lang].arrow;
+      });
       document.body.classList.remove('lang-fade');
     }, 180);
     localStorage.setItem('site-lang', lang);
   }
-  applyLang(localStorage.getItem('site-lang') || 'ar');
-  document.getElementById('lang-toggle').addEventListener('click', () => applyLang(document.documentElement.lang === 'ar' ? 'en' : 'ar'));
+
+  const savedLang = localStorage.getItem('site-lang') || 'ar';
+  applyLang(savedLang);
+
+  document.getElementById('lang-toggle').addEventListener('click', () => {
+    const current = document.documentElement.lang === 'ar' ? 'ar' : 'en';
+    applyLang(current === 'ar' ? 'en' : 'ar');
+  });
 </script>
+
 <script src="nav.js" data-site="main" data-active="index"></script>
+<!-- xtools-footer -->
 <style>
   .xt-footer{text-align:center;padding:36px 16px 26px;margin-top:20px;border-top:1px solid rgba(139,108,255,.18);font-family:'Cairo',sans-serif;color:#9a9ab5;font-size:14px}
   .xt-by{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
-  .xt-link{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;border:1px solid rgba(168,108,255,.5);background:linear-gradient(135deg,rgba(77,109,255,.18),rgba(197,108,240,.18));color:#c9b8ff;font-weight:700;font-size:13px;text-decoration:none;direction:ltr}
+  .xt-by .xt-name{color:#fff;font-weight:800;font-size:16px}
+  .xt-link{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;border:1px solid rgba(168,108,255,.5);background:linear-gradient(135deg,rgba(77,109,255,.18),rgba(197,108,240,.18));color:#c9b8ff;font-weight:700;font-size:13px;text-decoration:none;direction:ltr;transition:.2s}
+  .xt-link:hover{background:linear-gradient(135deg,#4d6dff,#c56cf0);color:#fff;transform:translateY(-1px)}
   .xt-copy{margin-top:12px;font-size:12px;color:#77779a}
 </style>
 <div class="xt-footer">
@@ -210,5 +539,15 @@
   </div>
   <div class="xt-copy" id="xt-copy">© 2026 xTools — جميع الحقوق محفوظة</div>
 </div>
+<script>
+(function(){
+  var T={ar:{by:'طُوِّر بـ ❤️ من قِبَل',c:'© 2026 xTools — جميع الحقوق محفوظة'},en:{by:'Built with ❤️ by',c:'© 2026 xTools — All rights reserved'}};
+  function lang(){var l='';try{l=localStorage.getItem('site-lang')}catch(e){}if(l!=='ar'&&l!=='en')l=document.documentElement.lang;return l==='en'?'en':'ar'}
+  var last='';
+  function upd(){var l=lang();if(l===last&&document.getElementById('footer-text').textContent===T[l].by)return;last=l;document.querySelector('.xt-footer').dir=l==='en'?'ltr':'rtl';
+    document.getElementById('footer-text').textContent=T[l].by;document.getElementById('xt-copy').textContent=T[l].c}
+  upd();setInterval(upd,400);
+})();
+</script>
 </body>
 </html>
