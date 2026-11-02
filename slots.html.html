@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سلوت عشوائي - xTools</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234d8dff'/%3E%3Cstop offset='50%25' stop-color='%238b6cff'/%3E%3Cstop offset='100%25' stop-color='%236d4fd1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='none' stroke='url(%23g)' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Arial, Helvetica, sans-serif' font-weight='900' font-size='36' text-anchor='middle' fill='url(%23g)'%3EX%3C/text%3E%3C/svg%3E">
+<script>
+  (function(){
+    var l = localStorage.getItem('site-lang') || 'ar';
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  })();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #8b6cff; --gold-dark: #6d4fd1;
+    --bg: #0d0d0d; --card: #161616; --card2: #1e1e1e;
+    --border: #2a2a2a; --text: #f0f0f0; --muted: #888;
+    --green: #2ecc71; --red: #e74c3c;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 16px 40px; overflow-x: hidden; }
+
+  /* NAVBAR */
+  .navbar { width: 100vw; background: #111; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: center; padding: 0 16px; margin-bottom: 28px; position: sticky; top: 0; z-index: 50; }
+  .navbar-inner { width: 100%; max-width: 700px; display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 10px 0; }
+  .navbar-inner::-webkit-scrollbar { display: none; }
+  .nav-home { font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 10px; border: 1px solid var(--border); background: transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s; flex-shrink: 0; }
+  .nav-home:hover { color: var(--gold); border-color: var(--gold-dark); }
+  .nav-sep { color: #333; font-size: 18px; flex-shrink: 0; padding: 0 2px; }
+  .nav-link { font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 10px; border: 1px solid transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s, background 0.2s; flex-shrink: 0; }
+  .nav-link:hover { color: var(--gold); border-color: var(--border); background: var(--card); }
+  .nav-link.active { color: var(--gold); background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.2); }
+  .nav-lang { margin-inline-start: auto; display: flex; align-items: center; gap: 6px; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); background: linear-gradient(135deg, rgba(77,109,255,0.12), rgba(168,108,255,0.12)); padding: 7px 14px; border-radius: 10px; border: 1px solid rgba(139,92,246,0.25); cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), border-color 0.25s, box-shadow 0.25s; }
+  .nav-lang:hover { border-color: var(--gold); box-shadow: 0 4px 16px rgba(139,92,246,0.25); transform: translateY(-2px); }
+  .nav-lang:active { transform: scale(0.95); }
+  .nav-lang .globe { transition: transform 0.4s ease; }
+  .nav-lang:hover .globe { transform: rotate(180deg); }
+  body.lang-fade [data-i18n], body.lang-fade [data-i18n-ph] { opacity: 0; transition: opacity 0.18s ease; }
+  [data-i18n] { transition: opacity 0.18s ease; }
+
+  .header { text-align: center; margin-bottom: 20px; animation: fadeUp 0.5s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px);} to {opacity:1; transform:translateY(0);} }
+  .header .logo { font-size: 13px; font-weight: 600; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 30px; font-weight: 900; color: #fff; line-height: 1.1; }
+  .header .subtitle { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* FILTER PANEL */
+  .filter-panel { width: 100%; max-width: 700px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 20px; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) 0.08s both; }
+  .filter-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .filter-title { font-size: 14px; font-weight: 700; color: var(--gold); }
+  .filter-toggle { font-size: 20px; color: var(--muted); transition: transform 0.3s; }
+  .filter-toggle.open { transform: rotate(180deg); }
+  .filter-body { margin-top: 14px; display: none; }
+  .filter-body.open { display: block; }
+  .filter-actions { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-btn { font-family: 'Cairo', sans-serif; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
+  .filter-btn.select-all { background: rgba(46,204,113,0.15); color: var(--green); border-color: rgba(46,204,113,0.3); }
+  .filter-btn.select-all:hover { background: rgba(46,204,113,0.25); }
+  .filter-btn.deselect-all { background: rgba(231,76,60,0.15); color: var(--red); border-color: rgba(231,76,60,0.3); }
+  .filter-btn.deselect-all:hover { background: rgba(231,76,60,0.25); }
+  .filter-btn.select-pinned { background: rgba(139,92,246,0.15); color: var(--gold); border-color: rgba(139,92,246,0.3); }
+  .filter-btn.select-pinned:hover { background: rgba(139,92,246,0.25); }
+  .filter-search { width: 100%; padding: 10px 14px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 13px; margin-bottom: 12px; outline: none; }
+  .filter-search:focus { border-color: var(--gold-dark); }
+  .companies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; max-height: 320px; overflow-y: auto; padding: 4px; }
+  .companies-grid::-webkit-scrollbar { width: 4px; }
+  .companies-grid::-webkit-scrollbar-track { background: var(--card2); border-radius: 4px; }
+  .companies-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .company-chip { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--card2); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; user-select: none; }
+  .company-chip:hover { border-color: var(--gold-dark); }
+  .company-chip.active { background: rgba(139,92,246,0.08); border-color: rgba(139,92,246,0.3); }
+  .company-chip .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all 0.2s; }
+  .company-chip.active .dot { background: var(--green); border-color: var(--green); }
+  .company-chip .chip-name { font-size: 12px; font-weight: 600; color: var(--muted); transition: color 0.2s; white-space: normal; word-break: break-word; }
+  .company-chip.active .chip-name { color: var(--text); }
+  .company-chip .chip-count { font-size: 10px; color: var(--muted); margin-right: auto; flex-shrink: 0; }
+  .filter-summary { margin-top: 12px; font-size: 12px; color: var(--muted); text-align: center; }
+  .pinned-section { margin-bottom: 14px; }
+  .pinned-label { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .pinned-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  .all-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 700px; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; text-align: center; }
+  .stat-label { font-size: 10px; color: var(--muted); margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
+  .stat-val { font-size: 24px; font-weight: 900; color: var(--gold); }
+
+  /* ACTIONS ROW */
+  .actions-container { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 700px; margin-bottom: 20px; animation: fadeUp 0.55s cubic-bezier(.22,1,.36,1) 0.16s both; }
+  .action-section { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .section-label { font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-align: center; opacity: 0.85; }
+  .section-divider-wrap { display: flex; align-items: center; gap: 10px; padding: 0 4px; }
+  .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+  .section-divider-text { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; }
+  .spin-btn { width: 100%; padding: 18px; font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 16px; border: none; background: linear-gradient(135deg, #4d6dff 0%, #a86cff 55%, #c56cf0 100%); color: #fff; transition: transform 0.3s cubic-bezier(.22,1,.36,1), box-shadow 0.3s cubic-bezier(.22,1,.36,1), opacity 0.2s ease; box-shadow: 0 4px 20px rgba(139,92,246,0.25); }
+  .spin-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(139,92,246,0.35); }
+  .spin-btn:active:not(:disabled) { transform: scale(0.98); }
+  .spin-btn:disabled { opacity: 0.35; cursor: not-allowed; background: #444; box-shadow: none; }
+  
+  .spin-triple-btn { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); color: #fff; box-shadow: 0 4px 20px rgba(168,85,247,0.25); flex: 1; }
+  .spin-triple-btn:hover:not(:disabled) { box-shadow: 0 6px 22px rgba(168,85,247,0.35); }
+  .multi-spin-row { display: flex; gap: 24px; align-items: center; width: 100%; }
+  .multi-count-wrap { display: flex; align-items: center; gap: 0; background: var(--card2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; flex-shrink: 0; }
+  .count-btn { font-family: 'Cairo', sans-serif; font-size: 22px; font-weight: 700; width: 44px; height: 56px; border: none; background: transparent; color: var(--gold); cursor: pointer; transition: background 0.15s; line-height: 1; }
+  .count-btn:hover { background: rgba(139,92,246,0.1); }
+  .count-btn:active { background: rgba(139,92,246,0.2); }
+  .count-display { font-family: 'Cairo', sans-serif; font-size: 20px; font-weight: 900; color: #fff; min-width: 64px; text-align: center; user-select: none; }
+
+  .wheel-trigger-btn { display: none; width: 100%; max-width: 700px; padding: 16px; font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 14px; border: none; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: #fff; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(46,204,113,0.3); text-align: center; }
+  .wheel-trigger-btn.show { display: block; }
+
+  .reset-btn { display: none; width: 100%; max-width: 700px; padding: 14px; font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; border-radius: 14px; border: 1px solid #3a3a3a; background: #1e1e1e; color: #f0f0f0; margin-bottom: 20px; transition: transform 0.15s, background 0.2s, border-color 0.2s; }
+  .reset-btn:hover { background: #2a2a2a; border-color: var(--gold-dark); color: var(--gold); transform: translateY(-1px); }
+  .reset-btn.show { display: block; }
+
+  /* Card shuffle area */
+  .shuffle-area { width: 100%; max-width: 700px; height: 120px; position: relative; margin-bottom: 20px; display: none; }
+  .shuffle-area.active { display: block; }
+  .card-item { position: absolute; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 1px solid var(--gold-dark); border-radius: 10px; width: 80px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--gold); text-align: center; padding: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.15s ease, left 0.2s ease, top 0.2s ease; line-height: 1.3; }
+  .card-item::before { content: '🎰'; display: block; font-size: 20px; margin-bottom: 4px; }
+
+  /* 3 SLOTS CHOICES AREA */
+  .slots-selection-panel { width: 100%; max-width: 700px; background: var(--card); border: 1px dashed var(--gold-dark); border-radius: 16px; padding: 16px; margin-bottom: 20px; display: none; text-align: center; }
+  .slots-selection-panel.show { display: block; }
+  .selection-title { font-size: 13px; color: var(--gold); font-weight: 700; margin-bottom: 12px; }
+  .choices-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .choice-card { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; cursor: pointer; transition: all 0.2s; position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 95px; }
+  .choice-card:hover { border-color: var(--gold); transform: scale(1.03); background: #252525; }
+  .choice-card .replace-badge { position: absolute; top: 4px; right: 4px; font-size: 9px; background: rgba(139,92,246,0.15); color: var(--gold); padding: 1px 5px; border-radius: 6px; font-weight: bold; }
+  .choice-name { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .choice-co { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .choice-card.highlighted { border-color: var(--green); background: rgba(46,204,113,0.1); transform: scale(1.05); }
+  .choice-card.spinning-glow { border-color: #a855f7; background: rgba(168,85,247,0.05); animation: pulseGlow 0.4s ease infinite alternate; }
+  @keyframes pulseGlow { 0% { box-shadow: 0 0 4px rgba(168,85,247,0.2); } 100% { box-shadow: 0 0 12px rgba(168,85,247,0.5); } }
+
+  /* Result Card */
+  .result-card { background: var(--card); border: 1px solid var(--gold-dark); border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 700px; margin-bottom: 20px; display: none; text-align: center; box-shadow: 0 0 40px rgba(139,92,246,0.15); }
+  .result-img { width: 220px; height: 220px; max-width: 90%; object-fit: contain; background: var(--card); border-radius: 16px; margin: 0 auto 14px; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+  .choice-img { width: 100%; aspect-ratio: 3 / 4; object-fit: contain; background: var(--card2); border-radius: 8px; margin-bottom: 6px; display: block; }
+  .result-card.show { display: block; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes popIn { 0% { transform: scale(0.7) rotate(-3deg); opacity: 0; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+  .result-label { font-size: 11px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+  .result-name { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 6px; }
+  .result-company { font-size: 14px; color: var(--gold); font-weight: 600; opacity: 0.8; }
+  .result-name.reveal { animation: reveal 0.5s ease; }
+  @keyframes reveal { 0% { transform: rotateY(90deg); opacity: 0; } 100% { transform: rotateY(0deg); opacity: 1; } }
+  .session-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  /* Particles */
+  .particle { position: fixed; pointer-events: none; z-index: 999; width: 8px; height: 8px; border-radius: 50%; animation: particleFly 1s ease-out forwards; }
+  @keyframes particleFly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
+
+  /* History */
+  .recent-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; width: 100%; max-width: 700px; display: none; }
+  .recent-card.show { display: block; }
+  .recent-title { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; font-weight: 600; }
+  .recent-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text); font-weight: 600; }
+  .recent-item:last-child { border-bottom: none; }
+  .recent-num { width: 24px; height: 24px; border-radius: 50%; background: var(--card2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .recent-company { font-size: 11px; color: var(--gold); margin-right: auto; opacity: 0.7; }
+
+  .bottom-note { margin-top: 16px; font-size: 12px; color: var(--muted); text-align: center; }
+  @keyframes cardFlip { 0% { transform: rotateY(0deg) translateY(0px); } 25% { transform: rotateY(90deg) translateY(-20px); } 50% { transform: rotateY(180deg) translateY(0px); } 75% { transform: rotateY(270deg) translateY(-10px); } 100% { transform: rotateY(360deg) translateY(0px); } }
+  .flipping { animation: cardFlip 0.4s ease infinite; }
+</style>
+</head>
+<body>
+
+<button class="nav-lang" id="lang-toggle" type="button"><span class="globe">🌐</span><span id="lang-toggle-label">English</span></button>
+
+<div class="header">
+  <div class="logo">🎰 xTools</div>
+  <h1 data-i18n="pageTitle">سلوت عشوائي</h1>
+</div>
+
+<!-- COMPANY FILTER PANEL -->
+<div class="filter-panel" id="filter-panel">
+  <div class="filter-header" onclick="toggleFilter()">
+    <span class="filter-title" data-i18n="filterTitle">🏢 اختر الشركات للسحب منها</span>
+    <span class="filter-toggle" id="filter-toggle">▼</span>
+  </div>
+  <div class="filter-body" id="filter-body">
+    <div class="filter-actions">
+      <button class="filter-btn select-all" onclick="selectAllCompanies()" data-i18n="selectAll">✅ تحديد الكل</button>
+      <button class="filter-btn deselect-all" onclick="deselectAllCompanies()" data-i18n="deselectAll">❌ إلغاء الكل</button>
+      <button class="filter-btn select-pinned" onclick="selectPinnedCompanies()" data-i18n="selectPinned">⭐ تحديد الشائعة</button>
+    </div>
+    <div class="pinned-section" id="pinned-section">
+      <div class="pinned-label" data-i18n="pinnedLabel">⭐ شركات شائعة</div>
+      <div class="pinned-grid" id="pinned-grid"></div>
+    </div>
+    <hr class="section-divider">
+    <div class="all-label" data-i18n="allLabel">الكل (من أ - ي)</div>
+    <input class="filter-search" id="company-search" type="text" placeholder="🔍 ابحث عن شركة..." oninput="filterCompanies()" data-i18n-ph="searchPh" />
+    <div class="companies-grid" id="companies-grid"></div>
+    <div class="filter-summary" id="filter-summary"></div>
+  </div>
+</div>
+
+<div class="stats-row" id="stats-row" style="display:none">
+  <div class="stat-card">
+    <div class="stat-label" data-i18n="statTotal">إجمالي الألعاب</div>
+    <div class="stat-val" id="total-games">0</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label" data-i18n="statAvail">متاحة الآن</div>
+    <div class="stat-val" id="avail-games">0</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label" data-i18n="statSession">هذه الجلسة</div>
+    <div class="stat-val" id="session-count">0</div>
+  </div>
+</div>
+
+<!-- ACTIONS BUTTONS -->
+<div class="actions-container">
+  <div class="action-section">
+    <div class="section-label" data-i18n="singleSpinLabel">🎲 سلوت واحد</div>
+    <button class="spin-btn" id="spin-btn" onclick="spinSingle()" disabled data-i18n="spinSingleBtn">🎲 اختر سلوت عشوائي واحد</button>
+
+    <div class="shuffle-area" id="shuffle-area"></div>
+
+    <!-- Result for Option 1 (single spin) -->
+    <div class="result-card" id="result-card">
+      <div class="result-label" data-i18n="resultLabel">✦ النتيجة النهائية ✦</div>
+      <img class="result-img" id="result-img" src="" alt="" style="display:none;">
+      <div class="result-name" id="result-name">—</div>
+      <div class="result-company" id="result-company"></div>
+      <div class="session-note" data-i18n="sessionNote">لن يظهر مجدداً في هذه الجلسة</div>
+    </div>
+  </div>
+
+  <div class="section-divider-wrap">
+    <span class="section-divider-line"></span>
+    <span class="section-divider-text" data-i18n="orLabel">أو</span>
+    <span class="section-divider-line"></span>
+  </div>
+
+  <div class="action-section">
+    <div class="section-label" data-i18n="multiSpinLabel">🔮 سحب متعدد</div>
+    <div class="multi-spin-row">
+      <div class="multi-count-wrap">
+        <button class="count-btn" id="count-minus" onclick="changeCount(-1)">−</button>
+        <span class="count-display"><span id="slot-count-val">3</span> <span style="font-size:11px;color:var(--muted)" id="slot-count-unit" data-i18n="slotsUnit">سلوتات</span></span>
+        <button class="count-btn" id="count-plus" onclick="changeCount(1)">+</button>
+      </div>
+      <button class="spin-btn spin-triple-btn" id="spin-triple-btn" onclick="pickMultiSlotsGradually()" disabled data-i18n="spinTripleBtn">🔮 سحب عشوائي</button>
+    </div>
+
+    <!-- Result for Option 2 (multi spin) -->
+    <div class="slots-selection-panel" id="slots-panel">
+      <div class="selection-title" data-i18n="selectionTitle">👇 اضغط على أي لعبة لتغييرها عشوائياً قبل لف الدولاب:</div>
+      <div class="choices-grid" id="choices-grid"></div>
+    </div>
+
+    <button class="wheel-trigger-btn" id="wheel-btn" onclick="spinWheel()" data-i18n="wheelBtn">🎡 لف دولاب الحظ</button>
+  </div>
+</div>
+
+<button class="reset-btn" id="reset-btn" data-i18n="resetBtn">🔄 ريست الجلسة</button>
+
+<div class="recent-card" id="recent-list">
+  <div class="recent-title" data-i18n="recentTitle">⏱ آخر النتائج الفائزة</div>
+  <div id="recent-items"></div>
+</div>
+
+<div class="bottom-note" id="refresh-note"></div>
+
+<script src="slots-data.js" charset="utf-8"></script>
+<script>
+// ---- i18n ----
+const I18N = {
+  ar: {
+    navHome: '🏠 الرئيسية', navSlots: '🎰 سلوت عشوائي', navMult: '🚀 الاكس العشوائي', navWheel: '🎡 دولاب الحظ', navTour: '🏆 البطولة', navBattle: '⚔️ حرب السلوتات', navGive: '🎁 سحب البث',
+    pageTitle: 'سلوت عشوائي', loading: 'جاري التحميل...',
+    filterTitle: '🏢 اختر الشركات للسحب منها', selectAll: '✅ تحديد الكل', deselectAll: '❌ إلغاء الكل', selectPinned: '⭐ تحديد الشائعة',
+    pinnedLabel: '⭐ شركات شائعة', allLabel: 'الكل (من أ - ي)', searchPh: '🔍 ابحث عن شركة...',
+    statTotal: 'إجمالي الألعاب', statAvail: 'متاحة الآن', statSession: 'هذه الجلسة',
+    spinSingleBtn: '🎲 اختر سلوت عشوائي واحد', slotsUnit: 'سلوتات', spinTripleBtn: '🔮 سحب عشوائي',
+    spinTripleBtnReady: '🔮 سحب متعدد عشوائي', singleSpinLabel: 'سلوت واحد', multiSpinLabel: 'سحب متعدد', orLabel: 'أو',
+    selectionTitle: '👇 اضغط على أي لعبة لتغييرها عشوائياً قبل لف الدولاب:',
+    wheelBtn: '🎡 لف دولاب الحظ', resetBtn: '🔄 ريست الجلسة',
+    resultLabel: '✦ النتيجة النهائية ✦', sessionNote: 'لن يظهر مجدداً في هذه الجلسة', recentTitle: '⏱ آخر النتائج الفائزة',
+    filterSummary: (total, games) => `${total} شركة محددة · ${games} لعبة`,
+    drawing: 'جاري السحب...', warnNoCompany: '⚠️ اختر شركة واحدة على الأقل!', warnFewGames: '⚠️ الألعاب المتاحة أقل من 3!',
+    exhausted: 'تم استنفاد جميع الألعاب المتاحة، لا يمكن الاستبدال!',
+    refreshNote: n => `${n} لعبة متاحة`, lastUpdate: t => 'آخر تحديث: ' + t,
+    toggleLabel: 'English', companySelectedCount: n => `${n} شركة`, footer: 'طُوِّر بـ ❤️ من قِبَل', replaceBadge: '🔄 استبدال'
+  },
+  en: {
+    navHome: '🏠 Home', navSlots: '🎰 Random Slot', navMult: '🚀 Random Multiplier', navWheel: '🎡 Wheel of Fortune', navTour: '🏆 Tournament', navBattle: '⚔️ Slot Battle', navGive: '🎁 Giveaway',
+    pageTitle: 'Random Slot', loading: 'Loading...',
+    filterTitle: '🏢 Choose Providers to Draw From', selectAll: '✅ Select All', deselectAll: '❌ Deselect All', selectPinned: '⭐ Select Popular',
+    pinnedLabel: '⭐ Popular Providers', allLabel: 'All (A - Z)', searchPh: '🔍 Search a provider...',
+    statTotal: 'Total Games', statAvail: 'Available Now', statSession: 'This Session',
+    spinSingleBtn: '🎲 Pick One Random Slot', slotsUnit: 'slots', spinTripleBtn: '🔮 Random Draw',
+    spinTripleBtnReady: '🔮 Multi Random Draw', singleSpinLabel: 'Single Slot', multiSpinLabel: 'Multi Draw', orLabel: 'OR',
+    selectionTitle: '👇 Tap any game to reroll it before spinning the wheel:',
+    wheelBtn: '🎡 Spin the Wheel', resetBtn: '🔄 Reset Session',
+    resultLabel: '✦ Final Result ✦', sessionNote: 'Won\'t appear again this session', recentTitle: '⏱ Recent Wins',
+    filterSummary: (total, games) => `${total} providers selected · ${games} games`,
+    drawing: 'Drawing...', warnNoCompany: '⚠️ Select at least one provider!', warnFewGames: '⚠️ Fewer than 3 games available!',
+    exhausted: 'All available games have been used, cannot replace!',
+    refreshNote: n => `${n} games available`, lastUpdate: t => 'Last update: ' + t,
+    toggleLabel: 'عربي', companySelectedCount: n => `${n} providers`, footer: 'Built with ❤️ by', replaceBadge: '🔄 Replace'
+  }
+};
+let currentLang = localStorage.getItem('site-lang') || 'ar';
+
+function applyLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.add('lang-fade');
+  setTimeout(() => {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (I18N[lang][key]) el.textContent = I18N[lang][key];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (I18N[lang][key]) el.placeholder = I18N[lang][key];
+    });
+    document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
+    document.getElementById('footer-text').textContent = I18N[lang].footer;
+    if (typeof updateFilterSummary === 'function') { try { updateFilterSummary(); } catch(e){} }
+    if (typeof updateStats === 'function') { try { updateStats(); } catch(e){} }
+    if (typeof buildCompaniesGrid === 'function') { try { buildCompaniesGrid(document.getElementById('company-search') ? document.getElementById('company-search').value : ''); } catch(e){} }
+    document.body.classList.remove('lang-fade');
+  }, 160);
+  localStorage.setItem('site-lang', lang);
+}
+
+function imgOf(g){ if(!g) return ""; if(Array.isArray(g.imgs)&&g.imgs.length) return g.imgs[Math.floor(Math.random()*g.imgs.length)]; return g.img||""; }
+
+// Build company -> games map
+const companyMap = {};
+ALL_SLOTS.forEach(g => {
+  if (!companyMap[g.company]) companyMap[g.company] = [];
+  companyMap[g.company].push(g);
+});
+const allCompanies = [
+  ...PINNED.filter(c => companyMap[c]),
+  ...Object.keys(companyMap).filter(c => !PINNED.includes(c)).sort((a,b) => companyMap[b].length - companyMap[a].length || a.toLowerCase().localeCompare(b.toLowerCase()))
+];
+
+// State
+let selectedCompanies = new Set();
+let SLOTS_RAW = []; 
+let sessionUsed = new Set();
+let history = [];
+let currentChoices = [];
+
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+// ---- Filter UI ----
+function toggleFilter() {
+  const body = document.getElementById('filter-body');
+  const tog = document.getElementById('filter-toggle');
+  body.classList.toggle('open');
+  tog.classList.toggle('open');
+}
+
+function makeChip(co, container) {
+  const chip = document.createElement('div');
+  chip.className = 'company-chip' + (selectedCompanies.has(co) ? ' active' : '');
+  chip.dataset.company = co;
+  chip.innerHTML = `<span class="dot"></span><span class="chip-name" title="${co}">${co}</span><span class="chip-count">${companyMap[co] ? companyMap[co].length : 0}</span>`;
+  chip.onclick = () => toggleCompany(co, chip);
+  container.appendChild(chip);
+  return chip;
+}
+
+function buildPinnedGrid() {
+  const grid = document.getElementById('pinned-grid');
+  grid.innerHTML = '';
+  PINNED.filter(c => companyMap[c]).forEach(co => makeChip(co, grid));
+}
+
+function buildCompaniesGrid(filter = '') {
+  const grid = document.getElementById('companies-grid');
+  grid.innerHTML = '';
+  const fl = filter.toLowerCase();
+  const nonPinned = allCompanies.filter(c => !PINNED.includes(c));
+  nonPinned.forEach(co => {
+    if (fl && !co.toLowerCase().includes(fl)) return;
+    makeChip(co, grid);
+  });
+  updateFilterSummary();
+}
+
+function toggleCompany(co, chip) {
+  if (selectedCompanies.has(co)) {
+    selectedCompanies.delete(co);
+  } else {
+    selectedCompanies.add(co);
+  }
+  document.querySelectorAll(`.company-chip[data-company="${CSS.escape(co)}"]`).forEach(c => {
+    c.classList.toggle('active', selectedCompanies.has(co));
+  });
+  rebuildSlots();
+  updateFilterSummary();
+}
+
+function selectAllCompanies() {
+  selectedCompanies = new Set(allCompanies);
+  document.querySelectorAll('.company-chip').forEach(c => c.classList.add('active'));
+  rebuildSlots();
+  updateFilterSummary();
+}
+
+function deselectAllCompanies() {
+  selectedCompanies.clear();
+  document.querySelectorAll('.company-chip').forEach(c => c.classList.remove('active'));
+  rebuildSlots();
+  updateFilterSummary();
+}
+
+function selectPinnedCompanies() {
+  selectedCompanies = new Set(PINNED.filter(c => companyMap[c]));
+  document.querySelectorAll(".company-chip").forEach(c => {
+    c.classList.toggle("active", selectedCompanies.has(c.dataset.company));
+  });
+  rebuildSlots();
+  updateFilterSummary();
+}
+
+function filterCompanies() {
+  buildCompaniesGrid(document.getElementById('company-search').value);
+}
+
+// ---- Rebuild Slots ----
+function rebuildSlots() {
+  SLOTS_RAW = ALL_SLOTS.filter(g => selectedCompanies.has(g.company));
+  sessionUsed = new Set([...sessionUsed].filter(n => SLOTS_RAW.some(g => g.name === n)));
+  updateStats();
+}
+
+function updateFilterSummary() {
+  const total = selectedCompanies.size;
+  const games = SLOTS_RAW.length;
+  document.getElementById('filter-summary').textContent = I18N[currentLang].filterSummary(total, games);
+}
+
+// ---- Audio ----
+function playCardFlip() {
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(600, ctx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+  g.gain.setValueAtTime(0.15, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+  o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.08);
+}
+function playWhoosh() {
+  const bufSize = ctx.sampleRate * 0.3, buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) data[i] = (Math.random()*2-1)*(1-i/bufSize);
+  const src = ctx.createBufferSource(); src.buffer = buf;
+  const filter = ctx.createBiquadFilter(); filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(2000, ctx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.3);
+  filter.Q.value = 1.5;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.4, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+  src.connect(filter); filter.connect(g); g.connect(ctx.destination);
+  src.start(); src.stop(ctx.currentTime + 0.3);
+}
+function playWin() {
+  [523,659,784,1047].forEach((freq,i) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination); o.type = 'sine';
+    const t = ctx.currentTime + i*0.12;
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.3, t+0.05);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.35);
+    o.start(t); o.stop(t+0.35);
+  });
+}
+
+// ---- Cards Visual (Single Spin) ----
+function spawnCards(names) {
+  const area = document.getElementById('shuffle-area');
+  area.innerHTML = ''; area.classList.add('active');
+  const count = Math.min(6, names.length);
+  const areaW = Math.min(700, window.innerWidth - 32);
+  for (let i = 0; i < count; i++) {
+    const card = document.createElement('div');
+    card.className = 'card-item flipping';
+    card.textContent = names[i].name;
+    card.style.left = (i*(areaW/count)) + 'px';
+    card.style.top = Math.random()*20 + 'px';
+    card.style.animationDelay = (i*0.07) + 's';
+    card.style.zIndex = i;
+    area.appendChild(card);
+  }
+}
+function shuffleCards() {
+  const area = document.getElementById('shuffle-area');
+  const cards = area.querySelectorAll('.card-item');
+  const areaW = Math.min(700, window.innerWidth - 32);
+  cards.forEach(card => { card.style.left = Math.random()*(areaW-80) + 'px'; card.style.top = Math.random()*20 + 'px'; });
+}
+function hideCards() {
+  const area = document.getElementById('shuffle-area');
+  area.querySelectorAll('.card-item').forEach((card,i) => {
+    setTimeout(() => { card.style.transition = 'transform 0.3s ease, opacity 0.3s ease'; card.style.transform = 'translateY(-150px) rotate(' + (Math.random()*40-20) + 'deg)'; card.style.opacity = '0'; }, i*50);
+  });
+  setTimeout(() => { area.classList.remove('active'); area.innerHTML = ''; }, 600);
+}
+
+// ---- Particles ----
+function spawnParticles(x, y) {
+  const colors = ['#8b6cff','#fff','#ff6b6b','#4ecdc4','#a8e063'];
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = Math.random()*Math.PI*2, dist = 80+Math.random()*120;
+    p.style.cssText = `left:${x}px;top:${y}px;background:${colors[Math.floor(Math.random()*colors.length)]};--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+
+// ---- Spin Lock System ----
+let isSpinning = false;
+
+function lockUI() {
+  isSpinning = true;
+  document.getElementById('spin-btn').disabled = true;
+  document.getElementById('spin-triple-btn').disabled = true;
+  document.getElementById('reset-btn').disabled = true;
+  document.getElementById('wheel-btn').disabled = true;
+  // Disable count buttons
+  document.getElementById('count-minus').disabled = true;
+  document.getElementById('count-plus').disabled = true;
+  // Disable company filter chips
+  document.querySelectorAll('.company-chip').forEach(c => c.style.pointerEvents = 'none');
+  document.querySelectorAll('.filter-btn').forEach(b => b.disabled = true);
+}
+
+function unlockUI() {
+  isSpinning = false;
+  document.getElementById('reset-btn').disabled = false;
+  document.getElementById('wheel-btn').disabled = false;
+  document.getElementById('count-minus').disabled = slotCount <= 2;
+  document.getElementById('count-plus').disabled = slotCount >= 10;
+  document.querySelectorAll('.company-chip').forEach(c => c.style.pointerEvents = '');
+  document.querySelectorAll('.filter-btn').forEach(b => b.disabled = false);
+  updateStats(); // re-enables spin/triple based on state
+}
+
+// ---- Core Logic Helpers ----
+function getRandom(slots, used, excludeList = []) {
+  const available = slots.filter(s => !used.has(s.name) && !excludeList.some(e => e.name === s.name));
+  if (!available.length) return null;
+  return available[Math.floor(Math.random()*available.length)];
+}
+
+function updateStats() {
+  const avail = SLOTS_RAW.filter(s => !sessionUsed.has(s.name)).length;
+  document.getElementById('total-games').textContent = SLOTS_RAW.length;
+  document.getElementById('avail-games').textContent = avail;
+  document.getElementById('session-count').textContent = sessionUsed.size;
+  document.getElementById('stats-row').style.display = '';
+  
+  const btnSingle = document.getElementById('spin-btn');
+  const btnTriple = document.getElementById('spin-triple-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  
+  if (SLOTS_RAW.length === 0) {
+    btnSingle.disabled = btnTriple.disabled = true;
+    btnSingle.textContent = I18N[currentLang].warnNoCompany;
+  } else if (avail < 3) {
+    btnSingle.disabled = false;
+    btnTriple.disabled = true;
+    btnSingle.textContent = I18N[currentLang].spinSingleBtn;
+    btnTriple.textContent = I18N[currentLang].warnFewGames;
+  } else {
+    btnSingle.disabled = btnTriple.disabled = false;
+    btnSingle.textContent = I18N[currentLang].spinSingleBtn;
+    btnTriple.textContent = I18N[currentLang].spinTripleBtnReady;
+  }
+  resetBtn.classList.toggle('show', sessionUsed.size > 0);
+}
+
+function updateHistory() {
+  const list = document.getElementById('recent-list');
+  if (!history.length) { list.classList.remove('show'); return; }
+  list.classList.add('show');
+  document.getElementById('recent-items').innerHTML = history.slice(-5).reverse()
+    .map((s,i) => `<div class="recent-item"><span class="recent-num">${i+1}</span>${s.name}<span class="recent-company">${s.company}</span></div>`).join('');
+}
+
+// ---- SYSTEM 1: SPIN SINGLE SLOT (ORIGINAL) ----
+function spinSingle() {
+  if (isSpinning) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  lockUI();
+  
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('slots-panel').classList.remove('show');
+  document.getElementById('wheel-btn').classList.remove('show');
+
+  const shuffled = [...SLOTS_RAW].sort(()=>Math.random()-0.5).slice(0,6);
+  spawnCards(shuffled);
+  playWhoosh();
+  
+  let flips = 0, totalFlips = 16;
+  const interval = setInterval(() => {
+    flips++;
+    if (flips%3===0) { shuffleCards(); playCardFlip(); }
+    if (flips >= totalFlips) {
+      clearInterval(interval);
+      const chosen = getRandom(SLOTS_RAW, sessionUsed);
+      if (!chosen) { hideCards(); unlockUI(); return; }
+      hideCards();
+      setTimeout(() => {
+        const nameEl = document.getElementById('result-name');
+        nameEl.textContent = chosen.name;
+        nameEl.className = 'result-name reveal';
+        document.getElementById('result-company').textContent = '🏢 ' + chosen.company;
+        const imgEl = document.getElementById('result-img');
+        imgEl.style.display = 'none';
+        if (imgOf(chosen)) {
+          imgEl.onload = () => { imgEl.style.display = 'block'; };
+          imgEl.src = imgOf(chosen);
+          imgEl.alt = chosen.name;
+        } else {
+          imgEl.removeAttribute('src');
+        }
+        document.getElementById('result-card').classList.add('show');
+        playWin();
+        const rect = document.getElementById('result-card').getBoundingClientRect();
+        spawnParticles(rect.left+rect.width/2, rect.top+rect.height/2);
+        sessionUsed.add(chosen.name);
+        history.push(chosen);
+        unlockUI();
+        updateHistory();
+      }, 400);
+    }
+  }, 120);
+}
+
+// ---- SYSTEM 2: TRIPLE SLOTS WITH STEP-BY-STEP SPINNING EFFECT (SLOWER) ----
+let slotCount = 3;
+
+function changeCount(delta) {
+  slotCount = Math.min(10, Math.max(2, slotCount + delta));
+  document.getElementById('slot-count-val').textContent = slotCount;
+  document.getElementById('count-minus').disabled = slotCount <= 2;
+  document.getElementById('count-plus').disabled = slotCount >= 10;
+}
+
+function pickMultiSlotsGradually() {
+  if (isSpinning) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  lockUI();
+  
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('wheel-btn').classList.remove('show');
+
+  currentChoices = [];
+  
+  const panel = document.getElementById('slots-panel');
+  const grid = document.getElementById('choices-grid');
+  grid.innerHTML = '';
+  panel.classList.add('show');
+
+  for (let i = 0; i < slotCount; i++) {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'choice-card';
+    placeholder.id = `choice-${i}`;
+    placeholder.innerHTML = `<div class="choice-name" style="color:var(--muted)">${I18N[currentLang].drawing}</div>`;
+    grid.appendChild(placeholder);
+  }
+
+  function spinSequentially(index) {
+    if (index >= slotCount) {
+      document.getElementById('wheel-btn').classList.add('show');
+      unlockUI();
+      return;
+    }
+    spinSlotOneByOne(index, () => spinSequentially(index + 1));
+  }
+  spinSequentially(0);
+}
+
+function spinSlotOneByOne(slotIndex, callback) {
+  const cardElement = document.getElementById(`choice-${slotIndex}`);
+  cardElement.classList.add('spinning-glow');
+  
+  let ticks = 0;
+  const totalTicks = 12 + slotIndex * 2; // variance per slot
+  playWhoosh();
+
+  const rollInterval = setInterval(() => {
+    ticks++;
+    const tempRandomGame = SLOTS_RAW[Math.floor(Math.random() * SLOTS_RAW.length)];
+    cardElement.innerHTML = `
+      ${imgOf(tempRandomGame) ? `<img class="choice-img" src="${imgOf(tempRandomGame)}" alt="">` : ''}
+      <div class="choice-name">${tempRandomGame.name}</div>
+      <div class="choice-co">🏢 ${tempRandomGame.company}</div>
+    `;
+    playCardFlip();
+
+    if (ticks >= totalTicks) {
+      clearInterval(rollInterval);
+      cardElement.classList.remove('spinning-glow');
+      
+      const finalSelectedSlot = getRandom(SLOTS_RAW, sessionUsed, currentChoices);
+      currentChoices[slotIndex] = finalSelectedSlot;
+      
+      cardElement.innerHTML = `
+        <span class="replace-badge">${I18N[currentLang].replaceBadge}</span>
+        ${imgOf(finalSelectedSlot) ? `<img class="choice-img" src="${imgOf(finalSelectedSlot)}" alt="">` : ''}
+        <div class="choice-name">${finalSelectedSlot.name}</div>
+        <div class="choice-co">🏢 ${finalSelectedSlot.company}</div>
+      `;
+      cardElement.onclick = () => replaceSlot(slotIndex);
+      
+      const rect = cardElement.getBoundingClientRect();
+      spawnParticles(rect.left + rect.width/2, rect.top + rect.height/2);
+      
+      callback();
+    }
+  }, 150); 
+}
+
+function replaceSlot(index) {
+  if (isSpinning) return;
+  playCardFlip();
+  const newGame = getRandom(SLOTS_RAW, sessionUsed, currentChoices);
+  if (!newGame) {
+    alert(I18N[currentLang].exhausted);
+    return;
+  }
+  
+  currentChoices[index] = newGame;
+  const card = document.getElementById(`choice-${index}`);
+  card.innerHTML = `
+    <span class="replace-badge">${I18N[currentLang].replaceBadge}</span>
+    ${imgOf(newGame) ? `<img class="choice-img" src="${imgOf(newGame)}" alt="">` : ''}
+    <div class="choice-name">${newGame.name}</div>
+    <div class="choice-co">🏢 ${newGame.company}</div>
+  `;
+  
+  card.style.borderColor = 'var(--gold)';
+  setTimeout(() => card.style.borderColor = 'var(--border)', 300);
+}
+
+// ---- FORTUNE WHEEL ----
+function spinWheel() {
+  if (isSpinning) return;
+  lockUI();
+  
+  let currentHighlight = -1;
+  let duration = 80; 
+  let iterations = 0;
+  const totalSteps = 22 + Math.floor(Math.random() * 10);
+  
+  function highlightNext() {
+    document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('highlighted'));
+    
+    currentHighlight = (currentHighlight + 1) % slotCount;
+    const currentCard = document.getElementById(`choice-${currentHighlight}`);
+    if (currentCard) currentCard.classList.add('highlighted');
+    
+    playCardFlip();
+    iterations++;
+    
+    if (iterations < totalSteps) {
+      duration += 18; 
+      setTimeout(highlightNext, duration);
+    } else {
+      const winner = currentChoices[currentHighlight];
+      
+      setTimeout(() => {
+        const nameEl = document.getElementById('result-name');
+        nameEl.textContent = winner.name;
+        nameEl.className = 'result-name reveal';
+        document.getElementById('result-company').textContent = '🏢 ' + winner.company;
+        const imgEl = document.getElementById('result-img');
+        imgEl.style.display = 'none';
+        if (imgOf(winner)) {
+          imgEl.onload = () => { imgEl.style.display = 'block'; };
+          imgEl.src = imgOf(winner);
+          imgEl.alt = winner.name;
+        } else {
+          imgEl.removeAttribute('src');
+        }
+        document.getElementById('result-card').classList.add('show');
+        
+        playWin();
+        const rect = document.getElementById('result-card').getBoundingClientRect();
+        spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        
+        sessionUsed.add(winner.name);
+        history.push(winner);
+        
+        document.getElementById('slots-panel').classList.remove('show');
+        document.getElementById('wheel-btn').classList.remove('show');
+        
+        unlockUI();
+        updateHistory();
+      }, 500);
+    }
+  }
+  highlightNext();
+}
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (isSpinning) return;
+  sessionUsed.clear(); history.length = 0; currentChoices = [];
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('slots-panel').classList.remove('show');
+  document.getElementById('wheel-btn').classList.remove('show');
+  document.getElementById('recent-list').classList.remove('show');
+  document.getElementById('recent-items').innerHTML = '';
+  updateStats();
+});
+
+// Init
+rebuildSlots();
+buildPinnedGrid();
+buildCompaniesGrid();
+applyLang(currentLang);
+document.getElementById('lang-toggle').addEventListener('click', () => {
+  applyLang(currentLang === 'ar' ? 'en' : 'ar');
+});
+document.getElementById('refresh-note').textContent = I18N[currentLang].refreshNote(ALL_SLOTS.length);
+</script>
+
+<script src="nav.js" data-site="main" data-active="slots"></script>
+<!-- xtools-footer -->
+<style>
+  .xt-footer{text-align:center;padding:36px 16px 26px;margin-top:20px;border-top:1px solid rgba(139,108,255,.18);font-family:'Cairo',sans-serif;color:#9a9ab5;font-size:14px}
+  .xt-by{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .xt-by .xt-name{color:#fff;font-weight:800;font-size:16px}
+  .xt-link{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;border:1px solid rgba(168,108,255,.5);background:linear-gradient(135deg,rgba(77,109,255,.18),rgba(197,108,240,.18));color:#c9b8ff;font-weight:700;font-size:13px;text-decoration:none;direction:ltr;transition:.2s}
+  .xt-link:hover{background:linear-gradient(135deg,#4d6dff,#c56cf0);color:#fff;transform:translateY(-1px)}
+  .xt-copy{margin-top:12px;font-size:12px;color:#77779a}
+</style>
+<div class="xt-footer">
+  <div class="xt-by">
+    <span id="footer-text">طُوِّر بـ ❤️ من قِبَل</span>
+    <a class="xt-name" href="https://guns.lol/roy_5x" target="_blank" rel="noopener" style="text-decoration:none;color:#fff;font-weight:800;font-size:16px">Roy</a>
+    <a class="xt-link" href="https://guns.lol/roy_5x" target="_blank" rel="noopener">🔗 guns.lol/roy_5x</a>
+  </div>
+  <div class="xt-copy" id="xt-copy">© 2026 xTools — جميع الحقوق محفوظة</div>
+</div>
+<script>
+(function(){
+  var T={ar:{by:'طُوِّر بـ ❤️ من قِبَل',c:'© 2026 xTools — جميع الحقوق محفوظة'},en:{by:'Built with ❤️ by',c:'© 2026 xTools — All rights reserved'}};
+  function lang(){var l='';try{l=localStorage.getItem('site-lang')}catch(e){}if(l!=='ar'&&l!=='en')l=document.documentElement.lang;return l==='en'?'en':'ar'}
+  var last='';
+  function upd(){var l=lang();if(l===last&&document.getElementById('footer-text').textContent===T[l].by)return;last=l;document.querySelector('.xt-footer').dir=l==='en'?'ltr':'rtl';
+    document.getElementById('footer-text').textContent=T[l].by;document.getElementById('xt-copy').textContent=T[l].c}
+  upd();setInterval(upd,400);
+})();
+</script>
+</body>
+</html>
