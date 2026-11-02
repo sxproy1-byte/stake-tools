@@ -167,21 +167,17 @@
   .load-note { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 0; }
   .hidden { display: none !important; }
 </style>
+<script>
+  (function(){
+    var l = localStorage.getItem('site-lang') || 'ar';
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  })();
+</script>
 </head>
 <body>
 
-<nav class="navbar">
-  <div class="navbar-inner">
-    <a class="nav-home" href="index.html">🏠 الرئيسية</a>
-    <span class="nav-sep">|</span>
-    <a class="nav-link" href="slots.html">🎰 سلوت عشوائي</a>
-    <a class="nav-link" href="multiplier.html">🚀 الاكس العشوائي</a>
-    <a class="nav-link" href="wheel.html">🎡 دولاب الحظ</a>
-    <a class="nav-link active" href="tournament.html">🏆 بطولة السلوتات</a>
-    <a class="nav-link" href="battle.html">⚔️ حرب السلوتات</a>
-    <button class="nav-lang" id="lang-toggle" type="button"><span>🌐</span><span>English</span></button>
-  </div>
-</nav>
+<button class="nav-lang" id="lang-toggle" type="button"><span class="globe">🌐</span><span id="lang-toggle-label">English</span></button>
 
 <div class="header">
   <div class="logo">🎰 xTools</div>
@@ -263,15 +259,17 @@
 
 <script src="slots-data.js" charset="utf-8" onerror="document.getElementById('load-note').textContent='تعذّر تحميل ملف slots-data.js — تأكد إنه موجود بنفس مجلد هذه الصفحة.'"></script>
 <script>
+let curLang = (function(){ try { var l = localStorage.getItem('site-lang'); return l === 'en' ? 'en' : 'ar'; } catch (e) { return 'ar'; } })();
+const tr = (ar, en) => curLang === 'en' ? en : ar;
 const POWERS = [
-  { key:'double',  label:'⚡ المضاعف',       desc:'يضيف 10% على نتيجتك (x1.10) بالجولة الأولى تلقائياً.' },
-  { key:'curse',   label:'💀 اللعنة',        desc:'تُلغي سلوت خصمك المباشر تلقائياً ويطلعله سلوت جديد، بالجولة الأولى.' },
-  { key:'steal',   label:'🕵️ السرقة',        desc:'تبدّل نتيجتك مع نتيجة خصمك المباشر بالكامل تلقائياً — خطر لو رقمك أعلى منه!' },
-  { key:'weaken',  label:'🔻 التخفيض',       desc:'ينقص 10% من نتيجة خصمك المباشر (x0.90) بالجولة الأولى تلقائياً.' },
-  { key:'shield',  label:'🛡️ الدرع',         desc:'يصدّ تلقائياً أي قدرة هجومية (لعنة/سرقة/تخفيض) موجّهة ضدك بالجولة الأولى.' },
-  { key:'redraw2', label:'🎯 السحب المزدوج', desc:'تسحب سلوتين مرة وحدة بالبداية وتختار الأفضل منهم.' },
-  { key:'revive',  label:'🔁 الإنعاش',       desc:'لو خسرت مباراة الجولة الأولى، بتاخذ سلوت جديد وتنعاد المباراة تلقائياً مرة وحدة.' },
-  { key:'none',    label:'🚫 بدون قدرة',     desc:'حظك السليم بس، بدون أي ميزة إضافية.' }
+  { key:'double', get label(){return tr('⚡ المضاعف','⚡ Multiplier')}, get desc(){return tr('يضيف 10% على نتيجتك (x1.10) بالجولة الأولى تلقائياً.','Adds 10% to your result (x1.10) in round one, automatically.')} },
+  { key:'curse', get label(){return tr('💀 اللعنة','💀 Curse')}, get desc(){return tr('تُلغي سلوت خصمك المباشر تلقائياً ويطلعله سلوت جديد، بالجولة الأولى.',"Cancels your direct opponent's slot and they draw a new one, in round one.")} },
+  { key:'steal', get label(){return tr('🕵️ السرقة','🕵️ Steal')}, get desc(){return tr('تبدّل نتيجتك مع نتيجة خصمك المباشر بالكامل تلقائياً — خطر لو رقمك أعلى منه!',"Swaps your result with your direct opponent's entirely — risky if your number is higher!")} },
+  { key:'weaken', get label(){return tr('🔻 التخفيض','🔻 Weaken')}, get desc(){return tr('ينقص 10% من نتيجة خصمك المباشر (x0.90) بالجولة الأولى تلقائياً.',"Cuts 10% from your direct opponent's result (x0.90) in round one, automatically.")} },
+  { key:'shield', get label(){return tr('🛡️ الدرع','🛡️ Shield')}, get desc(){return tr('يصدّ تلقائياً أي قدرة هجومية (لعنة/سرقة/تخفيض) موجّهة ضدك بالجولة الأولى.','Automatically blocks any attack (curse/steal/weaken) aimed at you in round one.')} },
+  { key:'redraw2', get label(){return tr('🎯 السحب المزدوج','🎯 Double Draw')}, get desc(){return tr('تسحب سلوتين مرة وحدة بالبداية وتختار الأفضل منهم.','Draw two slots at once at the start and keep the better one.')} },
+  { key:'revive', get label(){return tr('🔁 الإنعاش','🔁 Revive')}, get desc(){return tr('لو خسرت مباراة الجولة الأولى، بتاخذ سلوت جديد وتنعاد المباراة تلقائياً مرة وحدة.','If you lose your round-one match, you get a new slot and the match replays once, automatically.')} },
+  { key:'none', get label(){return tr('🚫 بدون قدرة','🚫 No power')}, get desc(){return tr('حظك السليم بس، بدون أي ميزة إضافية.','Just your own luck, no extra advantage.')} }
 ];
 
 // ALL_SLOTS و PINNED بيجيو جاهزين من ملف slots-data.js (محمّل بـ <script> فوق بالصفحة)
@@ -285,6 +283,52 @@ let players = {}; // name -> { power, slot, shielded, cursed, pendingChoice, rev
 let rounds = [];
 let currentRoundIndex = 0;
 
+
+function setT(sel, ar, en, html, all) {
+  document.querySelectorAll(sel).forEach(el => { const v = tr(ar, en); if (html) el.innerHTML = v; else el.textContent = v; });
+}
+function applyStatic() {
+  setT('.header h1', '🏆 بطولة السلوتات', '🏆 Slots Tournament');
+  const sl = document.querySelectorAll('.setup-label');
+  if (sl[0]) sl[0].textContent = tr('📋 عدد المتسابقين', '📋 Number of players');
+  if (sl[1]) sl[1].textContent = tr('🔮 القدرات', '🔮 Powers');
+  if (sl[2]) sl[2].textContent = tr('✏️ أسماء المتسابقين', '✏️ Player names');
+  setT('.size-btn[data-size="8"]', '8 أشخاص', '8 players');
+  setT('.size-btn[data-size="16"]', '16 شخص', '16 players');
+  setT('.powers-btn[data-powers="on"]', 'مع قدرات<span class="sub">قدرة عشوائية لكل واحد بالجولة الأولى</span>', 'With powers<span class="sub">A random power for everyone in round one</span>', true);
+  setT('.powers-btn[data-powers="off"]', 'بدون قدرات<span class="sub">بطولة عادية، حظ السلوت بس</span>', 'No powers<span class="sub">A normal tournament, slot luck only</span>', true);
+  setT('.shuffle-note', 'بيتحدد الترتيب والسلوت الثابت عشوائياً عند البدء', 'The order and fixed slots are randomized when you start');
+  setT('.filter-title', '🏢 الشركات المسموح تنسحب منها الألعاب', '🏢 Companies games can be drawn from');
+  const fb = document.querySelectorAll('.filter-actions .filter-btn');
+  if (fb[0]) fb[0].textContent = tr('⭐ تحديد الشائعة', '⭐ Select popular');
+  if (fb[1]) fb[1].textContent = tr('✅ تحديد الكل', '✅ Select all');
+  if (fb[2]) fb[2].textContent = tr('❌ إلغاء الكل', '❌ Deselect all');
+  const cs = document.getElementById('company-search'); if (cs) cs.placeholder = tr('ابحث عن شركة...', 'Search a company...');
+  setT('.pinned-label', '⭐ شركات شائعة', '⭐ Popular companies');
+  setT('.all-label', 'الكل (من أ - ي)', 'All (A–Z)');
+  setT('#start-btn', '🚀 ابدأ البطولة', '🚀 Start tournament');
+  const rt = document.querySelector('.roster-title span'); if (rt) rt.textContent = tr('👥 المتسابقون وقدراتهم وسلوتاتهم', '👥 Players, powers and slots');
+  setT('#next-round-btn', '➡️ الجولة التالية', '➡️ Next round');
+  setT('.ghost-btn', '🔄 إلغاء وبدء بطولة جديدة', '🔄 Cancel and start a new tournament');
+  setT('.champion-label', '✦ بطل البطولة ✦', '✦ Tournament Champion ✦');
+  setT('#champion-screen .primary-btn', '🔄 بطولة جديدة', '🔄 New tournament');
+  const ln = document.getElementById('load-note'); if (ln && !ln.classList.contains('hidden')) ln.textContent = tr('جاري تحميل قائمة الألعاب...', 'Loading games list...');
+  document.querySelectorAll('.name-input').forEach(i => { const m = i.value.match(/^(اللاعب|Player) (\d+)$/); if (m) i.value = tr('اللاعب ', 'Player ') + m[2]; });
+  document.getElementById('lang-toggle-label').textContent = curLang === 'en' ? 'عربي' : 'English';
+  document.title = tr('بطولة السلوتات - xTools', 'Slots Tournament - xTools');
+}
+function setLang(l) {
+  curLang = l;
+  try { localStorage.setItem('site-lang', l); } catch (e) {}
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  applyStatic();
+  if (document.getElementById('company-search')) { try { renderCompanyChips(); } catch (e) {} }
+  if (typeof rounds !== 'undefined' && rounds.length && !document.getElementById('round-screen').classList.contains('hidden')) { try { renderRound(); } catch (e) {} }
+}
+document.getElementById('lang-toggle').addEventListener('click', () => setLang(curLang === 'ar' ? 'en' : 'ar'));
+applyStatic();
+
 try {
   if (typeof ALL_SLOTS === 'undefined' || !Array.isArray(ALL_SLOTS)) throw new Error('no data');
   ALL_COMPANIES = [...new Set(ALL_SLOTS.filter(g => g.img).map(g => g.company))].sort((a,b)=>a.localeCompare(b));
@@ -297,7 +341,7 @@ try {
   renderCompanyChips();
   applyWheelNames();
 } catch (e) {
-  document.getElementById('load-note').textContent = 'تعذّر تحميل قائمة الألعاب. تأكد إن ملف slots-data.js موجود بنفس المجلد.';
+  document.getElementById('load-note').textContent = tr('تعذّر تحميل قائمة الألعاب. تأكد إن ملف slots-data.js موجود بنفس المجلد.','Could not load the games list. Make sure slots-data.js is in the same folder.');
 }
 
 function buildNameInputs() {
@@ -307,7 +351,7 @@ function buildNameInputs() {
     const inp = document.createElement('input');
     inp.className = 'name-input';
     inp.id = 'name-' + i;
-    inp.value = 'اللاعب ' + i;
+    inp.value = tr('اللاعب ','Player ') + i;
     inp.maxLength = 24;
     grid.appendChild(inp);
   }
@@ -352,7 +396,7 @@ function renderCompanyChips() {
 
   ALL_COMPANIES.filter(c => !PINNED.includes(c) && c.toLowerCase().includes(q)).forEach(c => grid_makeChip(c, grid));
 
-  document.getElementById('filter-count').textContent = `محدّد ${selectedCompanies.size} من ${ALL_COMPANIES.length} شركة`;
+  document.getElementById('filter-count').textContent = tr(`محدّد ${selectedCompanies.size} من ${ALL_COMPANIES.length} شركة`,`Selected ${selectedCompanies.size} of ${ALL_COMPANIES.length} companies`);
 }
 function grid_makeChip(c, container) {
   const chip = document.createElement('div');
@@ -404,11 +448,11 @@ function makeMatch(p1, p2) {
 }
 
 function startTournament() {
-  if (selectedCompanies.size === 0) { alert('لازم تختار شركة واحدة على الأقل!'); return; }
+  if (selectedCompanies.size === 0) { alert(tr('لازم تختار شركة واحدة على الأقل!','Select at least one company!')); return; }
   const names = [];
   for (let i = 1; i <= bracketSize; i++) {
     const v = document.getElementById('name-' + i).value.trim();
-    names.push(v || ('اللاعب ' + i));
+    names.push(v || (tr('اللاعب ','Player ') + i));
   }
   const shuffled = shuffle(names);
   usedSlotNames = new Set();
@@ -424,38 +468,38 @@ function startTournament() {
     const m = makeMatch(p1, p2);
     const pw1 = players[p1].power.key, pw2 = players[p2].power.key;
 
-    if (pw1 === 'double') { m.p1MultActive = true; m.log.push(`⚡ ${p1} استخدم المضاعف (+10%)`); }
-    if (pw2 === 'double') { m.p2MultActive = true; m.log.push(`⚡ ${p2} استخدم المضاعف (+10%)`); }
+    if (pw1 === 'double') { m.p1MultActive = true; m.log.push(tr(`⚡ ${p1} استخدم المضاعف (+10%)`,`⚡ ${p1} used Multiplier (+10%)`)); }
+    if (pw2 === 'double') { m.p2MultActive = true; m.log.push(tr(`⚡ ${p2} استخدم المضاعف (+10%)`,`⚡ ${p2} used Multiplier (+10%)`)); }
 
     if (pw1 === 'weaken') {
-      if (!players[p2].shielded) { m.p2ReduceIncoming = true; m.log.push(`🔻 ${p1} استخدم التخفيض على ${p2} (-10%)`); }
-      else { m.log.push(`🛡️ ${p2} صد التخفيض من ${p1} بالدرع`); players[p2].shielded = false; }
+      if (!players[p2].shielded) { m.p2ReduceIncoming = true; m.log.push(tr(`🔻 ${p1} استخدم التخفيض على ${p2} (-10%)`,`🔻 ${p1} used Weaken on ${p2} (-10%)`)); }
+      else { m.log.push(tr(`🛡️ ${p2} صد التخفيض من ${p1} بالدرع`,`🛡️ ${p2} blocked Weaken from ${p1} with Shield`)); players[p2].shielded = false; }
     }
     if (pw2 === 'weaken') {
-      if (!players[p1].shielded) { m.p1ReduceIncoming = true; m.log.push(`🔻 ${p2} استخدم التخفيض على ${p1} (-10%)`); }
-      else { m.log.push(`🛡️ ${p1} صد التخفيض من ${p2} بالدرع`); players[p1].shielded = false; }
+      if (!players[p1].shielded) { m.p1ReduceIncoming = true; m.log.push(tr(`🔻 ${p2} استخدم التخفيض على ${p1} (-10%)`,`🔻 ${p2} used Weaken on ${p1} (-10%)`)); }
+      else { m.log.push(tr(`🛡️ ${p1} صد التخفيض من ${p2} بالدرع`,`🛡️ ${p1} blocked Weaken from ${p2} with Shield`)); players[p1].shielded = false; }
     }
 
     if (pw1 === 'steal' && pw2 === 'steal') {
-      m.log.push(`🕵️ الاثنين طلعلهم سرقة، فانلغت القدرة عند الاثنين`);
+      m.log.push(tr(`🕵️ الاثنين طلعلهم سرقة، فانلغت القدرة عند الاثنين`,`🕵️ Both got Steal, so the power is cancelled for both`));
     } else {
       if (pw1 === 'steal') {
-        if (!players[p2].shielded) { m.p1Steals = true; m.log.push(`🕵️ ${p1} استخدم السرقة — نتيجة ${p1} و${p2} بتتبدّل مع بعض بالكامل`); }
-        else { m.log.push(`🛡️ ${p2} صد السرقة من ${p1} بالدرع`); players[p2].shielded = false; }
+        if (!players[p2].shielded) { m.p1Steals = true; m.log.push(tr(`🕵️ ${p1} استخدم السرقة — نتيجة ${p1} و${p2} بتتبدّل مع بعض بالكامل`,`🕵️ ${p1} used Steal — ${p1} and ${p2} swap results`)); }
+        else { m.log.push(tr(`🛡️ ${p2} صد السرقة من ${p1} بالدرع`,`🛡️ ${p2} blocked Steal from ${p1} with Shield`)); players[p2].shielded = false; }
       }
       if (pw2 === 'steal') {
-        if (!players[p1].shielded) { m.p2Steals = true; m.log.push(`🕵️ ${p2} استخدم السرقة — نتيجة ${p1} و${p2} بتتبدّل مع بعض بالكامل`); }
-        else { m.log.push(`🛡️ ${p1} صد السرقة من ${p2} بالدرع`); players[p1].shielded = false; }
+        if (!players[p1].shielded) { m.p2Steals = true; m.log.push(tr(`🕵️ ${p2} استخدم السرقة — نتيجة ${p1} و${p2} بتتبدّل مع بعض بالكامل`,`🕵️ ${p2} used Steal — ${p1} and ${p2} swap results`)); }
+        else { m.log.push(tr(`🛡️ ${p1} صد السرقة من ${p2} بالدرع`,`🛡️ ${p1} blocked Steal from ${p2} with Shield`)); players[p1].shielded = false; }
       }
     }
 
     if (pw1 === 'curse') {
-      if (!players[p2].shielded) { players[p2].cursed = true; m.log.push(`💀 ${p1} استخدم اللعنة على ${p2} (سحب سلوت جديد)`); }
-      else { m.log.push(`🛡️ ${p2} صد اللعنة من ${p1} بالدرع`); players[p2].shielded = false; }
+      if (!players[p2].shielded) { players[p2].cursed = true; m.log.push(tr(`💀 ${p1} استخدم اللعنة على ${p2} (سحب سلوت جديد)`,`💀 ${p1} cursed ${p2} (new slot drawn)`)); }
+      else { m.log.push(tr(`🛡️ ${p2} صد اللعنة من ${p1} بالدرع`,`🛡️ ${p2} blocked Curse from ${p1} with Shield`)); players[p2].shielded = false; }
     }
     if (pw2 === 'curse') {
-      if (!players[p1].shielded) { players[p1].cursed = true; m.log.push(`💀 ${p2} استخدم اللعنة على ${p1} (سحب سلوت جديد)`); }
-      else { m.log.push(`🛡️ ${p1} صد اللعنة من ${p2} بالدرع`); players[p1].shielded = false; }
+      if (!players[p1].shielded) { players[p1].cursed = true; m.log.push(tr(`💀 ${p2} استخدم اللعنة على ${p1} (سحب سلوت جديد)`,`💀 ${p2} cursed ${p1} (new slot drawn)`)); }
+      else { m.log.push(tr(`🛡️ ${p1} صد اللعنة من ${p2} بالدرع`,`🛡️ ${p1} blocked Curse from ${p2} with Shield`)); players[p1].shielded = false; }
     }
 
     firstRound.push(m);
@@ -472,19 +516,19 @@ function startTournament() {
   document.getElementById('round-screen').classList.remove('hidden');
   renderRoster();
   renderRound();
-  showRoundBanner('🚀 بدأت البطولة — ' + roundLabel(firstRound.length));
+  showRoundBanner(tr('🚀 بدأت البطولة — ','🚀 Tournament started — ') + roundLabel(firstRound.length));
 }
 
 function assignInitialSlot(name) {
   const p = players[name];
   if (p.power.key === 'redraw2') {
     const [a, b] = pickTwoRandomSlots();
-    if (!a) { alert('مافي ألعاب كافية بالشركات المختارة!'); return; }
+    if (!a) { alert(tr('مافي ألعاب كافية بالشركات المختارة!','Not enough games in the selected companies!')); return; }
     p.pendingChoice = [a, b].filter(Boolean);
     return;
   }
   const s = pickRandomSlot();
-  if (!s) { alert('خلصت الألعاب المتاحة بالشركات المختارة!'); return; }
+  if (!s) { alert(tr('خلصت الألعاب المتاحة بالشركات المختارة!','No more games left in the selected companies!')); return; }
   claimSlot(s);
   p.slot = s;
   if (p.cursed) {
@@ -514,7 +558,7 @@ function rerollPersonalSlot(name) {
   const old = p.slot;
   releaseSlot(old);
   const s = pickRandomSlot();
-  if (!s) { claimSlot(old); alert('ما في سلوتات بديلة متاحة بالشركات المختارة!'); return; }
+  if (!s) { claimSlot(old); alert(tr('ما في سلوتات بديلة متاحة بالشركات المختارة!','No replacement slots available in the selected companies!')); return; }
   claimSlot(s);
   p.slot = s;
   renderRound();
@@ -527,7 +571,7 @@ function renderRoster() {
     const p = players[name];
     const row = document.createElement('div');
     row.className = 'roster-item';
-    const slotTxt = p.slot ? p.slot.name : (p.pendingChoice ? 'بانتظار اختيارك' : '—');
+    const slotTxt = p.slot ? p.slot.name : (p.pendingChoice ? tr('بانتظار اختيارك','Waiting for your pick') : '—');
     const powerHtml = powersEnabled ? `<div class="p-label">${p.power.label}</div><div class="p-desc">${p.power.desc}</div>` : '';
     row.innerHTML = `<div class="roster-name">${name}</div><div class="roster-power">${powerHtml}<div class="p-slot">🎰 ${slotTxt}</div></div>`;
     list.appendChild(row);
@@ -539,16 +583,16 @@ function toggleRoster() {
 }
 
 function roundLabel(matchCount) {
-  if (matchCount >= 8) return 'دور الـ' + (matchCount * 2);
-  if (matchCount === 4) return 'ربع النهائي';
-  if (matchCount === 2) return 'نصف النهائي';
-  return 'النهائي';
+  if (matchCount >= 8) return tr('دور الـ' + (matchCount * 2), 'Round of ' + (matchCount * 2));
+  if (matchCount === 4) return tr('ربع النهائي','Quarter-finals');
+  if (matchCount === 2) return tr('نصف النهائي','Semi-finals');
+  return tr('النهائي','Final');
 }
 
 function renderRound() {
   const round = rounds[currentRoundIndex];
   document.getElementById('round-name').textContent = '🥊 ' + roundLabel(round.length);
-  document.getElementById('round-progress').textContent = 'الجولة ' + (currentRoundIndex + 1) + ' من ' + Math.log2(bracketSize);
+  document.getElementById('round-progress').textContent = tr('الجولة ','Round ') + (currentRoundIndex + 1) + tr(' من ',' of ') + Math.log2(bracketSize);
   const list = document.getElementById('matches-list');
   list.innerHTML = '';
   round.forEach((match, idx) => list.appendChild(buildMatchCard(match, idx)));
@@ -573,7 +617,7 @@ function buildMatchCard(match, idx) {
   if (p1.slot && p2.slot && !match.winner) {
     const decideBtn = document.createElement('button');
     decideBtn.className = 'decide-btn';
-    decideBtn.textContent = '✅ تحديد الفائز';
+    decideBtn.textContent = tr('✅ تحديد الفائز','✅ Decide winner');
     decideBtn.onclick = () => decideMatch(match, idx);
     card.appendChild(decideBtn);
   }
@@ -588,7 +632,7 @@ function buildMatchCard(match, idx) {
     }
     const redo = document.createElement('button');
     redo.className = 'redo-btn';
-    redo.textContent = '↩️ تعديل النتيجة';
+    redo.textContent = tr('↩️ تعديل النتيجة','↩️ Edit result');
     redo.onclick = () => { match.winner = null; match.resultLine = ''; renderRound(); };
     card.appendChild(redo);
   }
@@ -612,7 +656,7 @@ function buildSide(match, idx, which) {
   if (winner && winner !== name) {
     const stamp = document.createElement('div');
     stamp.className = 'elim-stamp';
-    stamp.textContent = 'خرج ❌';
+    stamp.textContent = tr('خرج ❌','Out ❌');
     side.appendChild(stamp);
   }
 
@@ -631,7 +675,7 @@ function buildSide(match, idx, which) {
   if (p.pendingChoice) {
     const label = document.createElement('div');
     label.className = 'choose-label';
-    label.textContent = '🎯 اختر سلوتك الثابت لكامل البطولة:';
+    label.textContent = tr('🎯 اختر سلوتك الثابت لكامل البطولة:','🎯 Pick your fixed slot for the whole tournament:');
     side.appendChild(label);
     const wrap = document.createElement('div');
     wrap.className = 'double-choice';
@@ -649,7 +693,7 @@ function buildSide(match, idx, which) {
   if (!p.slot) {
     const note = document.createElement('div');
     note.className = 'choose-label';
-    note.textContent = 'جاري توزيع السلوت...';
+    note.textContent = tr('جاري توزيع السلوت...','Assigning slot...');
     side.appendChild(note);
     return side;
   }
@@ -661,7 +705,7 @@ function buildSide(match, idx, which) {
 
   const reroll = document.createElement('button');
   reroll.className = 'reroll-btn';
-  reroll.textContent = '🔄 غيّر السلوت';
+  reroll.textContent = tr('🔄 غيّر السلوت','🔄 Change slot');
   reroll.onclick = () => rerollPersonalSlot(name);
   side.appendChild(reroll);
 
@@ -669,7 +713,7 @@ function buildSide(match, idx, which) {
     const xKey = which === 'p1' ? 'x1' : 'x2';
     const xField = document.createElement('div');
     xField.className = 'x-field';
-    xField.innerHTML = `<input type="number" step="0.01" min="0" id="${xKey}-${idx}" placeholder="الإكس اللي طلعلك" value="${match[xKey] ?? ''}">`;
+    xField.innerHTML = `<input type="number" step="0.01" min="0" id="${xKey}-${idx}" placeholder="${tr('الإكس اللي طلعلك','Your X result')}" value="${match[xKey] ?? ''}">`;
     side.appendChild(xField);
   }
 
@@ -679,7 +723,7 @@ function buildSide(match, idx, which) {
 function decideMatch(match, idx) {
   const x1raw = parseFloat(document.getElementById('x1-' + idx).value);
   const x2raw = parseFloat(document.getElementById('x2-' + idx).value);
-  if (isNaN(x1raw) || isNaN(x2raw)) { alert('لازم تدخل الإكس لكلا الشخصين!'); return; }
+  if (isNaN(x1raw) || isNaN(x2raw)) { alert(tr('لازم تدخل الإكس لكلا الشخصين!','Enter the X for both players!')); return; }
   match.x1 = x1raw; match.x2 = x2raw;
 
   const swapped = match.p1Steals || match.p2Steals;
@@ -688,8 +732,8 @@ function decideMatch(match, idx) {
   const eff1 = baseX1 * (match.p1MultActive ? 1.10 : 1) * (match.p1ReduceIncoming ? 0.90 : 1);
   const eff2 = baseX2 * (match.p2MultActive ? 1.10 : 1) * (match.p2ReduceIncoming ? 0.90 : 1);
   match.winner = eff1 >= eff2 ? match.p1 : match.p2;
-  const winLabel = match.log.length ? 'فاز بعد تطبيق القدرات أعلاه' : 'فاز';
-  match.resultLine = `🏆 ${match.winner} ${winLabel} (${eff1.toFixed(2)} مقابل ${eff2.toFixed(2)})`;
+  const winLabel = match.log.length ? tr('فاز بعد تطبيق القدرات أعلاه','won after the powers above') : tr('فاز','won');
+  match.resultLine = `🏆 ${match.winner} ${winLabel} (${eff1.toFixed(2)} ${tr('مقابل','vs')} ${eff2.toFixed(2)})`;
 
   if (currentRoundIndex === 0) {
     const loserName = match.winner === match.p1 ? match.p2 : match.p1;
@@ -699,7 +743,7 @@ function decideMatch(match, idx) {
       releaseSlot(loser.slot);
       const ns = pickRandomSlot();
       if (ns) { claimSlot(ns); loser.slot = ns; }
-      match.log.push(`🔁 ${loserName} خسر واستخدم الإنعاش تلقائياً — سلوت جديد وإعادة المباراة`);
+      match.log.push(tr(`🔁 ${loserName} خسر واستخدم الإنعاش تلقائياً — سلوت جديد وإعادة المباراة`,`🔁 ${loserName} lost and used Revive automatically — new slot and rematch`));
       match.x1 = null; match.x2 = null; match.winner = null; match.resultLine = '';
       renderRound();
       return;
@@ -756,7 +800,7 @@ function showChampion(name) {
     const myX = iAmP1 ? match.x1 : match.x2;
     const item = document.createElement('div');
     item.className = 'path-item';
-    item.innerHTML = `<span>ضد ${opp}</span><b>x${myX}</b>`;
+    item.innerHTML = `<span>${tr('ضد','vs')} ${opp}</span><b>x${myX}</b>`;
     pathList.appendChild(item);
   });
 
@@ -790,5 +834,33 @@ function resetTournament() {
 }
 </script>
 
+<script src="nav.js" data-site="main" data-active="tournament"></script>
+<!-- xtools-footer -->
+<style>
+  .xt-footer{text-align:center;padding:36px 16px 26px;margin-top:20px;border-top:1px solid rgba(139,108,255,.18);font-family:'Cairo',sans-serif;color:#9a9ab5;font-size:14px}
+  .xt-by{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .xt-by .xt-name{color:#fff;font-weight:800;font-size:16px}
+  .xt-link{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;border:1px solid rgba(168,108,255,.5);background:linear-gradient(135deg,rgba(77,109,255,.18),rgba(197,108,240,.18));color:#c9b8ff;font-weight:700;font-size:13px;text-decoration:none;direction:ltr;transition:.2s}
+  .xt-link:hover{background:linear-gradient(135deg,#4d6dff,#c56cf0);color:#fff;transform:translateY(-1px)}
+  .xt-copy{margin-top:12px;font-size:12px;color:#77779a}
+</style>
+<div class="xt-footer">
+  <div class="xt-by">
+    <span id="footer-text">طُوِّر بـ ❤️ من قِبَل</span>
+    <a class="xt-name" href="https://guns.lol/roy_5x" target="_blank" rel="noopener" style="text-decoration:none;color:#fff;font-weight:800;font-size:16px">Roy</a>
+    <a class="xt-link" href="https://guns.lol/roy_5x" target="_blank" rel="noopener">🔗 guns.lol/roy_5x</a>
+  </div>
+  <div class="xt-copy" id="xt-copy">© 2026 xTools — جميع الحقوق محفوظة</div>
+</div>
+<script>
+(function(){
+  var T={ar:{by:'طُوِّر بـ ❤️ من قِبَل',c:'© 2026 xTools — جميع الحقوق محفوظة'},en:{by:'Built with ❤️ by',c:'© 2026 xTools — All rights reserved'}};
+  function lang(){var l='';try{l=localStorage.getItem('site-lang')}catch(e){}if(l!=='ar'&&l!=='en')l=document.documentElement.lang;return l==='en'?'en':'ar'}
+  var last='';
+  function upd(){var l=lang();if(l===last&&document.getElementById('footer-text').textContent===T[l].by)return;last=l;document.querySelector('.xt-footer').dir=l==='en'?'ltr':'rtl';
+    document.getElementById('footer-text').textContent=T[l].by;document.getElementById('xt-copy').textContent=T[l].c}
+  upd();setInterval(upd,400);
+})();
+</script>
 </body>
 </html>

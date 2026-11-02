@@ -29,7 +29,7 @@
   }
 
   html, body {
-    height: 100%;
+    min-height: 100%;
   }
 
   body {
@@ -199,6 +199,7 @@
   .service-card:nth-child(3) { animation: fadeUp 0.55s ease 0.75s forwards; }
   .service-card:nth-child(4) { animation: fadeUp 0.55s ease 0.85s forwards; }
   .service-card:nth-child(5) { animation: fadeUp 0.55s ease 0.95s forwards; }
+  .service-card:nth-child(6) { animation: fadeUp 0.55s ease 1.05s forwards; }
 
   .service-card.featured { border-color: var(--gold-dark); background: linear-gradient(135deg, #171226 0%, var(--card) 70%); box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 8px 30px rgba(139,92,246,0.12); }
   .service-card.featured .card-icon { filter: drop-shadow(0 0 14px rgba(255,200,60,0.55)); }
@@ -356,7 +357,7 @@
   <h1 data-i18n-html="title">مرحباً بك في<br><span>xTools</span></h1>
 
   <p class="hero-desc" data-i18n="desc">
-    منصة متكاملة تضم خمس أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
+    منصة متكاملة تضم ست أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
     اختر الأداة التي تناسبك وابدأ الآن.
   </p>
 
@@ -414,6 +415,16 @@
       <div class="card-arrow" id="arrow5">←</div>
     </a>
 
+    <!-- Giveaway -->
+    <a class="service-card" href="https://giveaway.xtools.live/giveaway.html">
+      <div class="card-icon">🎁</div>
+      <div class="card-body">
+        <div class="card-title"><span data-i18n="giveTitle">سحب البث</span><span class="card-badge" data-i18n="giveBadge">جديد</span></div>
+        <div class="card-desc" data-i18n="giveDesc">سجّل دخول بحساب Kick وسوّي سحب على شات قناتك مباشرة — بدون إعدادات</div>
+      </div>
+      <div class="card-arrow" id="arrow6">←</div>
+    </a>
+
   </div>
 
 
@@ -436,7 +447,7 @@
     ar: {
       badge: '🎰 xTools',
       title: 'مرحباً بك في<br><span>xTools</span>',
-      desc: 'منصة متكاملة تضم خمس أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
+      desc: 'منصة متكاملة تضم ست أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
       chooseService: 'اختر الخدمة',
       slotsTitle: 'سلوت عشوائي',
       slotsDesc: 'يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake',
@@ -449,7 +460,7 @@
       tourDesc: 'بطولة سلوتات مع قدرات استثنائية — نافس بسلوتاتك واستخدم قدرات خاصة تقلب موازين المنافسة',
       battleTitle: 'حرب السلوتات',
       battleBadge: 'جديد',
-      battleDesc: 'صوّت مع الجمهور على السلوت اللي راح يفوز في الحرب المباشرة',
+      battleDesc: 'صوّت مع الجمهور على السلوت اللي راح يفوز في الحرب المباشرة', giveTitle: 'سحب البث', giveBadge: 'جديد', giveDesc: 'سجّل دخول بحساب Kick وسوّي سحب على شات قناتك مباشرة — بدون إعدادات',
       footer: 'طُوِّر بـ ❤️ من قِبَل',
       toggleLabel: 'English',
       arrow: '←'
@@ -457,7 +468,7 @@
     en: {
       badge: '🎰 xTools',
       title: 'Welcome to<br><span>xTools</span>',
-      desc: 'An all-in-one platform with five professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
+      desc: 'An all-in-one platform with six professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
       chooseService: 'Choose a Service',
       slotsTitle: 'Random Slot',
       slotsDesc: 'Picks a random slot for you from hundreds of games available on Stake',
@@ -470,7 +481,7 @@
       tourDesc: 'A slots tournament with exceptional abilities — compete with your slots and use special powers that turn the tide',
       battleTitle: 'Slot Battle',
       battleBadge: 'NEW',
-      battleDesc: 'Vote with the crowd on which slot will win the live battle',
+      battleDesc: 'Vote with the crowd on which slot will win the live battle', giveTitle: 'Stream Giveaway', giveBadge: 'NEW', giveDesc: 'Log in with Kick and run a giveaway on your chat instantly — zero setup',
       footer: 'Built with ❤️ by',
       toggleLabel: 'عربي',
       arrow: '→'
@@ -492,7 +503,7 @@
       });
       document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
       document.getElementById('footer-text').textContent = I18N[lang].footer;
-      ['arrow1','arrow2','arrow3','arrow4','arrow5'].forEach(id => {
+      ['arrow1','arrow2','arrow3','arrow4','arrow5','arrow6'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = I18N[lang].arrow;
       });
@@ -510,9 +521,33 @@
   });
 </script>
 
-<div style="text-align:center; padding: 32px 16px 20px; color: #444; font-size: 13px; font-family: 'Cairo', sans-serif;">
-  <span id="footer-text">طُوِّر بـ ❤️ من قِبَل</span>
-  <a href="https://guns.lol/roy_5x" target="_blank" style="color: #8b6cff; font-weight: 700; text-decoration: none; margin: 0 4px;">Roy</a>
+<script src="nav.js" data-site="main" data-active="index"></script>
+<!-- xtools-footer -->
+<style>
+  .xt-footer{text-align:center;padding:36px 16px 26px;margin-top:20px;border-top:1px solid rgba(139,108,255,.18);font-family:'Cairo',sans-serif;color:#9a9ab5;font-size:14px}
+  .xt-by{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .xt-by .xt-name{color:#fff;font-weight:800;font-size:16px}
+  .xt-link{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;border:1px solid rgba(168,108,255,.5);background:linear-gradient(135deg,rgba(77,109,255,.18),rgba(197,108,240,.18));color:#c9b8ff;font-weight:700;font-size:13px;text-decoration:none;direction:ltr;transition:.2s}
+  .xt-link:hover{background:linear-gradient(135deg,#4d6dff,#c56cf0);color:#fff;transform:translateY(-1px)}
+  .xt-copy{margin-top:12px;font-size:12px;color:#77779a}
+</style>
+<div class="xt-footer">
+  <div class="xt-by">
+    <span id="footer-text">طُوِّر بـ ❤️ من قِبَل</span>
+    <a class="xt-name" href="https://guns.lol/roy_5x" target="_blank" rel="noopener" style="text-decoration:none;color:#fff;font-weight:800;font-size:16px">Roy</a>
+    <a class="xt-link" href="https://guns.lol/roy_5x" target="_blank" rel="noopener">🔗 guns.lol/roy_5x</a>
+  </div>
+  <div class="xt-copy" id="xt-copy">© 2026 xTools — جميع الحقوق محفوظة</div>
 </div>
+<script>
+(function(){
+  var T={ar:{by:'طُوِّر بـ ❤️ من قِبَل',c:'© 2026 xTools — جميع الحقوق محفوظة'},en:{by:'Built with ❤️ by',c:'© 2026 xTools — All rights reserved'}};
+  function lang(){var l='';try{l=localStorage.getItem('site-lang')}catch(e){}if(l!=='ar'&&l!=='en')l=document.documentElement.lang;return l==='en'?'en':'ar'}
+  var last='';
+  function upd(){var l=lang();if(l===last&&document.getElementById('footer-text').textContent===T[l].by)return;last=l;document.querySelector('.xt-footer').dir=l==='en'?'ltr':'rtl';
+    document.getElementById('footer-text').textContent=T[l].by;document.getElementById('xt-copy').textContent=T[l].c}
+  upd();setInterval(upd,400);
+})();
+</script>
 </body>
 </html>
