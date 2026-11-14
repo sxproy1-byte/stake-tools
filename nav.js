@@ -4,7 +4,8 @@
   var SITE = (script && script.getAttribute('data-site')) || 'main';
   var ACTIVE = (script && script.getAttribute('data-active')) || '';
   var MAIN = 'https:' + '//xtools.live/';
-  var GIVE = 'https:' + '//giveaway.xtools.live/giveaway.html';
+  var GIVE = 'https:' + '//giveaway.xtools.live/';
+  var SUB = { giveaway: 'giveaway.html', slotcall: 'slotcall.html' };
   var ITEMS = [
     ['index',      '🏠', 'الرئيسية',        'Home'],
     ['slots',      '🎰', 'سلوت عشوائي',     'Random Slot'],
@@ -12,11 +13,12 @@
     ['wheel',      '🎡', 'دولاب الحظ',      'Wheel of Fortune'],
     ['tournament', '🏆', 'بطولة السلوتات',  'Slots Tournament'],
     ['battle',     '⚔️', 'حرب السلوتات',    'Slot Battle'],
-    ['giveaway',   '🎁', 'سحب البث',        'Stream Giveaway']
+    ['giveaway',   '🎁', 'سحب البث',        'Stream Giveaway'],
+    ['slotcall',   '🎬', 'سلوت كول',        'Slot Call']
   ];
   function href(k) {
-    if (SITE === 'giveaway') return k === 'giveaway' ? 'giveaway.html' : MAIN + (k === 'index' ? '' : k + '.html');
-    return k === 'giveaway' ? GIVE : (k === 'index' ? 'index.html' : k + '.html');
+    if (SITE === 'giveaway') return SUB[k] ? SUB[k] : MAIN + (k === 'index' ? '' : k + '.html');
+    return SUB[k] ? GIVE + SUB[k] : (k === 'index' ? 'index.html' : k + '.html');
   }
   function lang() {
     var l = ''; try { l = localStorage.getItem('site-lang'); } catch (e) {}
