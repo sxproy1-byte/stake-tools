@@ -200,6 +200,7 @@
   .service-card:nth-child(4) { animation: fadeUp 0.55s ease 0.85s forwards; }
   .service-card:nth-child(5) { animation: fadeUp 0.55s ease 0.95s forwards; }
   .service-card:nth-child(6) { animation: fadeUp 0.55s ease 1.05s forwards; }
+  .service-card:nth-child(7) { animation: fadeUp 0.55s ease 1.15s forwards; }
 
   .service-card.featured { border-color: var(--gold-dark); background: linear-gradient(135deg, #171226 0%, var(--card) 70%); box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 8px 30px rgba(139,92,246,0.12); }
   .service-card.featured .card-icon { filter: drop-shadow(0 0 14px rgba(255,200,60,0.55)); }
@@ -357,7 +358,7 @@
   <h1 data-i18n-html="title">مرحباً بك في<br><span>xTools</span></h1>
 
   <p class="hero-desc" data-i18n="desc">
-    منصة متكاملة تضم ست أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
+    منصة متكاملة تضم سبع أدوات احترافية لتجربة لعب أذكى وأكثر إثارة.
     اختر الأداة التي تناسبك وابدأ الآن.
   </p>
 
@@ -425,6 +426,16 @@
       <div class="card-arrow" id="arrow6">←</div>
     </a>
 
+    <!-- Slot Call -->
+    <a class="service-card featured" href="https://giveaway.xtools.live/slotcall.html">
+      <div class="card-icon">🎬</div>
+      <div class="card-body">
+        <div class="card-title"><span data-i18n="callTitle">سلوت كول</span><span class="card-badge" data-i18n="callBadge">جديد</span></div>
+        <div class="card-desc" data-i18n="callDesc">الناس بتطلب سلوت من الشات وبتظهر قائمة الطلبات على بثك بمربع OBS — والستريمر بيختار منها</div>
+      </div>
+      <div class="card-arrow" id="arrow7">←</div>
+    </a>
+
   </div>
 
 
@@ -447,7 +458,7 @@
     ar: {
       badge: '🎰 xTools',
       title: 'مرحباً بك في<br><span>xTools</span>',
-      desc: 'منصة متكاملة تضم ست أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
+      desc: 'منصة متكاملة تضم سبع أدوات احترافية لتجربة لعب أذكى وأكثر إثارة. اختر الأداة التي تناسبك وابدأ الآن.',
       chooseService: 'اختر الخدمة',
       slotsTitle: 'سلوت عشوائي',
       slotsDesc: 'يختار لك سلوت عشوائي من مئات الألعاب المتاحة على Stake',
@@ -461,6 +472,7 @@
       battleTitle: 'حرب السلوتات',
       battleBadge: 'جديد',
       battleDesc: 'صوّت مع الجمهور على السلوت اللي راح يفوز في الحرب المباشرة', giveTitle: 'سحب البث', giveBadge: 'جديد', giveDesc: 'سجّل دخول بحساب Kick وسوّي سحب على شات قناتك مباشرة — بدون إعدادات',
+      callTitle: 'سلوت كول', callBadge: 'جديد', callDesc: 'الناس بتطلب سلوت من الشات وبتظهر قائمة الطلبات على بثك بمربع OBS — والستريمر بيختار منها',
       footer: 'طُوِّر بـ ❤️ من قِبَل',
       toggleLabel: 'English',
       arrow: '←'
@@ -468,7 +480,7 @@
     en: {
       badge: '🎰 xTools',
       title: 'Welcome to<br><span>xTools</span>',
-      desc: 'An all-in-one platform with six professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
+      desc: 'An all-in-one platform with seven professional tools for a smarter, more exciting play experience. Pick the tool that suits you and get started.',
       chooseService: 'Choose a Service',
       slotsTitle: 'Random Slot',
       slotsDesc: 'Picks a random slot for you from hundreds of games available on Stake',
@@ -482,6 +494,7 @@
       battleTitle: 'Slot Battle',
       battleBadge: 'NEW',
       battleDesc: 'Vote with the crowd on which slot will win the live battle', giveTitle: 'Stream Giveaway', giveBadge: 'NEW', giveDesc: 'Log in with Kick and run a giveaway on your chat instantly — zero setup',
+      callTitle: 'Slot Call', callBadge: 'NEW', callDesc: 'Viewers request slots in chat, the request list shows on your stream via an OBS box — and you pick from it',
       footer: 'Built with ❤️ by',
       toggleLabel: 'عربي',
       arrow: '→'
@@ -503,7 +516,7 @@
       });
       document.getElementById('lang-toggle-label').textContent = I18N[lang].toggleLabel;
       document.getElementById('footer-text').textContent = I18N[lang].footer;
-      ['arrow1','arrow2','arrow3','arrow4','arrow5','arrow6'].forEach(id => {
+      ['arrow1','arrow2','arrow3','arrow4','arrow5','arrow6','arrow7'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = I18N[lang].arrow;
       });
